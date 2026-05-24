@@ -1,3 +1,4 @@
+import { HomepageCommunitySection } from "@/components/community/homepage-community-section";
 import Link from "next/link";
 import { EmailSignupCard } from "@/components/cards/email-signup-card";
 import { PlaceholderCard } from "@/components/cards/placeholder-card";
@@ -157,7 +158,8 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </Container>
+                <HomepageCommunitySection />
+</Container>
       </section>
     </div>
   );

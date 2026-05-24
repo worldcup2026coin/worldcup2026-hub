@@ -5,9 +5,11 @@ import { MatchEventsTimeline } from "@/components/matches/match-events-timeline"
 import { MatchHeader } from "@/components/matches/match-header";
 import { MatchLineups } from "@/components/matches/match-lineups";
 import { MatchPollPlaceholder } from "@/components/matches/match-poll-placeholder";
+import { PollCard } from "@/components/community/poll-card";
 import { MatchPreviewBlock } from "@/components/matches/match-preview-block";
 import { MatchShareButtons } from "@/components/matches/match-share-buttons";
 import { MatchStats } from "@/components/matches/match-stats";
+import { EmailSignupForm } from "@/components/community/email-signup-form";
 import { MatchPredictionSections } from "@/components/predictions/match-prediction-sections";
 import {
   getMatchBySlug,
@@ -16,6 +18,7 @@ import {
   getPublicSiteUrl,
 } from "@/lib/data/matches";
 import { getPredictionContentForFixture } from "@/lib/data/predictions";
+import { getPublishedPolls } from "@/lib/data/community";
 import { formatDateOnly } from "@/lib/worldcup/format";
 
 export const dynamic = "force-dynamic";
@@ -89,7 +92,14 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
   const { fixture, canonicalSlug, events, stats, lineups } = data;
 
-  const predictionContent = await getPredictionContentForFixture(fixture.id);
+  const [predictionContent, fixturePolls] = await Promise.all([
+    getPredictionContentForFixture(fixture.id),
+    getPublishedPolls({
+      contextType: "fixture",
+      fixtureId: fixture.id,
+      limit: 1,
+    }),
+  ]);
 
   const siteUrl = getPublicSiteUrl();
   const shareUrl = `${siteUrl}/matches/${canonicalSlug}`;
@@ -134,10 +144,20 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
           <aside className="grid content-start gap-6">
             <MatchShareButtons shareText={shareText} shareUrl={shareUrl} />
-            <MatchPollPlaceholder fixture={fixture} />
+            <EmailSignupForm
+              source="match_page"
+              title="Get matchday updates"
+              description="Join the list for World Cup updates, matchday notes and community features."
+            />
+                        {fixturePolls[0] ? (
+              <PollCard poll={fixturePolls[0]} source="match_page" />
+            ) : (
+              <MatchPollPlaceholder fixture={fixture} />
+            )}
           </aside>
         </div>
       </Container>
     </div>
   );
 }
+
