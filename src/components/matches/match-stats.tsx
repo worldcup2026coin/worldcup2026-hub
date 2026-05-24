@@ -1,4 +1,4 @@
-import type { Fixture, MatchStatistic } from "@/lib/data/worldcup";
+import type { Fixture, MatchStatistic } from "@/lib/data/matches";
 import { MatchEmptyState } from "@/components/matches/match-empty-state";
 
 type MatchStatsProps = {
@@ -6,12 +6,39 @@ type MatchStatsProps = {
   stats: MatchStatistic[];
 };
 
+const preferredOrder = [
+  "Ball Possession",
+  "Total Shots",
+  "Shots on Goal",
+  "Shots off Goal",
+  "Blocked Shots",
+  "Corner Kicks",
+  "Fouls",
+  "Yellow Cards",
+  "Red Cards",
+  "Goalkeeper Saves",
+  "Passes %",
+  "expected_goals",
+];
+
 function displayValue(value: string | null | undefined) {
   if (value === null || value === undefined || value === "") {
     return "-";
   }
 
   return value;
+}
+
+function orderStat(type: string) {
+  const exactIndex = preferredOrder.findIndex(
+    (item) => item.toLowerCase() === type.toLowerCase()
+  );
+
+  if (exactIndex >= 0) {
+    return exactIndex;
+  }
+
+  return 999;
 }
 
 export function MatchStats({ fixture, stats }: MatchStatsProps) {
@@ -51,9 +78,16 @@ export function MatchStats({ fixture, stats }: MatchStatsProps) {
     statMap.set(stat.stat_type, current);
   }
 
-  const rows = Array.from(statMap.values()).sort((a, b) =>
-    a.type.localeCompare(b.type)
-  );
+  const rows = Array.from(statMap.values()).sort((a, b) => {
+    const orderA = orderStat(a.type);
+    const orderB = orderStat(b.type);
+
+    if (orderA !== orderB) {
+      return orderA - orderB;
+    }
+
+    return a.type.localeCompare(b.type);
+  });
 
   return (
     <section className="rounded-3xl border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-slate-950/30">
@@ -64,11 +98,11 @@ export function MatchStats({ fixture, stats }: MatchStatsProps) {
           <thead className="bg-slate-950/70 text-xs uppercase tracking-[0.18em] text-slate-400">
             <tr>
               <th className="px-4 py-3 text-left">
-                {fixture.home_team_name ?? "Home"}
+                {fixture.home_team_name || "Home"}
               </th>
               <th className="px-4 py-3 text-center">Stat</th>
               <th className="px-4 py-3 text-right">
-                {fixture.away_team_name ?? "Away"}
+                {fixture.away_team_name || "Away"}
               </th>
             </tr>
           </thead>

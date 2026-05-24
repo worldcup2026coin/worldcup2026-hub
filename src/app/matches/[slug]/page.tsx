@@ -9,7 +9,12 @@ import { MatchPredictionPlaceholder } from "@/components/matches/match-predictio
 import { MatchPreviewBlock } from "@/components/matches/match-preview-block";
 import { MatchShareButtons } from "@/components/matches/match-share-buttons";
 import { MatchStats } from "@/components/matches/match-stats";
-import { getMatchBySlug, getMatchPageData } from "@/lib/data/worldcup";
+import {
+  getMatchBySlug,
+  getMatchPageData,
+  getMatchTitle,
+  getPublicSiteUrl,
+} from "@/lib/data/matches";
 import { formatDateOnly } from "@/lib/worldcup/format";
 
 export const dynamic = "force-dynamic";
@@ -20,34 +25,35 @@ type MatchPageProps = {
   }>;
 };
 
-function matchTitle(home?: string | null, away?: string | null) {
-  return `${home ?? "Home"} vs ${away ?? "Away"}`;
-}
-
 export async function generateMetadata({
   params,
 }: MatchPageProps): Promise<Metadata> {
   const { slug } = await params;
   const match = await getMatchBySlug(slug);
+  const siteUrl = getPublicSiteUrl();
 
   if (!match) {
     return {
       title: "Match not found",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
   const { fixture, canonicalSlug } = match;
-  const title = `${matchTitle(
+  const matchName = getMatchTitle(
     fixture.home_team_name,
     fixture.away_team_name
-  )} | World Cup 2026 Preview, Live Score & Stats`;
+  );
 
-  const description = `Follow ${matchTitle(
-    fixture.home_team_name,
-    fixture.away_team_name
-  )} at World Cup 2026 with live score, match stats, team news, predictions and fan insights.`;
+  const title = `${matchName} | World Cup 2026 Preview, Live Score & Stats`;
+
+  const description = `Follow ${matchName} at World Cup 2026 with live score, match stats, team news, predictions and fan insights.`;
 
   return {
+    metadataBase: new URL(siteUrl),
     title,
     description,
     alternates: {
@@ -57,6 +63,13 @@ export async function generateMetadata({
       title,
       description,
       type: "article",
+      url: `/matches/${canonicalSlug}`,
+      siteName: "World Cup 2026 Hub",
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
     },
   };
 }
@@ -75,11 +88,9 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
   const { fixture, canonicalSlug, events, stats, lineups } = data;
 
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://worldcup2026-hub.vercel.app";
-
-  const shareUrl = `${siteUrl.replace(/\/+$/, "")}/matches/${canonicalSlug}`;
-  const shareText = `${matchTitle(
+  const siteUrl = getPublicSiteUrl();
+  const shareUrl = `${siteUrl}/matches/${canonicalSlug}`;
+  const shareText = `${getMatchTitle(
     fixture.home_team_name,
     fixture.away_team_name
   )} · ${formatDateOnly(fixture.match_date)} · World Cup 2026 Hub`;

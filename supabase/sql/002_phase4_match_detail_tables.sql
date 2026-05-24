@@ -1,3 +1,5 @@
+create extension if not exists pgcrypto;
+
 create table if not exists public.match_events (
   id uuid primary key default gen_random_uuid(),
   fixture_id uuid references public.fixtures(id) on delete cascade,
@@ -6,6 +8,7 @@ create table if not exists public.match_events (
 
   elapsed integer,
   extra integer,
+
   team_api_id integer,
   team_name text,
   team_logo_url text,
@@ -75,23 +78,14 @@ create table if not exists public.match_lineups (
 create index if not exists idx_match_events_api_fixture_id
 on public.match_events(api_fixture_id);
 
-create index if not exists idx_match_events_team_api_id
-on public.match_events(team_api_id);
-
-create index if not exists idx_match_events_elapsed
-on public.match_events(elapsed, extra);
+create index if not exists idx_match_events_timeline
+on public.match_events(api_fixture_id, elapsed, extra);
 
 create index if not exists idx_match_statistics_api_fixture_id
 on public.match_statistics(api_fixture_id);
 
-create index if not exists idx_match_statistics_team_api_id
-on public.match_statistics(team_api_id);
-
 create index if not exists idx_match_lineups_api_fixture_id
 on public.match_lineups(api_fixture_id);
-
-create index if not exists idx_match_lineups_team_api_id
-on public.match_lineups(team_api_id);
 
 alter table public.match_events enable row level security;
 alter table public.match_statistics enable row level security;

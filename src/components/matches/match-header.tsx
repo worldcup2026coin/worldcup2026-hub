@@ -1,5 +1,6 @@
-import type { Fixture } from "@/lib/data/worldcup";
-import { formatDateTime, getFixtureDisplayStatus } from "@/lib/worldcup/format";
+import type { Fixture } from "@/lib/data/matches";
+import { formatDateTime } from "@/lib/worldcup/format";
+import { getMatchStatusInfo } from "@/lib/worldcup/match-status";
 import { MatchStatusBadge } from "@/components/matches/match-status-badge";
 
 type MatchHeaderProps = {
@@ -13,7 +14,7 @@ function TeamBadge({
   name: string | null;
   logo: string | null;
 }) {
-  const displayName = name ?? "Team TBC";
+  const displayName = name || "Team TBC";
 
   return (
     <div className="flex min-w-0 flex-col items-center text-center">
@@ -28,6 +29,7 @@ function TeamBadge({
           {displayName.slice(0, 2).toUpperCase()}
         </div>
       )}
+
       <h1 className="mt-4 max-w-[12rem] truncate text-2xl font-black text-white sm:text-4xl">
         {displayName}
       </h1>
@@ -35,19 +37,33 @@ function TeamBadge({
   );
 }
 
+function ScoreBox({ fixture }: { fixture: Fixture }) {
+  const status = getMatchStatusInfo(fixture.status_short, fixture.status_long);
+
+  if (!status.showScore) {
+    return (
+      <p className="mt-2 text-3xl font-black text-white sm:text-5xl">
+        <span className="text-slate-400">vs</span>
+      </p>
+    );
+  }
+
+  return (
+    <p className="mt-2 text-4xl font-black text-white sm:text-6xl">
+      {fixture.home_goals ?? "-"}
+      <span className="mx-2 text-slate-600">-</span>
+      {fixture.away_goals ?? "-"}
+    </p>
+  );
+}
+
 export function MatchHeader({ fixture }: MatchHeaderProps) {
-  const displayStatus = getFixtureDisplayStatus(fixture.status_short);
-  const showScore = displayStatus === "live" || displayStatus === "finished";
-
-  const homeScore = showScore ? fixture.home_goals ?? "-" : "-";
-  const awayScore = showScore ? fixture.away_goals ?? "-" : "-";
-
   return (
     <section className="rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/40 sm:p-10">
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-emerald-300">
-            {fixture.round ?? fixture.group_name ?? "World Cup 2026"}
+            {fixture.round || fixture.group_name || "World Cup 2026"}
           </p>
           <p className="mt-3 text-sm text-slate-300">
             {formatDateTime(fixture.match_date)}
@@ -70,11 +86,7 @@ export function MatchHeader({ fixture }: MatchHeaderProps) {
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
             Score
           </p>
-          <p className="mt-2 text-4xl font-black text-white sm:text-6xl">
-            {homeScore}
-            <span className="mx-2 text-slate-600">-</span>
-            {awayScore}
-          </p>
+          <ScoreBox fixture={fixture} />
         </div>
 
         <TeamBadge
@@ -89,7 +101,7 @@ export function MatchHeader({ fixture }: MatchHeaderProps) {
             Stage
           </p>
           <p className="mt-1 font-bold text-white">
-            {fixture.round ?? fixture.group_name ?? "TBC"}
+            {fixture.round || fixture.group_name || "Stage TBC"}
           </p>
         </div>
 
@@ -98,7 +110,7 @@ export function MatchHeader({ fixture }: MatchHeaderProps) {
             Venue
           </p>
           <p className="mt-1 font-bold text-white">
-            {fixture.venue_name ?? "Venue TBC"}
+            {fixture.venue_name || "Venue TBC"}
           </p>
         </div>
 
@@ -107,7 +119,7 @@ export function MatchHeader({ fixture }: MatchHeaderProps) {
             Host city
           </p>
           <p className="mt-1 font-bold text-white">
-            {fixture.venue_city ?? "Host city TBC"}
+            {fixture.venue_city || "Host city TBC"}
           </p>
         </div>
       </div>
