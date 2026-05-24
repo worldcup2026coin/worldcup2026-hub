@@ -137,3 +137,28 @@ export function getTeamIdFromSlug(slug: string) {
 
   return Number.isFinite(parsed) ? parsed : null;
 }
+
+export function fixtureSlug(input: {
+  api_fixture_id: number;
+  match_date?: string | null;
+  home_team_name?: string | null;
+  away_team_name?: string | null;
+}) {
+  const datePart = input.match_date?.slice(0, 10) || "date-tbc";
+  const homePart = slugify(input.home_team_name || "home-tbc");
+  const awayPart = slugify(input.away_team_name || "away-tbc");
+
+  return `${datePart}-${homePart}-vs-${awayPart}-${input.api_fixture_id}`;
+}
+
+export function getFixtureIdFromSlug(slug: string) {
+  const match = slug.match(/-(\d+)$/);
+
+  if (!match) {
+    return null;
+  }
+
+  const parsed = Number(match[1]);
+
+  return Number.isFinite(parsed) ? parsed : null;
+}
