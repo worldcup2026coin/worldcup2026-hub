@@ -12,7 +12,9 @@ export async function GET() {
       ),
       apiFootballBaseUrl: Boolean(process.env.API_FOOTBALL_BASE_URL),
       apiFootballKey: Boolean(process.env.API_FOOTBALL_KEY),
+      syncSecret: Boolean(process.env.SYNC_SECRET),
     },
   });
 }
+
 
