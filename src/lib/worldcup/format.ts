@@ -1,0 +1,139 @@
+export type FixtureDisplayStatus =
+  | "upcoming"
+  | "live"
+  | "finished"
+  | "postponed"
+  | "cancelled"
+  | "unknown";
+
+const liveStatuses = new Set(["1H", "HT", "2H", "ET", "BT", "P", "LIVE"]);
+const finishedStatuses = new Set(["FT", "AET", "PEN"]);
+const postponedStatuses = new Set(["PST", "SUSP", "INT"]);
+const cancelledStatuses = new Set(["CANC", "ABD", "AWD", "WO"]);
+
+export function getFixtureDisplayStatus(
+  statusShort: string | null | undefined
+): FixtureDisplayStatus {
+  const status = statusShort?.toUpperCase();
+
+  if (!status) {
+    return "unknown";
+  }
+
+  if (liveStatuses.has(status)) {
+    return "live";
+  }
+
+  if (finishedStatuses.has(status)) {
+    return "finished";
+  }
+
+  if (postponedStatuses.has(status)) {
+    return "postponed";
+  }
+
+  if (cancelledStatuses.has(status)) {
+    return "cancelled";
+  }
+
+  if (status === "NS" || status === "TBD") {
+    return "upcoming";
+  }
+
+  return "unknown";
+}
+
+export function isLiveFixture(statusShort: string | null | undefined) {
+  return getFixtureDisplayStatus(statusShort) === "live";
+}
+
+export function isFinishedFixture(statusShort: string | null | undefined) {
+  return getFixtureDisplayStatus(statusShort) === "finished";
+}
+
+export function isUpcomingFixture(statusShort: string | null | undefined) {
+  return getFixtureDisplayStatus(statusShort) === "upcoming";
+}
+
+export function formatDateTime(value: string | null | undefined) {
+  if (!value) {
+    return "Date TBC";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Date TBC";
+  }
+
+  return new Intl.DateTimeFormat("en-IE", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Dublin",
+  }).format(date);
+}
+
+export function formatDateOnly(value: string | null | undefined) {
+  if (!value) {
+    return "Date TBC";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Date TBC";
+  }
+
+  return new Intl.DateTimeFormat("en-IE", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "Europe/Dublin",
+  }).format(date);
+}
+
+export function getDateInputValue(value: string | null | undefined) {
+  if (!value) {
+    return "";
+  }
+
+  return value.slice(0, 10);
+}
+
+export function formatLastUpdated(value: string | null | undefined) {
+  if (!value) {
+    return "Last updated not available";
+  }
+
+  return formatDateTime(value);
+}
+
+export function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/['"]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export function teamSlug(name: string, apiTeamId: number) {
+  return `${slugify(name)}-${apiTeamId}`;
+}
+
+export function getTeamIdFromSlug(slug: string) {
+  const match = slug.match(/-(\d+)$/);
+
+  if (!match) {
+    return null;
+  }
+
+  const parsed = Number(match[1]);
+
+  return Number.isFinite(parsed) ? parsed : null;
+}
