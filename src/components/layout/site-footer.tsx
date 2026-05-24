@@ -55,9 +55,10 @@ export function SiteFooter() {
 
         <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 World Cup 2026 Hub. Built for tournament mode.</p>
-          <p>Phase 1 foundation — no live API data connected yet.</p>
+          <p>Live World Cup data powered by Supabase and API-Football sync.</p>
         </div>
       </Container>
     </footer>
   );
 }
+
