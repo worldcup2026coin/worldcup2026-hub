@@ -1,6 +1,11 @@
 import Link from "next/link";
 import type { Fixture } from "@/lib/data/worldcup";
-import { formatDateTime, getFixtureDisplayStatus, teamSlug } from "@/lib/worldcup/format";
+import {
+  fixtureSlug,
+  formatDateTime,
+  getFixtureDisplayStatus,
+  teamSlug,
+} from "@/lib/worldcup/format";
 import { FixtureStatusBadge } from "@/components/worldcup/fixture-status-badge";
 
 type FixtureCardProps = {
@@ -83,6 +88,13 @@ export function FixtureCard({ fixture }: FixtureCardProps) {
   const homeScore = showScore ? fixture.home_goals : null;
   const awayScore = showScore ? fixture.away_goals : null;
 
+  const matchSlug = fixtureSlug({
+    api_fixture_id: fixture.api_fixture_id,
+    match_date: fixture.match_date,
+    home_team_name: fixture.home_team_name,
+    away_team_name: fixture.away_team_name,
+  });
+
   return (
     <article className="rounded-3xl border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-slate-950/30">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -128,6 +140,13 @@ export function FixtureCard({ fixture }: FixtureCardProps) {
           {fixture.status_long ?? fixture.status_short ?? "TBC"}
         </p>
       </div>
+
+      <Link
+        href={`/matches/${matchSlug}`}
+        className="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-5 text-sm font-black text-emerald-200 transition hover:bg-emerald-400 hover:text-slate-950"
+      >
+        Match details
+      </Link>
     </article>
   );
 }

@@ -1,7 +1,9 @@
 import "server-only";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import {
+  fixtureSlug,
   getFixtureDisplayStatus,
+  getFixtureIdFromSlug,
   getTeamIdFromSlug,
 } from "@/lib/worldcup/format";
 
@@ -512,4 +514,242 @@ export function getTeamGroupMap(standings: Standing[]) {
   }
 
   return map;
+}
+
+export type MatchEvent = {
+  id: string;
+  fixture_id: string | null;
+  api_fixture_id: number;
+  api_event_key: string;
+  elapsed: number | null;
+  extra: number | null;
+  team_api_id: number | null;
+  team_name: string | null;
+  team_logo_url: string | null;
+  player_api_id: number | null;
+  player_name: string | null;
+  assist_api_id: number | null;
+  assist_name: string | null;
+  event_type: string | null;
+  event_detail: string | null;
+  comments: string | null;
+  raw: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+export type MatchStatistic = {
+  id: string;
+  fixture_id: string | null;
+  api_fixture_id: number;
+  team_api_id: number;
+  team_name: string;
+  team_logo_url: string | null;
+  stat_type: string;
+  stat_value: string | null;
+  raw: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+export type MatchLineup = {
+  id: string;
+  fixture_id: string | null;
+  api_fixture_id: number;
+  team_api_id: number;
+  team_name: string;
+  team_logo_url: string | null;
+  coach_name: string | null;
+  formation: string | null;
+  starting_xi: unknown;
+  substitutes: unknown;
+  raw: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+function asMatchEvents(data: unknown): MatchEvent[] {
+  return (data ?? []) as MatchEvent[];
+}
+
+function asMatchStatistics(data: unknown): MatchStatistic[] {
+  return (data ?? []) as MatchStatistic[];
+}
+
+function asMatchLineups(data: unknown): MatchLineup[] {
+  return (data ?? []) as MatchLineup[];
+}
+
+function isMissingOptionalMatchTableError(error: { code?: string; message?: string }) {
+  const message = error.message ?? "";
+
+  return (
+    error.code === "42P01" ||
+    error.code === "PGRST205" ||
+    message.includes("does not exist") ||
+    message.includes("Could not find the table")
+  );
+}
+
+export async function getMatchBySlug(slug: string) {
+  const apiFixtureId = getFixtureIdFromSlug(slug);
+
+  if (!apiFixtureId) {
+    return null;
+  }
+
+  const fixtures = await getFixtures();
+  const fixture = fixtures.find(
+    (row) => row.api_fixture_id === apiFixtureId
+  );
+
+  if (!fixture) {
+    return null;
+  }
+
+  const canonicalSlug = fixtureSlug({
+    api_fixture_id: fixture.api_fixture_id,
+    match_date: fixture.match_date,
+    home_team_name: fixture.home_team_name,
+    away_team_name: fixture.away_team_name,
+  });
+
+  return {
+    fixture,
+    canonicalSlug,
+  };
+}
+
+export async function getMatchEvents(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("match_events")
+    .select(
+      [
+        "id",
+        "fixture_id",
+        "api_fixture_id",
+        "api_event_key",
+        "elapsed",
+        "extra",
+        "team_api_id",
+        "team_name",
+        "team_logo_url",
+        "player_api_id",
+        "player_name",
+        "assist_api_id",
+        "assist_name",
+        "event_type",
+        "event_detail",
+        "comments",
+        "raw",
+        "created_at",
+        "updated_at",
+      ].join(", ")
+    )
+    .eq("api_fixture_id", apiFixtureId)
+    .order("elapsed", { ascending: true })
+    .order("extra", { ascending: true });
+
+  if (error) {
+    if (isMissingOptionalMatchTableError(error)) {
+      return [];
+    }
+
+    throw new Error(`Failed to load match events: ${error.message}`);
+  }
+
+  return asMatchEvents(data);
+}
+
+export async function getMatchStats(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("match_statistics")
+    .select(
+      [
+        "id",
+        "fixture_id",
+        "api_fixture_id",
+        "team_api_id",
+        "team_name",
+        "team_logo_url",
+        "stat_type",
+        "stat_value",
+        "raw",
+        "created_at",
+        "updated_at",
+      ].join(", ")
+    )
+    .eq("api_fixture_id", apiFixtureId)
+    .order("stat_type", { ascending: true });
+
+  if (error) {
+    if (isMissingOptionalMatchTableError(error)) {
+      return [];
+    }
+
+    throw new Error(`Failed to load match stats: ${error.message}`);
+  }
+
+  return asMatchStatistics(data);
+}
+
+export async function getMatchLineups(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("match_lineups")
+    .select(
+      [
+        "id",
+        "fixture_id",
+        "api_fixture_id",
+        "team_api_id",
+        "team_name",
+        "team_logo_url",
+        "coach_name",
+        "formation",
+        "starting_xi",
+        "substitutes",
+        "raw",
+        "created_at",
+        "updated_at",
+      ].join(", ")
+    )
+    .eq("api_fixture_id", apiFixtureId)
+    .order("team_name", { ascending: true });
+
+  if (error) {
+    if (isMissingOptionalMatchTableError(error)) {
+      return [];
+    }
+
+    throw new Error(`Failed to load match lineups: ${error.message}`);
+  }
+
+  return asMatchLineups(data);
+}
+
+export async function getMatchPageData(slug: string) {
+  const match = await getMatchBySlug(slug);
+
+  if (!match) {
+    return null;
+  }
+
+  const [events, stats, lineups] = await Promise.all([
+    getMatchEvents(match.fixture.api_fixture_id),
+    getMatchStats(match.fixture.api_fixture_id),
+    getMatchLineups(match.fixture.api_fixture_id),
+  ]);
+
+  return {
+    ...match,
+    events,
+    stats,
+    lineups,
+  };
 }
