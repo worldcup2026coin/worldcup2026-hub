@@ -44,7 +44,7 @@ export function MatchEventsTimeline({ events }: MatchEventsTimelineProps) {
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-black text-white">
                   {event.elapsed ?? "-"}
-                  {event.extra ? `+${event.extra}` : ""}'
+                  {event.extra ? `+${event.extra}` : ""}&apos;
                 </span>
                 <span className="text-sm font-bold text-emerald-200">
                   {event.event_type ?? "Event"}

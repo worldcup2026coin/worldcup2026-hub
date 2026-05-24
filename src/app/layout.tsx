@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
-import { siteConfig } from "@/lib/site";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -77,6 +76,7 @@ export default function RootLayout({
     </html>
   );
 }
+
 
 
 
