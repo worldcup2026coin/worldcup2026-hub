@@ -4,7 +4,7 @@ export async function GET() {
   return NextResponse.json({
     status: 'ok',
     app: 'worldcup2026-hub',
-    phase: '0',
+    phase: '1',
     env: {
       supabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
       supabasePublishableKey: Boolean(
@@ -15,3 +15,4 @@ export async function GET() {
     },
   });
 }
+
