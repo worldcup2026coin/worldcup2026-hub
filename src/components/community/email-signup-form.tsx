@@ -1,5 +1,7 @@
 "use client";
 
+import { track } from "@vercel/analytics";
+
 import { useState } from "react";
 
 type EmailSignupFormProps = {
@@ -42,16 +44,19 @@ export function EmailSignupForm({
 
       if (!response.ok || data.status !== "ok") {
         setStatus("error");
+        track("email_signup_error", { source });
         setMessage(data.error ?? "Unable to subscribe.");
         return;
       }
 
       setStatus("ok");
+      track("email_signup", { source });
       setMessage("You are on the list.");
       setEmail("");
       setConsent(false);
     } catch {
       setStatus("error");
+      track("email_signup_error", { source });
       setMessage("Unable to subscribe right now.");
     }
   }
@@ -107,3 +112,4 @@ export function EmailSignupForm({
     </section>
   );
 }
+

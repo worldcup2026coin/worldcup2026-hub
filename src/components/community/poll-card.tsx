@@ -1,5 +1,7 @@
 "use client";
 
+import { track } from "@vercel/analytics";
+
 import { useMemo, useState } from "react";
 import type { PollWithResults } from "@/lib/data/community";
 import { PollResults } from "@/components/community/poll-results";
@@ -72,6 +74,12 @@ export function PollCard({ poll, source }: PollCardProps) {
       }
 
       setCurrentPoll(data.poll);
+      track("poll_vote", {
+        source,
+        pollId: currentPoll.id,
+        optionId: selectedOption,
+        alreadyVoted: String(Boolean(data.alreadyVoted)),
+      });
       setHasVoted(true);
       setMessage(data.alreadyVoted ? "Vote already recorded." : "Vote recorded.");
     } catch {
@@ -144,3 +152,4 @@ export function PollCard({ poll, source }: PollCardProps) {
     </article>
   );
 }
+

@@ -1,5 +1,7 @@
 "use client";
 
+import { track } from "@vercel/analytics";
+
 import { useState } from "react";
 
 type SocialShareButtonsProps = {
@@ -21,6 +23,7 @@ export function SocialShareButtons({
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
+      track("copy_link_click", { shareUrl });
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
       setCopied(false);
@@ -38,6 +41,7 @@ export function SocialShareButtons({
           href={xUrl}
           target="_blank"
           rel="noreferrer"
+          onClick={() => track("share_x_click", { shareUrl })}
           className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-white px-5 text-sm font-black text-slate-950 transition hover:bg-slate-200"
         >
           Share on X
@@ -54,3 +58,4 @@ export function SocialShareButtons({
     </section>
   );
 }
+

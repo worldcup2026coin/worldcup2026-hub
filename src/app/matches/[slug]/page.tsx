@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo/json-ld";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Container } from "@/components/ui/container";
 import { MatchEventsTimeline } from "@/components/matches/match-events-timeline";
@@ -20,6 +21,7 @@ import {
 import { getPredictionContentForFixture } from "@/lib/data/predictions";
 import { getPublishedPolls } from "@/lib/data/community";
 import { formatDateOnly } from "@/lib/worldcup/format";
+import { breadcrumbJsonLd, sportsEventJsonLd } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -111,6 +113,32 @@ export default async function MatchPage({ params }: MatchPageProps) {
   return (
     <div className="py-10 sm:py-14">
       <Container>
+                <JsonLd
+          data={breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Fixtures", path: "/fixtures" },
+            {
+              name: `${fixture.home_team_name ?? "Home"} vs ${
+                fixture.away_team_name ?? "Away"
+              }`,
+              path: `/matches/${canonicalSlug}`,
+            },
+          ])}
+        />
+
+        <JsonLd
+          data={sportsEventJsonLd({
+            name: `${fixture.home_team_name ?? "Home"} vs ${
+              fixture.away_team_name ?? "Away"
+            }`,
+            startDate: fixture.match_date,
+            locationName: fixture.venue_name,
+            locationCity: fixture.venue_city,
+            homeTeam: fixture.home_team_name,
+            awayTeam: fixture.away_team_name,
+            path: `/matches/${canonicalSlug}`,
+          })}
+        />
         <MatchHeader fixture={fixture} />
 
         <div className="mt-8 grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
@@ -160,4 +188,6 @@ export default async function MatchPage({ params }: MatchPageProps) {
     </div>
   );
 }
+
+
 

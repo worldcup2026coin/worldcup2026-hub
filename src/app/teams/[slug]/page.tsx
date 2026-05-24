@@ -1,3 +1,5 @@
+import { breadcrumbJsonLd, sportsTeamJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EmptyState } from "@/components/worldcup/empty-state";
@@ -41,9 +43,29 @@ export default async function TeamPage({ params }: TeamPageProps) {
 
   const { team, fixtures, results, standing, groupStandings } = data;
 
+  const teamSchemaSlug = `${String(team.name ?? "team").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}-${team.api_team_id}`;
+
   return (
     <>
-      <PageHeader
+              <JsonLd
+          data={breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Teams", path: "/teams" },
+            {
+              name: team.name,
+              path: `/teams/${teamSchemaSlug}`,
+            },
+          ])}
+        />
+
+        <JsonLd
+          data={sportsTeamJsonLd({
+            name: team.name,
+            path: `/teams/${teamSchemaSlug}`,
+            logo: team.logo_url,
+          })}
+        />
+        <PageHeader
         eyebrow={standing?.group_name ?? "Team"}
         title={team.name}
         description={`Team overview for ${team.name}, including fixtures, results, group position, and squad placeholders. Data is read from Supabase only.`}
@@ -181,3 +203,4 @@ export default async function TeamPage({ params }: TeamPageProps) {
     </>
   );
 }
+
