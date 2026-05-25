@@ -105,15 +105,65 @@ function asFixture(data: unknown): Fixture | null {
 }
 
 function asMatchEvents(data: unknown): MatchEvent[] {
-  return (data ?? []) as MatchEvent[];
+  const rows = (data ?? []) as Array<Record<string, unknown>>;
+
+  return rows.map((row) => ({
+    ...row,
+    team_api_id: row.team_api_id ?? row.api_team_id ?? null,
+    player_api_id: row.player_api_id ?? row.api_player_id ?? null,
+    assist_api_id: row.assist_api_id ?? row.api_assist_player_id ?? null,
+    assist_name: row.assist_name ?? row.assist_player_name ?? null,
+  })) as MatchEvent[];
 }
 
 function asMatchStatistics(data: unknown): MatchStatistic[] {
-  return (data ?? []) as MatchStatistic[];
+  const rows = (data ?? []) as Array<Record<string, unknown>>;
+  const flatRows: Array<Record<string, unknown>> = [];
+
+  for (const row of rows) {
+    const stats = Array.isArray(row.statistics) ? row.statistics : [];
+
+    if (stats.length === 0) {
+      flatRows.push({
+        ...row,
+        team_api_id: row.team_api_id ?? row.api_team_id,
+        stat_type: "Statistics",
+        stat_value: null,
+      });
+      continue;
+    }
+
+    for (const stat of stats) {
+      const statRecord =
+        stat && typeof stat === "object" && !Array.isArray(stat)
+          ? (stat as Record<string, unknown>)
+          : {};
+
+      flatRows.push({
+        ...row,
+        team_api_id: row.team_api_id ?? row.api_team_id,
+        stat_type:
+          typeof statRecord.type === "string" ? statRecord.type : "Statistic",
+        stat_value:
+          typeof statRecord.value === "string" ||
+          typeof statRecord.value === "number"
+            ? String(statRecord.value)
+            : null,
+      });
+    }
+  }
+
+  return flatRows as MatchStatistic[];
 }
 
 function asMatchLineups(data: unknown): MatchLineup[] {
-  return (data ?? []) as MatchLineup[];
+  const rows = (data ?? []) as Array<Record<string, unknown>>;
+
+  return rows.map((row) => ({
+    ...row,
+    team_api_id: row.team_api_id ?? row.api_team_id,
+    starting_xi: row.starting_xi ?? row.start_xi ?? [],
+  })) as MatchLineup[];
 }
 
 function asMatchPrediction(data: unknown): MatchPrediction | null {
@@ -195,7 +245,7 @@ export async function getMatchEvents(apiFixtureId: number) {
   const supabase = createSupabaseAdminClient();
 
   const { data, error } = await supabase
-    .from("match_events")
+    .from("fixture_events")
     .select("*")
     .eq("api_fixture_id", apiFixtureId)
     .order("elapsed", { ascending: true, nullsFirst: true })
@@ -216,7 +266,7 @@ export async function getMatchStats(apiFixtureId: number) {
   const supabase = createSupabaseAdminClient();
 
   const { data, error } = await supabase
-    .from("match_statistics")
+    .from("fixture_statistics")
     .select("*")
     .eq("api_fixture_id", apiFixtureId)
     .order("stat_type", { ascending: true });
@@ -236,7 +286,7 @@ export async function getMatchLineups(apiFixtureId: number) {
   const supabase = createSupabaseAdminClient();
 
   const { data, error } = await supabase
-    .from("match_lineups")
+    .from("fixture_lineups")
     .select("*")
     .eq("api_fixture_id", apiFixtureId)
     .order("team_name", { ascending: true });
@@ -334,5 +384,7 @@ export async function getMatchPageData(slug: string) {
     injuries,
   };
 }
+
+
 
 
