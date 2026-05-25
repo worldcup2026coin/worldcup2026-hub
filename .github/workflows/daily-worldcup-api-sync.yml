@@ -1,0 +1,70 @@
+name: Daily World Cup API Sync
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 19:00 UTC = 20:00 Ireland during summer time.
+    - cron: "0 19 * * *"
+
+jobs:
+  daily-data-sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Run production-safe sync chunks
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -euo pipefail
+
+          call_route () {
+            route="$1"
+            echo ""
+            echo "Calling ${route}"
+
+            curl --fail --silent --show-error \
+              --max-time 90 \
+              -H "Authorization: Bearer ${CRON_SECRET}" \
+              "${SITE_URL}/api/cron/${route}" \
+              -o response.json
+
+            cat response.json
+            echo ""
+
+            python - <<'PY'
+import json
+from pathlib import Path
+
+payload = json.loads(Path("response.json").read_text())
+
+if payload.get("ok") is not True:
+    raise SystemExit(f"Sync route failed: {payload}")
+
+summary = payload.get("summary", {})
+print(
+    "OK:",
+    summary.get("jobName"),
+    summary.get("status"),
+    "requests=",
+    summary.get("apiRequestsUsed"),
+    "seen=",
+    summary.get("recordsSeen"),
+    "updated=",
+    summary.get("recordsUpdated"),
+)
+PY
+          }
+
+          call_route "team-squads-sync-1"
+          call_route "team-squads-sync-2"
+          call_route "team-squads-sync-3"
+          call_route "team-squads-sync-4"
+
+          call_route "match-context-sync-1"
+          call_route "match-context-sync-2"
+          call_route "match-context-sync-3"
+          call_route "match-context-sync-4"
+          call_route "match-context-sync-5"
+          call_route "match-context-sync-6"
