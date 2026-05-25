@@ -1,6 +1,6 @@
+import Link from "next/link";
 import { breadcrumbJsonLd, sportsTeamJsonLd } from "@/lib/seo";
 import { JsonLd } from "@/components/seo/json-ld";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EmptyState } from "@/components/worldcup/empty-state";
 import { FixtureCard } from "@/components/worldcup/fixture-card";
@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/worldcup/page-header";
 import { StandingsTable } from "@/components/worldcup/standings-table";
 import { Container } from "@/components/ui/container";
 import { getTeamPageData, groupSquadByPosition } from "@/lib/data/worldcup";
+import { playerSlug } from "@/lib/data/players";
 
 export const dynamic = "force-dynamic";
 
@@ -215,9 +216,15 @@ export default async function TeamPage({ params }: TeamPageProps) {
                             className="flex items-center justify-between rounded-xl border border-white/10 bg-slate-950/30 px-3 py-2"
                           >
                             <div>
-                              <p className="text-sm font-bold text-white">
+                              <Link
+                                href={`/players/${playerSlug(
+                                  player.player_name,
+                                  player.api_player_id
+                                )}`}
+                                className="text-sm font-bold text-white hover:text-emerald-300"
+                              >
                                 {player.player_name ?? "Player TBC"}
-                              </p>
+                              </Link>
                               <p className="text-xs text-slate-400">
                                 {player.position ?? "Position TBC"}
                               </p>
@@ -286,5 +293,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
     </>
   );
 }
+
+
 
 

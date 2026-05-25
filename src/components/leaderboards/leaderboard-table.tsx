@@ -1,4 +1,6 @@
+import Link from "next/link";
 import type { LeaderboardRow } from "@/lib/data/leaderboards";
+import { playerSlug } from "@/lib/data/players";
 
 type Props = {
   title: string;
@@ -42,7 +44,7 @@ export function LeaderboardTable({
                   <td className="py-3">{index + 1}</td>
 
                   <td className="py-3 font-semibold text-white">
-                    {row.player_name ?? "Unknown"}
+                    <Link href={`/players/${playerSlug(row.player_name, row.api_player_id)}`} className="hover:text-emerald-300"><Link href={`/players/${playerSlug(row.player_name, row.api_player_id)}`} className="hover:text-emerald-300">{row.player_name ?? "Unknown"}</Link></Link>
                   </td>
 
                   <td className="py-3 text-slate-300">
@@ -61,4 +63,6 @@ export function LeaderboardTable({
     </section>
   );
 }
+
+
 
