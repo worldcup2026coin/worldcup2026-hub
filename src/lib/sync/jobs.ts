@@ -1,3 +1,4 @@
+import { runTopStatsSyncJob as runApiFootballTopStatsSync } from "./api-football-top-stats";
 import { runApiFootballMatchdayDataChunkSync } from "./api-football-matchday-data";
 import { runApiFootballMatchContextChunkSync } from "./api-football-match-context";
 import { runApiFootballSquadsChunkSync } from "./api-football-squads";
@@ -163,4 +164,7 @@ export async function runMatchdayDataSync5Job() {
 
 export async function runMatchdayDataSync6Job() {
   return runApiFootballMatchdayDataChunkSync({ offset: 60, limit: 12, jobName: "matchday-data-sync-6" });
+}
+export async function runTopStatsSyncJob() {
+  return runApiFootballTopStatsSync();
 }

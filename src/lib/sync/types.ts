@@ -36,7 +36,8 @@ export type SyncJobName =
   | "matchday-data-sync-3"
   | "matchday-data-sync-4"
   | "matchday-data-sync-5"
-  | "matchday-data-sync-6";
+  | "matchday-data-sync-6"
+  | "top-stats-sync";
 
 export type SyncJobStatus = "started" | "success" | "partial" | "failed";
 
@@ -54,6 +55,7 @@ export type SyncJobSummary = {
   message: string;
   details?: Record<string, unknown>;
 };
+
 
 
 
