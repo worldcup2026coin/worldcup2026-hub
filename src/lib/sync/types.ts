@@ -19,7 +19,8 @@ export type SyncJobName =
   | "live-sync"
   | "enrichment-sync"
   | "finalization-sync"
-  | "missing-data-backfill";
+  | "missing-data-backfill"
+  | "full-sync";
 
 export type SyncJobStatus = "started" | "success" | "partial" | "failed";
 
@@ -37,4 +38,6 @@ export type SyncJobSummary = {
   message: string;
   details?: Record<string, unknown>;
 };
+
+
 

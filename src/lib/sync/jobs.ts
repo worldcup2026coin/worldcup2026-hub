@@ -1,3 +1,4 @@
+import { runApiFootballFullIngestSync } from "./api-football-full-ingest";
 import { runApiFootballStandingsSync } from "./api-football-standings";
 import { runApiFootballTeamsSync } from "./api-football-teams";
 import { runApiFootballBootstrapSync } from "./api-football-bootstrap";
@@ -56,5 +57,6 @@ export async function runFinalizationSyncJob() {
 export async function runMissingDataBackfillJob() {
   return createPlaceholderSummary("missing-data-backfill");
 }
-
-
+export async function runFullSyncJob() {
+  return runApiFootballFullIngestSync();
+}

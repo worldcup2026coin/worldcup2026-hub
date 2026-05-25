@@ -198,3 +198,129 @@ export async function fetchWorldCupLeagueMetadata() {
     season: getWorldCupSeason(),
   });
 }
+
+export type ApiFootballPlayerItem = {
+  player: {
+    id: number;
+    name: string;
+    firstname: string | null;
+    lastname: string | null;
+    age: number | null;
+    birth?: {
+      date: string | null;
+      place: string | null;
+      country: string | null;
+    };
+    nationality: string | null;
+    height: string | null;
+    weight: string | null;
+    injured: boolean | null;
+    photo: string | null;
+  };
+  statistics?: Array<{
+    team?: {
+      id: number;
+      name: string;
+      logo: string | null;
+    };
+    games?: {
+      appearences?: number | null;
+      appearances?: number | null;
+      lineups?: number | null;
+      minutes?: number | null;
+      number?: number | null;
+      position?: string | null;
+      rating?: string | null;
+      captain?: boolean | null;
+    };
+  }>;
+};
+
+export type ApiFootballCoachItem = {
+  id: number;
+  name: string;
+  firstname: string | null;
+  lastname: string | null;
+  age: number | null;
+  birth?: {
+    date: string | null;
+    place: string | null;
+    country: string | null;
+  };
+  nationality: string | null;
+  height: string | null;
+  weight: string | null;
+  photo: string | null;
+  team?: {
+    id: number;
+    name: string;
+    logo: string | null;
+  };
+};
+
+export async function fetchWorldCupPlayersPage(page: number) {
+  return apiFootballGet<ApiFootballPlayerItem[]>("/players", {
+    league: getWorldCupLeagueId(),
+    season: getWorldCupSeason(),
+    page,
+  });
+}
+
+export async function fetchCoachByTeam(teamId: number) {
+  return apiFootballGet<ApiFootballCoachItem[]>("/coachs", {
+    team: teamId,
+  });
+}
+
+export async function fetchWorldCupInjuries() {
+  return apiFootballGet<unknown[]>("/injuries", {
+    league: getWorldCupLeagueId(),
+    season: getWorldCupSeason(),
+  });
+}
+
+export async function fetchFixturePredictions(fixtureId: number) {
+  return apiFootballGet<unknown[]>("/predictions", {
+    fixture: fixtureId,
+  });
+}
+
+export async function fetchFixtureOdds(fixtureId: number) {
+  return apiFootballGet<unknown[]>("/odds", {
+    fixture: fixtureId,
+  });
+}
+
+export async function fetchFixtureHeadToHead(homeTeamId: number, awayTeamId: number) {
+  return apiFootballGet<unknown[]>("/fixtures/headtohead", {
+    h2h: `${homeTeamId}-${awayTeamId}`,
+  });
+}
+
+export async function fetchWorldCupTopScorers() {
+  return apiFootballGet<unknown[]>("/players/topscorers", {
+    league: getWorldCupLeagueId(),
+    season: getWorldCupSeason(),
+  });
+}
+
+export async function fetchWorldCupTopAssists() {
+  return apiFootballGet<unknown[]>("/players/topassists", {
+    league: getWorldCupLeagueId(),
+    season: getWorldCupSeason(),
+  });
+}
+
+export async function fetchWorldCupTopYellowCards() {
+  return apiFootballGet<unknown[]>("/players/topyellowcards", {
+    league: getWorldCupLeagueId(),
+    season: getWorldCupSeason(),
+  });
+}
+
+export async function fetchWorldCupTopRedCards() {
+  return apiFootballGet<unknown[]>("/players/topredcards", {
+    league: getWorldCupLeagueId(),
+    season: getWorldCupSeason(),
+  });
+}
