@@ -7,7 +7,7 @@ import { FixtureCard } from "@/components/worldcup/fixture-card";
 import { PageHeader } from "@/components/worldcup/page-header";
 import { StandingsTable } from "@/components/worldcup/standings-table";
 import { Container } from "@/components/ui/container";
-import { getTeamPageData } from "@/lib/data/worldcup";
+import { getTeamPageData, groupSquadByPosition } from "@/lib/data/worldcup";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +41,9 @@ export default async function TeamPage({ params }: TeamPageProps) {
     notFound();
   }
 
-  const { team, fixtures, results, standing, groupStandings } = data;
+  const { team, fixtures, results, standing, groupStandings, squad, coaches } = data;
+  const squadGroups = groupSquadByPosition(squad);
+  const coach = coaches[0] ?? null;
 
   const teamSchemaSlug = `${String(team.name ?? "team").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}-${team.api_team_id}`;
 
@@ -68,7 +70,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
         <PageHeader
         eyebrow={standing?.group_name ?? "Team"}
         title={team.name}
-        description={`Team overview for ${team.name}, including fixtures, results, group position, and squad placeholders. Data is read from Supabase only.`}
+        description={`Team overview for ${team.name}, including fixtures, results, group position, coach information and squad data from Supabase.`}
         meta={`${team.code ?? "Code TBC"} · ${team.country ?? "Country TBC"}`}
       />
 
@@ -142,16 +144,97 @@ export default async function TeamPage({ params }: TeamPageProps) {
 
             <section className="rounded-3xl border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/30">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-emerald-300">
-                Squad / key players
+                Coach
               </p>
-              <h2 className="mt-3 text-2xl font-black text-white">
-                Coming in a later phase
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-slate-300">
-                Squad, manager, star players, injuries, and player stats will
-                be added later after the core fixture and standings pages are
-                stable.
-              </p>
+
+              {coach ? (
+                <div className="mt-4 rounded-2xl bg-white/[0.04] p-4">
+                  <h2 className="text-2xl font-black text-white">
+                    {coach.name ?? "Coach TBC"}
+                  </h2>
+                  <p className="mt-2 text-sm text-slate-300">
+                    {coach.nationality ?? "Nationality TBC"}
+                    {coach.age ? ` · Age ${coach.age}` : ""}
+                  </p>
+                </div>
+              ) : (
+                <EmptyState
+                  title="Coach data not available yet"
+                  description="Coach information will appear here automatically when it is available in Supabase."
+                />
+              )}
+            </section>
+
+            <section className="rounded-3xl border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/30">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.24em] text-emerald-300">
+                    Squad
+                  </p>
+                  <h2 className="mt-3 text-2xl font-black text-white">
+                    {squad.length > 0
+                      ? `${squad.length} players synced`
+                      : "Squad data updating"}
+                  </h2>
+                </div>
+
+                {squad[0]?.last_synced_at ? (
+                  <p className="text-xs text-slate-400">
+                    Last synced{" "}
+                    {new Date(squad[0].last_synced_at).toLocaleDateString(
+                      "en-GB",
+                      {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      }
+                    )}
+                  </p>
+                ) : null}
+              </div>
+
+              {squad.length === 0 ? (
+                <div className="mt-6">
+                  <EmptyState
+                    title="No squad data yet"
+                    description="Squad details will appear here automatically after the next squad sync."
+                  />
+                </div>
+              ) : (
+                <div className="mt-6 grid gap-5">
+                  {Object.entries(squadGroups).map(([position, players]) => (
+                    <div key={position} className="rounded-2xl bg-white/[0.04] p-4">
+                      <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-300">
+                        {position}
+                      </h3>
+
+                      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                        {players.map((player) => (
+                          <div
+                            key={`${player.api_team_id}-${player.api_player_id}`}
+                            className="flex items-center justify-between rounded-xl border border-white/10 bg-slate-950/30 px-3 py-2"
+                          >
+                            <div>
+                              <p className="text-sm font-bold text-white">
+                                {player.player_name ?? "Player TBC"}
+                              </p>
+                              <p className="text-xs text-slate-400">
+                                {player.position ?? "Position TBC"}
+                              </p>
+                            </div>
+
+                            {player.number ? (
+                              <span className="rounded-full bg-white/10 px-2 py-1 text-xs font-black text-emerald-200">
+                                #{player.number}
+                              </span>
+                            ) : null}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
           </div>
         </section>
@@ -203,4 +286,5 @@ export default async function TeamPage({ params }: TeamPageProps) {
     </>
   );
 }
+
 

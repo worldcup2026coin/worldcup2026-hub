@@ -92,6 +92,37 @@ export type Standing = {
   updated_at: string;
 };
 
+export type TeamSquadPlayer = {
+  id: string;
+  api_team_id: number;
+  api_player_id: number;
+  season: number;
+  player_name: string | null;
+  team_name: string | null;
+  position: string | null;
+  number: number | null;
+  appearances: number | null;
+  lineups: number | null;
+  minutes: number | null;
+  rating: string | null;
+  captain: boolean | null;
+  last_synced_at: string | null;
+};
+
+export type Coach = {
+  id: string;
+  api_coach_id: number;
+  api_team_id: number | null;
+  name: string | null;
+  firstname: string | null;
+  lastname: string | null;
+  age: number | null;
+  nationality: string | null;
+  photo_url: string | null;
+  team_name: string | null;
+  last_synced_at: string | null;
+};
+
 export type SyncLog = {
   id: string;
   scope: string;
@@ -127,6 +158,14 @@ function asStandings(data: unknown): Standing[] {
 
 function asSyncLogs(data: unknown): SyncLog[] {
   return (data ?? []) as SyncLog[];
+}
+
+function asTeamSquadPlayers(data: unknown): TeamSquadPlayer[] {
+  return (data ?? []) as TeamSquadPlayer[];
+}
+
+function asCoaches(data: unknown): Coach[] {
+  return (data ?? []) as Coach[];
 }
 
 export async function getTeams() {
@@ -365,6 +404,103 @@ export async function getTeamsPageData() {
   };
 }
 
+export async function getTeamSquad(apiTeamId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("team_squad_players")
+    .select(
+      [
+        "id",
+        "api_team_id",
+        "api_player_id",
+        "season",
+        "player_name",
+        "team_name",
+        "position",
+        "number",
+        "appearances",
+        "lineups",
+        "minutes",
+        "rating",
+        "captain",
+        "last_synced_at",
+      ].join(", ")
+    )
+    .eq("api_team_id", apiTeamId)
+    .order("position", { ascending: true })
+    .order("player_name", { ascending: true });
+
+  if (error) {
+    throw new Error(`Failed to load team squad: ${error.message}`);
+  }
+
+  return asTeamSquadPlayers(data);
+}
+
+export async function getTeamCoaches(apiTeamId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("coaches")
+    .select(
+      [
+        "id",
+        "api_coach_id",
+        "api_team_id",
+        "name",
+        "firstname",
+        "lastname",
+        "age",
+        "nationality",
+        "photo_url",
+        "team_name",
+        "last_synced_at",
+      ].join(", ")
+    )
+    .eq("api_team_id", apiTeamId)
+    .order("last_synced_at", { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to load team coaches: ${error.message}`);
+  }
+
+  return asCoaches(data);
+}
+
+export function groupSquadByPosition(squad: TeamSquadPlayer[]) {
+  const groups: Record<string, TeamSquadPlayer[]> = {
+    Goalkeepers: [],
+    Defenders: [],
+    Midfielders: [],
+    Forwards: [],
+    Other: [],
+  };
+
+  for (const player of squad) {
+    const position = player.position?.toLowerCase() ?? "";
+
+    if (position.includes("goalkeeper")) {
+      groups.Goalkeepers.push(player);
+    } else if (position.includes("defender")) {
+      groups.Defenders.push(player);
+    } else if (position.includes("midfielder")) {
+      groups.Midfielders.push(player);
+    } else if (
+      position.includes("attacker") ||
+      position.includes("forward")
+    ) {
+      groups.Forwards.push(player);
+    } else {
+      groups.Other.push(player);
+    }
+  }
+
+  return Object.fromEntries(
+    Object.entries(groups).filter(([, players]) => players.length > 0)
+  ) as Record<string, TeamSquadPlayer[]>;
+}
+
 export async function getTeamPageData(slug: string) {
   const apiTeamId = getTeamIdFromSlug(slug);
 
@@ -374,7 +510,7 @@ export async function getTeamPageData(slug: string) {
 
   const supabase = createSupabaseAdminClient();
 
-  const [{ data: teamData, error: teamError }, fixtures, standings] =
+  const [{ data: teamData, error: teamError }, fixtures, standings, squad, coaches] =
     await Promise.all([
       supabase
         .from("teams")
@@ -385,6 +521,8 @@ export async function getTeamPageData(slug: string) {
         .maybeSingle(),
       getFixtures(),
       getStandings(),
+      getTeamSquad(apiTeamId),
+      getTeamCoaches(apiTeamId),
     ]);
 
   if (teamError) {
@@ -420,6 +558,8 @@ export async function getTeamPageData(slug: string) {
     ),
     standing,
     groupStandings,
+    squad,
+    coaches,
   };
 }
 
