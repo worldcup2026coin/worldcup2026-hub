@@ -14,6 +14,8 @@ export type SyncResult = {
 export type SyncJobName =
   | "bootstrap-sync"
   | "fixtures-sync"
+  | "teams-sync"
+  | "standings-sync"
   | "live-sync"
   | "enrichment-sync"
   | "finalization-sync"
@@ -35,3 +37,4 @@ export type SyncJobSummary = {
   message: string;
   details?: Record<string, unknown>;
 };
+

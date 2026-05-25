@@ -1,3 +1,6 @@
+import { runApiFootballStandingsSync } from "./api-football-standings";
+import { runApiFootballTeamsSync } from "./api-football-teams";
+import { runApiFootballBootstrapSync } from "./api-football-bootstrap";
 import { runApiFootballFixturesSync } from "./api-football-fixtures";
 import "server-only";
 
@@ -23,7 +26,15 @@ function createPlaceholderSummary(jobName: SyncJobName): Omit<SyncJobSummary, "s
 }
 
 export async function runBootstrapSyncJob() {
-  return createPlaceholderSummary("bootstrap-sync");
+  return runApiFootballBootstrapSync();
+}
+
+export async function runTeamsSyncJob() {
+  return runApiFootballTeamsSync();
+}
+
+export async function runStandingsSyncJob() {
+  return runApiFootballStandingsSync();
 }
 
 export async function runFixturesSyncJob() {
@@ -45,4 +56,5 @@ export async function runFinalizationSyncJob() {
 export async function runMissingDataBackfillJob() {
   return createPlaceholderSummary("missing-data-backfill");
 }
+
 
