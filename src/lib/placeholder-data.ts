@@ -50,7 +50,7 @@ export const homeHighlights: PlaceholderCardData[] = [
 ];
 
 export const homepagePlaceholders: Record<
-  "nextMatches" | "liveScores" | "groupStandings" | "fanPolls" | "memeCommunity",
+  "nextMatches" | "liveScores" | "groupStandings" | "fanPolls" | "fanCommunity",
   PlaceholderCardData[]
 > = {
   nextMatches: [
@@ -133,7 +133,7 @@ export const homepagePlaceholders: Record<
       tone: "violet",
     },
   ],
-  memeCommunity: [
+  fanCommunity: [
     {
       eyebrow: "Community",
       title: "Telegram and X hub",
@@ -143,11 +143,11 @@ export const homepagePlaceholders: Record<
       tone: "sky",
     },
     {
-      eyebrow: "Meme culture",
-      title: "World Cup meme board",
+      eyebrow: "Fan culture",
+      title: "World Cup fan hub",
       description:
-        "A teaser area for football memes, viral moments, and future community-led campaigns.",
-      meta: "No token logic here",
+        "A teaser area for fan reactions, viral football moments, and future community-led campaigns.",
+      meta: "Football-first community",
       tone: "rose",
     },
   ],
@@ -352,7 +352,7 @@ export const routeContent: Record<string, RouteContent> = {
         eyebrow: "Social",
         title: "Viral moments",
         description:
-          "This can later blend football news with meme culture, reactions, and community moments.",
+          "This can later blend football news with fan reactions, social discussion, and community moments.",
         meta: "Community layer",
         tone: "rose",
       },
@@ -396,7 +396,7 @@ export const routeContent: Record<string, RouteContent> = {
     eyebrow: "Community",
     title: "Fan community",
     description:
-      "A social-first area for polls, Telegram and X calls-to-action, email signup, and meme culture.",
+      "A social-first area for polls, Telegram and X calls-to-action, email signup, and fan discussion.",
     heroNote:
       "No community integrations yet. This page prepares the structure.",
     cards: [
@@ -412,19 +412,20 @@ export const routeContent: Record<string, RouteContent> = {
         eyebrow: "X",
         title: "Follow and share",
         description:
-          "X can drive viral posts, match reactions, predictions, and meme-led growth.",
+          "X can drive viral posts, match reactions, predictions, and fan-led growth.",
         meta: "Handle later",
         tone: "slate",
       },
       {
-        eyebrow: "Meme teaser",
+        eyebrow: "Fan culture",
         title: "Football culture layer",
         description:
-          "A dedicated teaser for memes, fan jokes, and community campaigns without adding token mechanics yet.",
+          "A dedicated teaser for fan reactions, matchday debates, and community campaigns.",
         meta: "Future community phase",
         tone: "rose",
       },
     ],
   },
 };
+
 
