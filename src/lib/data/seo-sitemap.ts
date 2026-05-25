@@ -80,6 +80,7 @@ export async function getDynamicSitemap(): Promise<MetadataRoute.Sitemap> {
     page("/fixtures", "hourly", 0.95),
     page("/live", "hourly", 0.95),
     page("/groups", "hourly", 0.9),
+    page("/best-third-placed-teams", "hourly", 0.86),
     page("/teams", "weekly", 0.85),
     page("/predictions", "daily", 0.8),
     page("/news", "daily", 0.85),

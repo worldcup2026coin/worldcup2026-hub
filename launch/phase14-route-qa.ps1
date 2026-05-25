@@ -85,6 +85,7 @@ $staticRoutes = @(
   "/fixtures",
   "/live",
   "/groups",
+  "/best-third-placed-teams",
   "/teams",
   "/predictions",
   "/news",

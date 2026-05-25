@@ -19,6 +19,12 @@ export function SiteFooter() {
               Sections
             </p>
             <div className="mt-4 grid gap-2">
+              <Link
+                href="/best-third-placed-teams"
+                className="text-sm text-slate-400 transition hover:text-white"
+              >
+                Best third-placed teams
+              </Link>
               {siteConfig.navLinks.slice(1, 6).map((link) => (
                 <Link
                   key={link.href}

@@ -237,6 +237,24 @@ export default async function HomePage() {
               <PollCard poll={data.polls[0]} source="homepage_polish" />
             ) : null}
 
+            <Link
+              href="/best-third-placed-teams"
+              className="block rounded-[2rem] border border-emerald-400/20 bg-emerald-400/[0.07] p-5 transition hover:-translate-y-1 hover:border-emerald-300/40"
+            >
+              <p className="text-sm font-black uppercase tracking-[0.2em] text-emerald-300">
+                Qualification watch
+              </p>
+              <h2 className="mt-2 text-2xl font-black text-white">
+                Best Third-Placed Teams
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-slate-300">
+                New for World Cup 2026: eight third-placed teams can still reach
+                the knockouts. Track the live qualification table.
+              </p>
+              <span className="mt-5 inline-flex text-sm font-black text-emerald-300">
+                View third-place table →
+              </span>
+            </Link>
             <EmailSignupForm
               source="homepage_polish"
               title="Get matchday updates"
