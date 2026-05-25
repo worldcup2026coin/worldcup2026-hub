@@ -9,6 +9,9 @@ export const siteConfig = {
     { href: "/live", label: "Live" },
     { href: "/groups", label: "Groups" },
     { href: "/teams", label: "Teams" },
+    { href: "/top-scorers", label: "Scorers" },
+    { href: "/top-assists", label: "Assists" },
+    { href: "/top-cards", label: "Cards" },
     { href: "/predictions", label: "Predictions" },
     { href: "/news", label: "News" },
     { href: "/stadiums", label: "Stadiums" },
@@ -20,3 +23,4 @@ export const siteConfig = {
     { href: "#", label: "Email" },
   ],
 } as const;
+
