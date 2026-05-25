@@ -12,7 +12,6 @@ export const siteConfig = {
     { href: "/predictions", label: "Predictions" },
     { href: "/news", label: "News" },
     { href: "/stadiums", label: "Stadiums" },
-    { href: "/memes", label: "Memes" },
     { href: "/community", label: "Community" },
   ],
   socialLinks: [
@@ -21,4 +20,3 @@ export const siteConfig = {
     { href: "#", label: "Email" },
   ],
 } as const;
-
