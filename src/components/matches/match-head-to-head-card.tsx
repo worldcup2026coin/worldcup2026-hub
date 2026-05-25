@@ -27,6 +27,32 @@ function getGoals(match: Record<string, unknown>, side: "home" | "away") {
   return typeof value === "number" ? String(value) : "-";
 }
 
+function hasRealScore(match: Record<string, unknown>) {
+  const goals = asRecord(match.goals);
+
+  return typeof goals?.home === "number" && typeof goals?.away === "number";
+}
+
+function getFixtureId(match: Record<string, unknown>) {
+  const fixture = asRecord(match.fixture);
+  const value = fixture?.id;
+
+  return typeof value === "number" ? value : null;
+}
+
+function isFinished(match: Record<string, unknown>) {
+  const fixture = asRecord(match.fixture);
+  const status = asRecord(fixture?.status);
+  const short = typeof status?.short === "string" ? status.short : "";
+  const long = typeof status?.long === "string" ? status.long.toLowerCase() : "";
+
+  return (
+    ["FT", "AET", "PEN"].includes(short) ||
+    long.includes("match finished") ||
+    long.includes("finished")
+  );
+}
+
 function getDate(match: Record<string, unknown>) {
   const fixture = asRecord(match.fixture);
   const value = fixture?.date;
@@ -45,14 +71,17 @@ export function MatchHeadToHeadCard({ headToHead }: MatchHeadToHeadCardProps) {
     ? headToHead.matches
         .map(asRecord)
         .filter((item): item is Record<string, unknown> => Boolean(item))
+        .filter((match) => getFixtureId(match) !== headToHead?.api_fixture_id)
+        .filter((match) => isFinished(match))
+        .filter((match) => hasRealScore(match))
         .slice(0, 5)
     : [];
 
   if (!headToHead || matches.length === 0) {
     return (
       <MatchEmptyState
-        title="Head-to-head data not available yet"
-        description="Previous meetings will appear here automatically when the API provides H2H data for this fixture."
+        title="No previous meetings found"
+        description="Finished head-to-head matches with confirmed scores will appear here automatically when the API provides them."
       />
     );
   }
@@ -65,7 +94,7 @@ export function MatchHeadToHeadCard({ headToHead }: MatchHeadToHeadCardProps) {
             Head to head
           </p>
           <h2 className="mt-3 text-2xl font-black text-white">
-            Previous meetings
+            Previous finished meetings
           </h2>
         </div>
 
@@ -84,7 +113,7 @@ export function MatchHeadToHeadCard({ headToHead }: MatchHeadToHeadCardProps) {
       <div className="mt-5 grid gap-3">
         {matches.map((match, index) => (
           <article
-            key={`${getDate(match)}-${index}`}
+            key={`${getFixtureId(match) ?? getDate(match)}-${index}`}
             className="rounded-2xl bg-white/[0.04] p-4"
           >
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">

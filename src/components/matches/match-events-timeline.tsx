@@ -21,7 +21,7 @@ export function MatchEventsTimeline({ events }: MatchEventsTimelineProps) {
     return (
       <MatchEmptyState
         title="No match events yet"
-        description="Goals, cards, substitutions, VAR and other events will appear here once the event sync is added and data is available."
+        description="Goals, cards, substitutions, VAR and other events will appear here automatically when API-Football releases match events and the matchday sync has run."
       />
     );
   }
@@ -76,3 +76,4 @@ export function MatchEventsTimeline({ events }: MatchEventsTimelineProps) {
     </section>
   );
 }
+

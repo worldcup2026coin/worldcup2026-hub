@@ -168,11 +168,10 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 Tips and predictions
               </p>
               <h2 className="mt-3 text-2xl font-black text-white">
-                Fan insights, fantasy notes and betting-style views
+                Fan insights and match context
               </h2>
               <p className="mt-3 text-sm leading-6 text-slate-300">
-                This content is manually managed in Supabase for now. No full
-                prediction engine is active in Phase 5.
+                This section combines published fan insight with synced API context where available. It is informational only and does not guarantee any outcome.
               </p>
 
               <div className="mt-5">
@@ -203,6 +202,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
     </div>
   );
 }
+
 
 
 
