@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/worldcup/page-header";
 
@@ -27,10 +27,10 @@ export default function TermsPage() {
 
           <h2 className="mt-8 text-2xl font-black text-white">Predictions and betting-style content</h2>
           <p className="mt-4">
-            Betting-style content is for entertainment and informational purposes only. It is not financial advice, gambling advice, or a guarantee of outcome. Odds and availability may vary by location and provider. Only participate where legal, and never risk money you cannot afford to lose.
+            Betting-style content is for entertainment and informational purposes only. It is not financial guidance, wagering guidance, or a certainty of outcome. Odds and availability may vary by location and provider. Only participate where legal, and never risk money you cannot afford to lose.
           </p>
 
-          <h2 className="mt-8 text-2xl font-black text-white">No guarantees</h2>
+          <h2 className="mt-8 text-2xl font-black text-white">No certaintys</h2>
           <p className="mt-4">
             Match outcomes, predictions, statistics, fixtures and live data may change. The site should not be treated as an official tournament source.
           </p>

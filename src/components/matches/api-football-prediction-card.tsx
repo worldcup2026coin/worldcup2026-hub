@@ -1,4 +1,4 @@
-import type { MatchPrediction } from "@/lib/data/matches";
+﻿import type { MatchPrediction } from "@/lib/data/matches";
 import { MatchEmptyState } from "@/components/matches/match-empty-state";
 
 type ApiFootballPredictionCardProps = {
@@ -63,7 +63,7 @@ export function ApiFootballPredictionCard({
       ) : null}
 
       <p className="mt-4 text-xs leading-5 text-slate-400">
-        API-Football prediction data is informational only and not a guarantee
+        API-Football prediction data is informational only and not a certainty
         of outcome.
       </p>
     </section>

@@ -1,4 +1,4 @@
-import type { Fixture } from "@/lib/data/worldcup";
+﻿import type { Fixture } from "@/lib/data/worldcup";
 
 type MatchPredictionPlaceholderProps = {
   fixture: Fixture;
@@ -49,7 +49,7 @@ export function MatchPredictionPlaceholder({
 
       <p className="mt-5 text-xs leading-5 text-amber-100/80">
         Responsible use: any future betting-style content should be treated as
-        informational only, never as guaranteed advice. Only gamble where legal,
+        informational only, never as certain advice. Only gamble where legal,
         and never stake more than you can afford to lose.
       </p>
     </section>
