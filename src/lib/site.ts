@@ -8,6 +8,7 @@ export const siteConfig = {
     { href: "/fixtures", label: "Fixtures" },
     { href: "/live", label: "Live" },
     { href: "/groups", label: "Groups" },
+    { href: "/best-third-placed-teams", label: "3rd Place" },
     { href: "/teams", label: "Teams" },
     { href: "/top-scorers", label: "Scorers" },
     { href: "/top-assists", label: "Assists" },
