@@ -11,6 +11,7 @@ import { MatchPreviewBlock } from "@/components/matches/match-preview-block";
 import { ApiFootballPredictionCard } from "@/components/matches/api-football-prediction-card";
 import { MatchHeadToHeadCard } from "@/components/matches/match-head-to-head-card";
 import { MatchOddsSnapshot } from "@/components/matches/match-odds-snapshot";
+import { InjuryList } from "@/components/matches/injury-list";
 import { MatchShareButtons } from "@/components/matches/match-share-buttons";
 import { MatchStats } from "@/components/matches/match-stats";
 import { EmailSignupForm } from "@/components/community/email-signup-form";
@@ -104,6 +105,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
     apiPrediction,
     apiOdds,
     headToHead,
+    injuries,
   } = data;
 
   const [predictionContent, fixturePolls] = await Promise.all([
@@ -159,6 +161,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
             <ApiFootballPredictionCard prediction={apiPrediction} />
             <MatchOddsSnapshot odds={apiOdds} />
             <MatchHeadToHeadCard headToHead={headToHead} />
+            <InjuryList title="Match injury news" injuries={injuries} />
             <MatchEventsTimeline events={events} />
             <MatchStats fixture={fixture} stats={stats} />
             <MatchLineups lineups={lineups} />
@@ -202,6 +205,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
     </div>
   );
 }
+
 
 
 

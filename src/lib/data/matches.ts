@@ -2,6 +2,7 @@ import "server-only";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { Fixture } from "@/lib/data/worldcup";
 import { fixtureSlug, getFixtureIdFromSlug } from "@/lib/worldcup/format";
+import { getInjuriesForFixture } from "@/lib/data/injuries";
 
 export type { Fixture } from "@/lib/data/worldcup";
 
@@ -311,7 +312,7 @@ export async function getMatchPageData(slug: string) {
     return null;
   }
 
-  const [events, stats, lineups, apiPrediction, apiOdds, headToHead] =
+  const [events, stats, lineups, apiPrediction, apiOdds, headToHead, injuries] =
     await Promise.all([
       getMatchEvents(match.fixture.api_fixture_id),
       getMatchStats(match.fixture.api_fixture_id),
@@ -319,6 +320,7 @@ export async function getMatchPageData(slug: string) {
       getFixturePrediction(match.fixture.api_fixture_id),
       getFixtureOdds(match.fixture.api_fixture_id),
       getFixtureHeadToHead(match.fixture.api_fixture_id),
+      getInjuriesForFixture(match.fixture.api_fixture_id),
     ]);
 
   return {
@@ -329,6 +331,8 @@ export async function getMatchPageData(slug: string) {
     apiPrediction,
     apiOdds,
     headToHead,
+    injuries,
   };
 }
+
 
