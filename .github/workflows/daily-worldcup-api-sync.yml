@@ -50,3 +50,11 @@ jobs:
           call_route "match-context-sync-4"
           call_route "match-context-sync-5"
           call_route "match-context-sync-6"
+
+          call_route "matchday-data-sync-1"
+          call_route "matchday-data-sync-2"
+          call_route "matchday-data-sync-3"
+          call_route "matchday-data-sync-4"
+          call_route "matchday-data-sync-5"
+          call_route "matchday-data-sync-6"
+
