@@ -3,27 +3,7 @@
   "crons": [
     {
       "path": "/api/cron/fixtures-sync",
-      "schedule": "*/15 * * * *"
-    },
-    {
-      "path": "/api/cron/live-sync",
-      "schedule": "* * * * *"
-    },
-    {
-      "path": "/api/cron/enrichment-sync",
-      "schedule": "*/5 * * * *"
-    },
-    {
-      "path": "/api/cron/finalization-sync",
-      "schedule": "*/5 * * * *"
-    },
-    {
-      "path": "/api/cron/missing-data-backfill",
-      "schedule": "17 */3 * * *"
-    },
-    {
-      "path": "/api/cron/bootstrap-sync",
-      "schedule": "7 3 * * *"
+      "schedule": "0 3 * * *"
     }
   ]
 }
