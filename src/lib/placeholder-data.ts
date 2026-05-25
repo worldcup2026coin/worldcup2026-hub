@@ -28,23 +28,23 @@ export const homeHighlights: PlaceholderCardData[] = [
     title: "Next matches",
     description:
       "A clean match calendar will sit here once API-Football is connected.",
-    meta: "API data later",
+    meta: "API-powered data",
     tone: "emerald",
   },
   {
     eyebrow: "Live",
     title: "Live score centre",
     description:
-      "Real-time score cards, match status, and major events will be added in a later phase.",
-    meta: "No live calls yet",
+      "Real-time score cards, match status, and major events will appear when available.",
+    meta: "Live data pending",
     tone: "sky",
   },
   {
     eyebrow: "Groups",
     title: "Group standings",
     description:
-      "Group tables, points, goal difference, and qualification status will be wired later.",
-    meta: "Placeholder only",
+      "Group tables, points, goal difference, and qualification status will update when available.",
+    meta: "Live section",
     tone: "violet",
   },
 ];
@@ -59,7 +59,7 @@ export const homepagePlaceholders: Record<
       title: "Opening fixture",
       description:
         "Kickoff time, venue, teams, and live status will appear here once the fixtures endpoint is connected.",
-      meta: "Coming in data phase",
+      meta: "Updates when available",
       tone: "emerald",
     },
     {
@@ -67,7 +67,7 @@ export const homepagePlaceholders: Record<
       title: "Featured match",
       description:
         "This card will highlight the biggest upcoming game with team form and fan context.",
-      meta: "Coming in data phase",
+      meta: "Updates when available",
       tone: "sky",
     },
     {
@@ -75,7 +75,7 @@ export const homepagePlaceholders: Record<
       title: "Today at a glance",
       description:
         "A compact summary of today's World Cup schedule will live here.",
-      meta: "Coming in data phase",
+      meta: "Updates when available",
       tone: "amber",
     },
   ],
@@ -85,15 +85,15 @@ export const homepagePlaceholders: Record<
       title: "No live matches yet",
       description:
         "When the tournament starts, this area will show live scorelines, match clocks, and key events.",
-      meta: "API-Football later",
+      meta: "API-Football data",
       tone: "rose",
     },
     {
       eyebrow: "Timeline",
       title: "Goals, cards, VAR",
       description:
-        "Future live timelines will show goals, substitutions, cards, and major match moments.",
-      meta: "Future module",
+        "Live timelines will show goals, substitutions, cards, and major match moments.",
+      meta: "Live module",
       tone: "sky",
     },
   ],
@@ -103,15 +103,15 @@ export const homepagePlaceholders: Record<
       title: "Standings preview",
       description:
         "Team rankings, played, won, drawn, lost, goals, goal difference, and points will be shown here.",
-      meta: "Tables later",
+      meta: "Standings data",
       tone: "violet",
     },
     {
       eyebrow: "Qualification",
       title: "Knockout path",
       description:
-        "A simple qualification tracker can later show who is through, at risk, or eliminated.",
-      meta: "Rules later",
+        "A simple qualification tracker can show who is through, at risk, or eliminated.",
+      meta: "Tournament rules",
       tone: "emerald",
     },
   ],
@@ -120,8 +120,8 @@ export const homepagePlaceholders: Record<
       eyebrow: "Poll",
       title: "Who wins the tournament?",
       description:
-        "Fan polls will be connected later through Supabase or another lightweight voting store.",
-      meta: "Supabase later",
+        "Fan polls will appear when available through Supabase or another lightweight voting store.",
+      meta: "Poll data",
       tone: "amber",
     },
     {
@@ -129,7 +129,7 @@ export const homepagePlaceholders: Record<
       title: "Biggest dark horse?",
       description:
         "Community voting can help drive repeat visits and social sharing.",
-      meta: "Community phase",
+      meta: "Community updates",
       tone: "violet",
     },
   ],
@@ -146,7 +146,7 @@ export const homepagePlaceholders: Record<
       eyebrow: "Fan culture",
       title: "World Cup fan hub",
       description:
-        "A teaser area for fan reactions, viral football moments, and future community-led campaigns.",
+        "A teaser area for fan reactions, viral football moments, and community-led campaigns.",
       meta: "Football-first community",
       tone: "rose",
     },
@@ -160,14 +160,14 @@ export const routeContent: Record<string, RouteContent> = {
     description:
       "The future home for every World Cup 2026 fixture, kickoff time, venue, team, and match status.",
     heroNote:
-      "Phase 1 keeps this as a static shell. API-Football fixture data comes later.",
+      "Fixture data, venue context and match status will update as tournament information becomes available.",
     cards: [
       {
         eyebrow: "Calendar",
         title: "Full match schedule",
         description:
           "This section will list every match by date, group, team, venue, and kickoff time.",
-        meta: "Fixture endpoint later",
+        meta: "Fixture data",
         tone: "emerald",
       },
       {
@@ -175,7 +175,7 @@ export const routeContent: Record<string, RouteContent> = {
         title: "Browse by team or group",
         description:
           "Fans will be able to filter fixtures by country, group, round, venue, and date.",
-        meta: "UI first",
+        meta: "Browse fixtures",
         tone: "sky",
       },
       {
@@ -183,7 +183,7 @@ export const routeContent: Record<string, RouteContent> = {
         title: "Preview-ready cards",
         description:
           "Each fixture can later expand into match previews, odds context, prediction notes, and fan content.",
-        meta: "Future detail pages",
+        meta: "Match detail pages",
         tone: "violet",
       },
     ],
@@ -194,14 +194,14 @@ export const routeContent: Record<string, RouteContent> = {
     description:
       "A matchday-first page for live scores, match clocks, events, and quick status updates.",
     heroNote:
-      "No live API calls yet. This page is prepared for the future live module.",
+      "Live scores, match clocks and events will appear when live tournament data is available.",
     cards: [
       {
         eyebrow: "Scoreboard",
         title: "Live match cards",
         description:
-          "Future cards will show scoreline, match minute, status, half-time score, and full-time result.",
-        meta: "Live endpoint later",
+          "Live cards will show scoreline, match minute, status, half-time score, and full-time result.",
+        meta: "Live data",
         tone: "rose",
       },
       {
@@ -209,7 +209,7 @@ export const routeContent: Record<string, RouteContent> = {
         title: "Goals and major moments",
         description:
           "This will later show goals, cards, substitutions, penalties, and VAR moments.",
-        meta: "Events later",
+        meta: "Event data",
         tone: "amber",
       },
       {
@@ -228,7 +228,7 @@ export const routeContent: Record<string, RouteContent> = {
     description:
       "The future standings hub for group tables, points, goal difference, and qualification status.",
     heroNote:
-      "Static placeholders only. Standings calculations and API data come later.",
+      "Group standings and qualification context will update as tournament data becomes available.",
     cards: [
       {
         eyebrow: "Tables",
@@ -243,7 +243,7 @@ export const routeContent: Record<string, RouteContent> = {
         title: "Qualification tracker",
         description:
           "Fans will be able to see who has qualified, who is at risk, and who is eliminated.",
-        meta: "Rules later",
+        meta: "Tournament rules",
         tone: "emerald",
       },
       {
@@ -262,22 +262,22 @@ export const routeContent: Record<string, RouteContent> = {
     description:
       "A directory for every qualified country, with future squad, form, fixture, and prediction pages.",
     heroNote:
-      "Team pages are not connected yet. This is the routing and layout foundation.",
+      "Team pages bring together squad, fixture and tournament context as data becomes available.",
     cards: [
       {
         eyebrow: "Directory",
         title: "All teams",
         description:
           "A searchable country directory will later show badges, groups, fixtures, and squad links.",
-        meta: "Teams endpoint later",
+        meta: "Team data",
         tone: "emerald",
       },
       {
         eyebrow: "Squads",
         title: "Player lists",
         description:
-          "Squads, star players, managers, and team profiles can be added once the data model is ready.",
-        meta: "Future phase",
+          "Squads, star players, managers, and team profiles will appear when squad data is available.",
+        meta: "Squad data",
         tone: "sky",
       },
       {
@@ -296,14 +296,14 @@ export const routeContent: Record<string, RouteContent> = {
     description:
       "A future home for prediction-style previews, betting-style notes, confidence levels, and match context.",
     heroNote:
-      "No prediction engine yet. This page is only the shell and content structure.",
+      "Prediction-style previews and match context will appear when published.",
     cards: [
       {
         eyebrow: "Preview",
         title: "Match prediction cards",
         description:
-          "Later phases can add predicted result, goal angles, confidence, and reasoning snippets.",
-        meta: "Model later",
+          "Published views can include predicted result, goal angles, confidence, and reasoning snippets.",
+        meta: "Prediction context",
         tone: "amber",
       },
       {
@@ -311,7 +311,7 @@ export const routeContent: Record<string, RouteContent> = {
         title: "Betting-style sections",
         description:
           "This area can eventually support match winner, goals, team goals, and value notes.",
-        meta: "Responsible UI later",
+        meta: "Responsible-use view",
         tone: "rose",
       },
       {
@@ -319,7 +319,7 @@ export const routeContent: Record<string, RouteContent> = {
         title: "Clear confidence labels",
         description:
           "Each prediction should clearly separate strong reads from watchlist-only opinions.",
-        meta: "Rules later",
+        meta: "Tournament rules",
         tone: "emerald",
       },
     ],
@@ -330,14 +330,14 @@ export const routeContent: Record<string, RouteContent> = {
     description:
       "A future content hub for tournament news, official updates, previews, injuries, and fan storylines.",
     heroNote:
-      "No news feed is connected yet. This is a static editorial shell.",
+      "Tournament updates, previews and football stories will appear here when published.",
     cards: [
       {
         eyebrow: "Latest",
         title: "Tournament headlines",
         description:
           "Latest World Cup updates, team news, and matchday stories can be displayed here.",
-        meta: "CMS or feed later",
+        meta: "Published updates",
         tone: "sky",
       },
       {
@@ -345,14 +345,14 @@ export const routeContent: Record<string, RouteContent> = {
         title: "Preview articles",
         description:
           "Short previews can support SEO and give fans reasons to visit before kickoff.",
-        meta: "Content phase",
+        meta: "Editorial updates",
         tone: "violet",
       },
       {
         eyebrow: "Social",
         title: "Viral moments",
         description:
-          "This can later blend football news with fan reactions, social discussion, and community moments.",
+          "This can blend football news with fan reactions, social discussion, and community moments.",
         meta: "Community layer",
         tone: "rose",
       },
@@ -364,14 +364,14 @@ export const routeContent: Record<string, RouteContent> = {
     description:
       "A future guide to World Cup 2026 stadiums, host cities, capacities, and match allocations.",
     heroNote:
-      "Static shell only. Venue data and maps can be added later.",
+      "Venue guides and match allocations will update as tournament information becomes available.",
     cards: [
       {
         eyebrow: "Venues",
         title: "Stadium directory",
         description:
           "Each stadium card can show city, capacity, country, fixtures, and local context.",
-        meta: "Venue data later",
+        meta: "Venue data",
         tone: "emerald",
       },
       {
@@ -379,7 +379,7 @@ export const routeContent: Record<string, RouteContent> = {
         title: "Host city notes",
         description:
           "Travel tips, time zones, and local fan information can be layered in later.",
-        meta: "Guide later",
+        meta: "Host city guide",
         tone: "amber",
       },
       {
@@ -387,7 +387,7 @@ export const routeContent: Record<string, RouteContent> = {
         title: "Games by venue",
         description:
           "Fans will be able to see which matches are played in each stadium.",
-        meta: "Fixture link later",
+        meta: "Fixture links",
         tone: "sky",
       },
     ],
@@ -398,14 +398,14 @@ export const routeContent: Record<string, RouteContent> = {
     description:
       "A social-first area for polls, Telegram and X calls-to-action, email signup, and fan discussion.",
     heroNote:
-      "No community integrations yet. This page prepares the structure.",
+      "Community features bring together polls, email updates, social sharing and fan culture.",
     cards: [
       {
         eyebrow: "Telegram",
         title: "Join the matchday chat",
         description:
           "Telegram can become the fast-moving community hub during the tournament.",
-        meta: "Link later",
+        meta: "Community link",
         tone: "sky",
       },
       {
@@ -413,7 +413,7 @@ export const routeContent: Record<string, RouteContent> = {
         title: "Follow and share",
         description:
           "X can drive viral posts, match reactions, predictions, and fan-led growth.",
-        meta: "Handle later",
+        meta: "Social updates",
         tone: "slate",
       },
       {
@@ -421,7 +421,7 @@ export const routeContent: Record<string, RouteContent> = {
         title: "Football culture layer",
         description:
           "A dedicated teaser for fan reactions, matchday debates, and community campaigns.",
-        meta: "Future community phase",
+        meta: "Community updates",
         tone: "rose",
       },
     ],

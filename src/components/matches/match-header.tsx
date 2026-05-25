@@ -30,7 +30,7 @@ function TeamBadge({
         </div>
       )}
 
-      <h1 className="mt-4 max-w-[12rem] truncate text-2xl font-black text-white sm:text-4xl">
+      <h1 className="mt-4 max-w-[9.5rem] overflow-hidden text-balance break-words text-2xl font-black leading-tight text-white sm:max-w-[18rem] sm:overflow-visible sm:text-4xl lg:max-w-[24rem]">
         {displayName}
       </h1>
     </div>
@@ -76,13 +76,13 @@ export function MatchHeader({ fixture }: MatchHeaderProps) {
         />
       </div>
 
-      <div className="mt-10 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+      <div className="mt-10 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 sm:gap-5">
         <TeamBadge
           name={fixture.home_team_name}
           logo={fixture.home_team_logo_url}
         />
 
-        <div className="rounded-3xl border border-white/10 bg-slate-950/70 px-5 py-4 text-center shadow-xl shadow-slate-950/40">
+        <div className="rounded-3xl border border-white/10 bg-slate-950/70 px-4 py-4 text-center shadow-xl shadow-slate-950/40 sm:px-5">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
             Score
           </p>

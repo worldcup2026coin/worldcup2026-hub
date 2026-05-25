@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CommunityCTA } from "@/components/community/community-cta";
 import { CommunityRules } from "@/components/community/community-rules";
 import { EmailSignupForm } from "@/components/community/email-signup-form";
-import { MemeWallPlaceholder } from "@/components/community/meme-wall-placeholder";
+import { FanCulturePanel } from "@/components/community/fan-culture-panel";
 import { PollCard } from "@/components/community/poll-card";
 import { PredictionGameTeaser } from "@/components/community/prediction-game-teaser";
 import { SocialShareButtons } from "@/components/community/social-share-buttons";
@@ -28,7 +28,7 @@ export default async function CommunityPage() {
       <PageHeader
         eyebrow="Community"
         title="World Cup 2026 fan community"
-        description="Polls, social sharing, email updates, fan culture placeholders and future prediction-game structure."
+        description="Polls, social sharing, email updates and football-first fan culture for World Cup 2026."
         meta="Football-first · Social-shareable · No open comments yet"
       />
 
@@ -65,7 +65,7 @@ export default async function CommunityPage() {
             </section>
 
             <PredictionGameTeaser />
-            <MemeWallPlaceholder />
+            <FanCulturePanel />
             <CommunityRules />
           </div>
 

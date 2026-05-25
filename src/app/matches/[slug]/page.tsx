@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/json-ld";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Container } from "@/components/ui/container";
@@ -174,7 +174,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
                 Fan insights and match context
               </h2>
               <p className="mt-3 text-sm leading-6 text-slate-300">
-                This section combines published fan insight with synced API context where available. It is informational only and does not certainty any outcome.
+                This section combines published fan insight with synced API context where available. It is informational only and does not guarantee any outcome.
               </p>
 
               <div className="mt-5">

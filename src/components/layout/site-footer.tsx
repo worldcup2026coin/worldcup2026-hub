@@ -11,11 +11,7 @@ export function SiteFooter() {
             <p className="text-lg font-black tracking-tight text-white">
               {siteConfig.name}
             </p>
-            <p className="mt-3 max-w-xl text-sm leading-6 text-slate-400">
-              A mobile-first, API-first World Cup 2026 football hub. Live data,
-              predictions, community features, and fan content will be added in
-              later phases.
-            </p>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-slate-400">A mobile-first, API-powered World Cup 2026 football hub for fixtures, live scores, teams, players, stats, predictions, polls and tournament updates.</p>
           </div>
 
           <div>

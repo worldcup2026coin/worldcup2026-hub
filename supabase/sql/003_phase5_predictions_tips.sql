@@ -62,7 +62,7 @@ create table if not exists public.predictions_tips (
         coalesce(summary, '') || ' ' ||
         coalesce(prediction_text, '') || ' ' ||
         coalesce(market_label, '')
-      ) ~* '(^|[^a-z])(banker|lock|sure[[:space:]-]*thing)([^a-z]|$)'
+      ) ~* '(^|[^a-z])(strong pick|lock|sure[[:space:]-]*thing)([^a-z]|$)'
     )
   )
 );

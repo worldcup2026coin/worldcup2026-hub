@@ -10,7 +10,7 @@ export function OddsStyleTable({ records }: OddsStyleTableProps) {
     return (
       <PredictionEmptyState
         title="Odds unavailable"
-        description="No odds-style records are available for this match yet. This section will stay empty until manual records or future odds-style data are added."
+        description="Odds-style snapshots will appear here when reliable market data is available."
       />
     );
   }

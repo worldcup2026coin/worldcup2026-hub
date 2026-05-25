@@ -40,7 +40,7 @@ const sections: {
     title: "Betting-style view",
     emptyTitle: "Betting-style view unavailable",
     emptyDescription:
-      "No betting-style content has been published for this match yet. No tips engine is active in this phase.",
+      "No betting-style view has been published for this match yet.",
   },
 ];
 

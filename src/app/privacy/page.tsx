@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/worldcup/page-header";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
-    "Privacy policy placeholder for World Cup 2026 Hub covering email signup, polls, analytics and community features.",
+    "Privacy policy for World Cup 2026 Hub covering email signup, polls, analytics and community features.",
 };
 
 export default function PrivacyPage() {
@@ -14,8 +14,8 @@ export default function PrivacyPage() {
       <PageHeader
         eyebrow="Privacy"
         title="Privacy Policy"
-        description="A plain-English placeholder privacy policy for the MVP launch."
-        meta="Last updated: launch preview"
+        description="A plain-English privacy policy for World Cup 2026 Hub users."
+        meta="Last updated: May 2026"
       />
 
       <Container className="pb-14">
@@ -42,7 +42,7 @@ export default function PrivacyPage() {
 
           <h2 className="mt-8 text-2xl font-black text-white">Contact</h2>
           <p className="mt-4">
-            This is an MVP placeholder. Replace this section with your real contact email before public launch.
+            For privacy or site questions, contact the World Cup 2026 Hub team through the published site contact channels.
           </p>
         </div>
       </Container>

@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/worldcup/page-header";
 import { PredictionCard } from "@/components/predictions/prediction-card";
@@ -23,7 +23,7 @@ export default async function PredictionsPage() {
         eyebrow="Predictions"
         title="World Cup 2026 predictions and fan insights"
         description="Safe, risk-labelled match preview content from Supabase. This section separates fan previews, fantasy-style notes and betting-style informational views."
-        meta="No certaintys · No affiliate links · Content structure only"
+        meta="No promised outcomes · No affiliate links · Informational views only"
       />
 
       <Container className="pb-14">

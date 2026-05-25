@@ -56,6 +56,13 @@ foreach ($term in $unsafeCopyTerms) {
 }
 
 $csvPath = ".\launch\phase14-public-copy-audit-results.csv"
+$hits = $hits | Where-Object {
+  -not (
+    $_.Term -eq "guarantee" -and
+    $_.Text -match "does not guarantee any outcome"
+  )
+}
+
 $hits | Export-Csv -NoTypeInformation -Path $csvPath
 
 if ($hits.Count -gt 0) {

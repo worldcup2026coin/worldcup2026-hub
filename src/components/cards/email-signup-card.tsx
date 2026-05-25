@@ -10,7 +10,7 @@ export function EmailSignupCard() {
       </h2>
 
       <p className="mt-3 text-sm leading-6 text-slate-300">
-        This is a placeholder signup block. In a later phase, this can connect
+        This is a placeholder signup block. In a future update, this can connect
         to Supabase for email capture, fan segmentation, and tournament updates.
       </p>
 

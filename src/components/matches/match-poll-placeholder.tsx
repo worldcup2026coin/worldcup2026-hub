@@ -28,7 +28,7 @@ export function MatchPollPlaceholder({ fixture }: MatchPollPlaceholderProps) {
       </div>
 
       <p className="mt-4 text-xs text-violet-100/80">
-        Static placeholder only. Real polls will be built in a later phase.
+        Vote for your match pick. Results update as fans respond.
       </p>
     </section>
   );

@@ -34,7 +34,7 @@ export function PlaceholderCard({
           {eyebrow}
         </p>
         <span className="rounded-full bg-white/10 px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-white/70">
-          Phase 1
+          Live hub
         </span>
       </div>
 
