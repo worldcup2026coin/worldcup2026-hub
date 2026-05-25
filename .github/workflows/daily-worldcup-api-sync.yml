@@ -6,6 +6,9 @@ on:
     # 19:00 UTC = 20:00 Ireland during summer time.
     - cron: "0 19 * * *"
 
+permissions:
+  contents: read
+
 jobs:
   daily-data-sync:
     runs-on: ubuntu-latest
@@ -33,28 +36,7 @@ jobs:
             cat response.json
             echo ""
 
-            python - <<'PY'
-import json
-from pathlib import Path
-
-payload = json.loads(Path("response.json").read_text())
-
-if payload.get("ok") is not True:
-    raise SystemExit(f"Sync route failed: {payload}")
-
-summary = payload.get("summary", {})
-print(
-    "OK:",
-    summary.get("jobName"),
-    summary.get("status"),
-    "requests=",
-    summary.get("apiRequestsUsed"),
-    "seen=",
-    summary.get("recordsSeen"),
-    "updated=",
-    summary.get("recordsUpdated"),
-)
-PY
+            python3 -c 'import json, sys; payload=json.load(open("response.json")); summary=payload.get("summary", {}); print("OK:", summary.get("jobName"), summary.get("status"), "requests=", summary.get("apiRequestsUsed"), "seen=", summary.get("recordsSeen"), "updated=", summary.get("recordsUpdated")); sys.exit(0 if payload.get("ok") is True else 1)'
           }
 
           call_route "team-squads-sync-1"
