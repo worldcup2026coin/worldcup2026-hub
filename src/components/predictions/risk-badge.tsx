@@ -1,3 +1,4 @@
+
 import type { PredictionRiskLevel } from "@/lib/data/predictions";
 
 type RiskBadgeProps = {
@@ -5,10 +6,10 @@ type RiskBadgeProps = {
 };
 
 const styles = {
-  low: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
-  medium: "border-amber-400/30 bg-amber-400/10 text-amber-200",
-  high: "border-rose-400/30 bg-rose-400/10 text-rose-200",
-  no_lean: "border-slate-400/30 bg-slate-400/10 text-slate-200",
+  low: "border-lime-300/35 bg-lime-300/10 text-lime-100 shadow-[0_0_18px_rgba(163,255,18,0.12)]",
+  medium: "border-amber-300/35 bg-amber-300/10 text-amber-100",
+  high: "border-fuchsia-300/35 bg-fuchsia-400/10 text-fuchsia-100 shadow-[0_0_18px_rgba(255,43,214,0.12)]",
+  no_lean: "border-cyan-300/30 bg-cyan-300/10 text-cyan-100",
 };
 
 const labels = {

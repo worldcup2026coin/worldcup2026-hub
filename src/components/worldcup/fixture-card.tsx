@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import type { Fixture } from "@/lib/data/worldcup";
 import {
@@ -21,19 +22,21 @@ function TeamLogo({
 }) {
   if (!src) {
     return (
-      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-xs font-black text-white">
+      <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-cyan-300/25 bg-cyan-300/10 text-xs font-black text-white shadow-[0_0_18px_rgba(34,211,238,0.12)]">
         {alt.slice(0, 2).toUpperCase()}
       </span>
     );
   }
 
   return (
-    <img
-      src={src}
-      alt={alt}
-      className="h-9 w-9 rounded-full object-contain"
-      loading="lazy"
-    />
+    <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/10 p-1 shadow-[0_0_18px_rgba(163,255,18,0.10)]">
+      <img
+        src={src}
+        alt={alt}
+        className="h-full w-full rounded-xl object-contain"
+        loading="lazy"
+      />
+    </span>
   );
 }
 
@@ -55,8 +58,8 @@ function TeamLine({
     <div className="flex min-w-0 items-center gap-3">
       <TeamLogo src={logo} alt={displayName} />
       <span
-        className={`truncate text-sm font-bold ${
-          isWinner ? "text-emerald-200" : "text-white"
+        className={`truncate text-sm font-black ${
+          isWinner ? "text-lime-200 glow-text" : "text-white"
         }`}
       >
         {displayName}
@@ -65,16 +68,20 @@ function TeamLine({
   );
 
   return (
-    <div className="flex items-center justify-between gap-4 rounded-2xl bg-white/[0.04] p-3">
+    <div className={`flex items-center justify-between gap-4 rounded-2xl border p-3 ${
+      isWinner
+        ? "border-lime-300/25 bg-lime-300/10"
+        : "border-white/10 bg-slate-950/45"
+    }`}>
       {apiTeamId && name ? (
-        <Link href={`/teams/${teamSlug(name, apiTeamId)}`} className="min-w-0">
+        <Link href={`/teams/${teamSlug(name, apiTeamId)}`} className="min-w-0 hover:text-lime-200">
           {content}
         </Link>
       ) : (
         <div className="min-w-0">{content}</div>
       )}
 
-      <span className="min-w-8 text-right text-xl font-black text-white">
+      <span className="min-w-9 text-right text-2xl font-black text-white">
         {score ?? "-"}
       </span>
     </div>
@@ -96,20 +103,15 @@ export function FixtureCard({ fixture }: FixtureCardProps) {
   });
 
   return (
-    <article className="rounded-3xl border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-slate-950/30">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-            {fixture.round ?? fixture.group_name ?? "World Cup 2026"}
-          </p>
-          <p className="mt-2 text-sm font-semibold text-slate-200">
-            {formatDateTime(fixture.match_date)}
-          </p>
-        </div>
+    <article className="neon-card group rounded-[2rem] p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <FixtureStatusBadge
           statusShort={fixture.status_short}
           statusLong={fixture.status_long}
         />
+        <span className="rounded-full border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-fuchsia-100">
+          {formatDateTime(fixture.match_date)}
+        </span>
       </div>
 
       <div className="mt-5 grid gap-3">
@@ -129,23 +131,20 @@ export function FixtureCard({ fixture }: FixtureCardProps) {
         />
       </div>
 
-      <div className="mt-5 grid gap-2 text-xs text-slate-400 sm:grid-cols-2">
+      <div className="mt-5 grid gap-2 text-xs font-semibold text-slate-400 sm:grid-cols-2">
         <p>
-          <span className="font-semibold text-slate-300">Venue:</span>{" "}
+          <span className="text-cyan-200">Venue:</span>{" "}
           {fixture.venue_name ?? "Venue TBC"}
           {fixture.venue_city ? `, ${fixture.venue_city}` : ""}
         </p>
         <p>
-          <span className="font-semibold text-slate-300">Status:</span>{" "}
-          {fixture.status_long ?? fixture.status_short ?? "TBC"}
+          <span className="text-lime-200">Round:</span>{" "}
+          {fixture.round ?? "World Cup 2026"}
         </p>
       </div>
 
-      <Link
-        href={`/matches/${matchSlug}`}
-        className="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-5 text-sm font-black text-emerald-200 transition hover:bg-emerald-400 hover:text-slate-950"
-      >
-        Match details
+      <Link href={`/matches/${matchSlug}`} className="glow-button-secondary mt-5 w-full">
+        Match centre
       </Link>
     </article>
   );

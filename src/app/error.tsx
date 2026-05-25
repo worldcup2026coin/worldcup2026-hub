@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -10,11 +11,9 @@ export default function ErrorPage({
 }) {
   return (
     <div className="mx-auto max-w-4xl px-4 py-16 text-center">
-      <div className="rounded-[2rem] border border-white/10 bg-white/[0.055] p-8 shadow-2xl shadow-slate-950/30">
-        <p className="text-sm font-black uppercase tracking-[0.2em] text-rose-300">
-          Error
-        </p>
-        <h1 className="mt-4 text-4xl font-black text-white">
+      <div className="hero-panel rounded-[2.25rem] p-8">
+        <p className="neon-kicker mx-auto">Signal error</p>
+        <h1 className="neon-title glow-text mt-5 text-5xl font-black text-white sm:text-7xl">
           Something went wrong
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-300">
@@ -25,14 +24,11 @@ export default function ErrorPage({
           <button
             type="button"
             onClick={reset}
-            className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-emerald-400 px-5 text-sm font-black text-slate-950"
+            className="glow-button-primary"
           >
             Try again
           </button>
-          <Link
-            href="/"
-            className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 text-sm font-bold text-white"
-          >
+          <Link href="/" className="glow-button-secondary">
             Back home
           </Link>
         </div>

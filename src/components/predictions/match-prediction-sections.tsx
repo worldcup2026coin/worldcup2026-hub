@@ -1,3 +1,4 @@
+
 import type { Fixture } from "@/lib/data/matches";
 import type {
   OddsStyleRecord,
@@ -23,22 +24,22 @@ const sections: {
 }[] = [
   {
     type: "fan_preview",
-    title: "Fan-friendly match preview",
-    emptyTitle: "No prediction published yet",
+    title: "Fan signal preview",
+    emptyTitle: "No prediction signal yet",
     emptyDescription:
-      "No fan preview has been published for this match yet. This will be filled manually through Supabase for now.",
+      "No fan preview has been published for this match yet.",
   },
   {
     type: "fantasy_tip",
-    title: "Fantasy-style players to watch",
-    emptyTitle: "Fantasy notes coming soon",
+    title: "Players to watch",
+    emptyTitle: "Player watchlist pending",
     emptyDescription:
       "No fantasy-style player notes have been published for this match yet.",
   },
   {
     type: "betting_style",
     title: "Betting-style view",
-    emptyTitle: "Betting-style view unavailable",
+    emptyTitle: "Betting-style signal unavailable",
     emptyDescription:
       "No betting-style view has been published for this match yet.",
   },
@@ -57,9 +58,12 @@ export function MatchPredictionSections({
         return (
           <div
             key={section.type}
-            className="rounded-3xl border border-white/10 bg-white/[0.045] p-5"
+            className="neon-card rounded-[2rem] p-5"
           >
-            <h2 className="text-xl font-black text-white">{section.title}</h2>
+            <p className="neon-kicker">{section.type.replaceAll("_", " ")}</p>
+            <h2 className="mt-4 text-2xl font-black uppercase tracking-tight text-white">
+              {section.title}
+            </h2>
 
             {sectionTips.length === 0 ? (
               <div className="mt-4">

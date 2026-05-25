@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import { EmailSignupForm } from "@/components/community/email-signup-form";
@@ -43,10 +44,10 @@ function matchHref(fixture: HomeFixture) {
 
 function scoreText(fixture: HomeFixture) {
   if (fixture.home_goals === null || fixture.away_goals === null) {
-    return "vs";
+    return "VS";
   }
 
-  return `${fixture.home_goals} - ${fixture.away_goals}`;
+  return `${fixture.home_goals} : ${fixture.away_goals}`;
 }
 
 function statusLabel(status: string | null) {
@@ -63,13 +64,13 @@ function MiniFixtureCard({ fixture }: { fixture: HomeFixture }) {
   return (
     <Link
       href={matchHref(fixture)}
-      className="block rounded-3xl border border-white/10 bg-white/[0.055] p-5 transition hover:-translate-y-1 hover:border-emerald-400/30"
+      className="neon-card block rounded-[2rem] p-5"
     >
       <div className="flex items-center justify-between gap-3">
-        <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-slate-300">
+        <span className="neon-badge neon-badge-pink">
           {statusLabel(fixture.status_short)}
         </span>
-        <span className="text-xs text-slate-400">
+        <span className="text-xs font-black uppercase tracking-[0.14em] text-slate-400">
           {formatDateTime(fixture.match_date)}
         </span>
       </div>
@@ -80,16 +81,16 @@ function MiniFixtureCard({ fixture }: { fixture: HomeFixture }) {
             <img
               src={fixture.home_team_logo}
               alt=""
-              className="mx-auto h-12 w-12 rounded-full object-contain"
+              className="mx-auto h-14 w-14 rounded-2xl border border-white/10 bg-white/10 object-contain p-1"
               loading="lazy"
             />
           ) : null}
-          <p className="mt-2 truncate text-sm font-black text-white">
+          <p className="mt-2 truncate text-sm font-black uppercase text-white">
             {fixture.home_team_name ?? "Home"}
           </p>
         </div>
 
-        <div className="rounded-2xl bg-slate-950/70 px-4 py-3 text-center text-lg font-black text-white">
+        <div className="rounded-2xl border border-lime-300/25 bg-lime-300/10 px-4 py-3 text-center text-xl font-black text-white shadow-[0_0_22px_rgba(163,255,18,0.10)]">
           {scoreText(fixture)}
         </div>
 
@@ -98,21 +99,47 @@ function MiniFixtureCard({ fixture }: { fixture: HomeFixture }) {
             <img
               src={fixture.away_team_logo}
               alt=""
-              className="mx-auto h-12 w-12 rounded-full object-contain"
+              className="mx-auto h-14 w-14 rounded-2xl border border-white/10 bg-white/10 object-contain p-1"
               loading="lazy"
             />
           ) : null}
-          <p className="mt-2 truncate text-sm font-black text-white">
+          <p className="mt-2 truncate text-sm font-black uppercase text-white">
             {fixture.away_team_name ?? "Away"}
           </p>
         </div>
       </div>
 
-      <p className="mt-4 text-xs text-slate-400">
+      <p className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
         {fixture.round ?? "World Cup 2026"}
         {fixture.venue_name ? ` · ${fixture.venue_name}` : ""}
       </p>
     </Link>
+  );
+}
+
+function StatTile({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone: "lime" | "cyan" | "pink" | "gold";
+}) {
+  const toneClass = {
+    lime: "border-lime-300/30 bg-lime-300/10 text-lime-100",
+    cyan: "border-cyan-300/30 bg-cyan-300/10 text-cyan-100",
+    pink: "border-fuchsia-300/30 bg-fuchsia-400/10 text-fuchsia-100",
+    gold: "border-amber-300/30 bg-amber-300/10 text-amber-100",
+  }[tone];
+
+  return (
+    <div className={`rounded-3xl border p-4 ${toneClass}`}>
+      <p className="text-[0.65rem] font-black uppercase tracking-[0.18em] opacity-80">
+        {label}
+      </p>
+      <p className="mt-2 text-3xl font-black text-white">{value}</p>
+    </div>
   );
 }
 
@@ -122,105 +149,130 @@ export default async function HomePage() {
 
   return (
     <div className="pb-14">
-      <section className="border-b border-white/10 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.22),_transparent_42%),linear-gradient(180deg,_rgba(15,23,42,1),_rgba(2,6,23,1))]">
-        <Container className="py-12 sm:py-16">
-          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-            <div>
-              <p className="text-sm font-black uppercase tracking-[0.24em] text-emerald-300">
-                World Cup 2026 Hub
-              </p>
-              <h1 className="mt-4 max-w-4xl text-4xl font-black tracking-tight text-white sm:text-6xl">
-                Fixtures, live scores, predictions and fan energy in one place.
-              </h1>
-              <p className="mt-5 max-w-2xl text-base leading-8 text-slate-300">
-                Follow the tournament with match centres, group tables, team pages,
-                fan polls, safe prediction content and football-first community updates.
-              </p>
+      <section className="px-4 py-8 sm:px-6 lg:px-8">
+        <Container className="px-0">
+          <div className="hero-panel rounded-[2.5rem] p-6 sm:p-10 lg:p-12">
+            <div className="relative z-10 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+              <div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="neon-kicker">World Cup 2026 hub</span>
+                  <span className="sticker-tilt inline-flex rounded-full px-3 py-2 text-xs font-black uppercase tracking-[0.18em] text-fuchsia-100">
+                    Fan chaos online
+                  </span>
+                </div>
 
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href="/fixtures"
-                  className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-emerald-400 px-6 text-sm font-black text-slate-950 transition hover:bg-emerald-300"
-                >
-                  View fixtures
-                </Link>
-                <Link
-                  href="/live"
-                  className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-6 text-sm font-bold text-white transition hover:bg-white/10"
-                >
-                  Live centre
-                </Link>
-                <Link
-                  href="/community"
-                  className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-6 text-sm font-bold text-white transition hover:bg-white/10"
-                >
-                  Join community
-                </Link>
+                <h1 className="neon-title glow-text mt-6 max-w-5xl text-5xl font-black leading-[0.82] text-white sm:text-7xl lg:text-8xl">
+                  FOOTBALL. CULTURE. CHAOS.
+                </h1>
+                <p className="mt-6 max-w-2xl text-lg font-semibold leading-8 text-slate-200">
+                  Fixtures. Live scores. Teams. Players. Stats. Predictions. Fan energy.
+                  A cyber football dashboard for the tournament pulse.
+                </p>
+
+                <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                  <Link href="/fixtures" className="glow-button-primary">
+                    View fixtures
+                  </Link>
+                  <Link href="/live" className="glow-button-secondary">
+                    Live scores
+                  </Link>
+                  <Link href="/teams" className="glow-button-secondary">
+                    Explore teams
+                  </Link>
+                </div>
+
+                <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-5">
+                  <StatTile label="Live data" value="ON" tone="lime" />
+                  <StatTile label="Fan signal" value="24/7" tone="pink" />
+                  <StatTile label="Teams" value="48" tone="cyan" />
+                  <StatTile label="Matches" value="104" tone="gold" />
+                  <StatTile label="Groups" value="12" tone="lime" />
+                </div>
+
+                {data.latestSyncLog ? (
+                  <p className="mt-5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                    Data last synced:{" "}
+                    {formatDateTime(data.latestSyncLog.ended_at ?? data.latestSyncLog.started_at)}
+                    {" · "}
+                    {data.latestSyncLog.status}
+                  </p>
+                ) : null}
               </div>
 
-              {data.latestSyncLog ? (
-                <p className="mt-5 text-xs text-slate-500">
-                  Data last synced:{" "}
-                  {formatDateTime(data.latestSyncLog.ended_at ?? data.latestSyncLog.started_at)}
-                  {" · "}
-                  {data.latestSyncLog.status}
-                </p>
-              ) : null}
-            </div>
-
-            <div>
-              {featuredMatch ? (
-                <div className="rounded-[2rem] border border-emerald-400/20 bg-white/[0.07] p-5 shadow-2xl shadow-emerald-950/20">
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-emerald-300">
-                    Featured match
-                  </p>
+              <div className="grid gap-4">
+                <div className="neon-card rounded-[2rem] p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="neon-kicker">Next match panel</p>
+                    <span className="neon-badge neon-badge-cyan">Dashboard</span>
+                  </div>
                   <div className="mt-4">
-                    <MiniFixtureCard fixture={featuredMatch} />
+                    {featuredMatch ? (
+                      <MiniFixtureCard fixture={featuredMatch} />
+                    ) : (
+                      <div className="rounded-3xl border border-dashed border-white/15 bg-white/[0.04] p-8 text-center">
+                        <h2 className="text-2xl font-black text-white">
+                          Fixtures coming soon
+                        </h2>
+                        <p className="mt-3 text-sm text-slate-300">
+                          Once fixtures sync, the featured match lights up here.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
-              ) : (
-                <div className="rounded-[2rem] border border-dashed border-white/15 bg-white/[0.04] p-8 text-center">
-                  <h2 className="text-2xl font-black text-white">
-                    Fixtures coming soon
-                  </h2>
-                  <p className="mt-3 text-sm text-slate-300">
-                    Once fixtures are synced, the featured match will appear here.
-                  </p>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Link href="/groups" className="neon-card rounded-[2rem] p-5">
+                    <span className="neon-badge">Group pulse</span>
+                    <h2 className="mt-4 text-2xl font-black uppercase text-white">
+                      Standings watch
+                    </h2>
+                    <p className="mt-2 text-sm leading-6 text-slate-300">
+                      Track every group and the knockout chase.
+                    </p>
+                  </Link>
+                  <Link href="/top-scorers" className="neon-card rounded-[2rem] p-5">
+                    <span className="neon-badge neon-badge-pink">Leaderboard</span>
+                    <h2 className="mt-4 text-2xl font-black uppercase text-white">
+                      Top performers
+                    </h2>
+                    <p className="mt-2 text-sm leading-6 text-slate-300">
+                      Goals, assists and card signal.
+                    </p>
+                  </Link>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </Container>
       </section>
 
-      <Container className="pt-10">
+      <Container className="pt-4">
         <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5">
+          <div className="neon-panel rounded-[2rem] p-5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="text-sm font-black uppercase tracking-[0.2em] text-emerald-300">
-                  What to watch
-                </p>
-                <h2 className="mt-2 text-2xl font-black text-white">
-                  Next matches
+                <p className="neon-kicker">Matchday dashboard</p>
+                <h2 className="mt-4 text-3xl font-black uppercase text-white">
+                  Next fixtures
                 </h2>
               </div>
-              <Link href="/fixtures" className="text-sm font-bold text-emerald-300">
+              <Link href="/fixtures" className="link-neon text-sm">
                 Full fixture list →
               </Link>
             </div>
 
             {data.liveFixtures.length > 0 ? (
-              <div className="mt-5 rounded-3xl border border-rose-400/20 bg-rose-400/10 p-4">
-                <p className="text-sm font-black text-rose-100">
+              <div className="mt-5 rounded-3xl border border-fuchsia-300/25 bg-fuchsia-400/10 p-4">
+                <p className="text-sm font-black text-fuchsia-100">
                   {data.liveFixtures.length} live match
                   {data.liveFixtures.length === 1 ? "" : "es"} right now
                 </p>
               </div>
             ) : (
-              <div className="mt-5 rounded-3xl border border-white/10 bg-white/[0.04] p-4">
-                <p className="text-sm text-slate-300">
-                  No live matches right now. The next scheduled fixtures are below.
+              <div className="mt-5 rounded-3xl border border-cyan-300/20 bg-cyan-300/10 p-4">
+                <p className="text-sm font-semibold text-slate-300">
+                  No live matches right now. Calm before the next kick-off.
                 </p>
               </div>
             )}
@@ -239,54 +291,52 @@ export default async function HomePage() {
 
             <Link
               href="/best-third-placed-teams"
-              className="block rounded-[2rem] border border-emerald-400/20 bg-emerald-400/[0.07] p-5 transition hover:-translate-y-1 hover:border-emerald-300/40"
+              className="neon-card block rounded-[2rem] p-5"
             >
-              <p className="text-sm font-black uppercase tracking-[0.2em] text-emerald-300">
-                Qualification watch
-              </p>
-              <h2 className="mt-2 text-2xl font-black text-white">
-                Best Third-Placed Teams
+              <span className="sticker-tilt inline-flex rounded-full px-3 py-2 text-xs font-black uppercase tracking-[0.18em] text-fuchsia-100">
+                3RD PLACE SIGNAL
+              </span>
+              <h2 className="mt-4 text-3xl font-black uppercase text-white">
+                Best third-placed teams
               </h2>
               <p className="mt-3 text-sm leading-6 text-slate-300">
-                New for World Cup 2026: eight third-placed teams can still reach
-                the knockouts. Track the live qualification table.
+                Eight third-placed teams can still reach the knockouts. This is
+                where the group-stage chaos gets serious.
               </p>
-              <span className="mt-5 inline-flex text-sm font-black text-emerald-300">
+              <span className="mt-5 inline-flex text-sm font-black text-lime-200">
                 View third-place table →
               </span>
             </Link>
             <EmailSignupForm
               source="homepage_polish"
               title="Get matchday updates"
-              description="Join the list for World Cup updates, feature launches and community highlights."
+              description="Join the fan signal for World Cup updates, feature launches and community highlights."
             />
           </div>
         </section>
 
         <section className="mt-10 grid gap-6 lg:grid-cols-3">
-          <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 lg:col-span-2">
+          <div className="neon-panel rounded-[2rem] p-5 lg:col-span-2">
             <div className="flex items-end justify-between gap-3">
               <div>
-                <p className="text-sm font-black uppercase tracking-[0.2em] text-sky-300">
-                  Latest predictions
-                </p>
-                <h2 className="mt-2 text-2xl font-black text-white">
-                  Fan insights and risk-labelled previews
+                <p className="neon-kicker">Prediction signal</p>
+                <h2 className="mt-4 text-3xl font-black uppercase text-white">
+                  Fan insights and match reads
                 </h2>
               </div>
-              <Link href="/predictions" className="text-sm font-bold text-sky-300">
+              <Link href="/predictions" className="link-neon text-sm">
                 All predictions →
               </Link>
             </div>
 
             <div className="mt-5 grid gap-4">
               {data.latestPredictions.length === 0 ? (
-                <div className="rounded-3xl border border-dashed border-white/15 bg-white/[0.04] p-6 text-center">
+                <div className="rounded-3xl border border-dashed border-cyan-300/20 bg-cyan-300/10 p-6 text-center">
                   <h3 className="text-lg font-black text-white">
-                    No published predictions yet
+                    No prediction signal yet
                   </h3>
                   <p className="mt-2 text-sm text-slate-300">
-                    Publish prediction rows in Supabase and they will appear here.
+                    Publish prediction rows in Supabase and they will light up here.
                   </p>
                 </div>
               ) : (
@@ -303,13 +353,13 @@ export default async function HomePage() {
                           })}`
                         : "/predictions"
                     }
-                    className="rounded-3xl border border-white/10 bg-white/[0.055] p-5 transition hover:border-sky-400/30"
+                    className="neon-card rounded-3xl p-5"
                   >
-                    <p className="text-xs font-black uppercase tracking-[0.18em] text-sky-300">
+                    <p className="neon-badge neon-badge-cyan">
                       {prediction.type.replaceAll("_", " ")} ·{" "}
                       {prediction.risk_level ?? "no lean"}
                     </p>
-                    <h3 className="mt-2 text-lg font-black text-white">
+                    <h3 className="mt-3 text-xl font-black uppercase text-white">
                       {prediction.title}
                     </h3>
                     {prediction.summary ? (
@@ -323,17 +373,15 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5">
+          <div className="neon-panel rounded-[2rem] p-5">
             <div className="flex items-end justify-between gap-3">
               <div>
-                <p className="text-sm font-black uppercase tracking-[0.2em] text-amber-300">
-                  Trending teams
-                </p>
-                <h2 className="mt-2 text-2xl font-black text-white">
+                <p className="neon-kicker">Team radar</p>
+                <h2 className="mt-4 text-3xl font-black uppercase text-white">
                   Team pages
                 </h2>
               </div>
-              <Link href="/teams" className="text-sm font-bold text-amber-300">
+              <Link href="/teams" className="link-neon text-sm">
                 Teams →
               </Link>
             </div>
@@ -343,20 +391,20 @@ export default async function HomePage() {
                 <Link
                   key={team.id}
                   href={`/teams/${teamSlug(team.name, team.api_team_id)}`}
-                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.045] p-3 transition hover:bg-white/10"
+                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/45 p-3 transition hover:border-lime-300/30 hover:bg-lime-300/10"
                 >
                   {team.logo_url ? (
                     <img
                       src={team.logo_url}
                       alt=""
-                      className="h-9 w-9 rounded-full object-contain"
+                      className="h-10 w-10 rounded-xl border border-white/10 bg-white/10 object-contain p-1"
                       loading="lazy"
                     />
                   ) : (
-                    <div className="h-9 w-9 rounded-full bg-white/10" />
+                    <div className="h-10 w-10 rounded-xl bg-white/10" />
                   )}
                   <div>
-                    <p className="text-sm font-black text-white">{team.name}</p>
+                    <p className="text-sm font-black uppercase text-white">{team.name}</p>
                     <p className="text-xs text-slate-400">
                       {team.group_name ?? team.country ?? "World Cup 2026"}
                     </p>
@@ -367,17 +415,15 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="mt-10 rounded-[2rem] border border-white/10 bg-white/[0.04] p-5">
+        <section className="neon-panel mt-10 rounded-[2rem] p-5">
           <div className="flex items-end justify-between gap-3">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.2em] text-fuchsia-300">
-                Latest articles
-              </p>
-              <h2 className="mt-2 text-2xl font-black text-white">
+              <p className="neon-kicker">Football internet</p>
+              <h2 className="mt-4 text-3xl font-black uppercase text-white">
                 News, guides and fan culture
               </h2>
             </div>
-            <Link href="/news" className="text-sm font-bold text-fuchsia-300">
+            <Link href="/news" className="link-neon text-sm">
               News hub →
             </Link>
           </div>
@@ -387,12 +433,12 @@ export default async function HomePage() {
               <Link
                 key={article.id}
                 href={`/news/${article.slug}`}
-                className="rounded-3xl border border-white/10 bg-white/[0.055] p-5 transition hover:-translate-y-1 hover:border-fuchsia-400/30"
+                className="neon-card rounded-3xl p-5"
               >
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-fuchsia-300">
+                <p className="neon-badge neon-badge-pink">
                   {article.category.replaceAll("_", " ")}
                 </p>
-                <h3 className="mt-3 text-lg font-black text-white">
+                <h3 className="mt-4 text-xl font-black uppercase text-white">
                   {article.title}
                 </h3>
                 {article.excerpt ? (

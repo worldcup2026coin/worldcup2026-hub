@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -91,77 +92,89 @@ export default async function BestThirdPlacedTeamsPage() {
       <JsonLd data={faqJsonLd()} />
 
       <Container>
-        <section className="rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/40 sm:p-10">
-          <p className="text-sm font-black uppercase tracking-[0.24em] text-emerald-300">
-            World Cup 2026 format guide
-          </p>
-          <h1 className="mt-4 max-w-4xl text-4xl font-black tracking-tight text-white sm:text-6xl">
-            World Cup 2026 Best Third-Placed Teams Explained
-          </h1>
-          <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300 sm:text-lg">
-            World Cup 2026 has 12 groups of four. The top two teams in every
-            group qualify automatically, then the eight best third-placed teams
-            also reach the Round of 32.
-          </p>
+        <section className="hero-panel rounded-[2.5rem] p-6 sm:p-10">
+          <div className="relative z-10 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div>
+              <div className="flex flex-wrap gap-2">
+                <p className="neon-kicker">World Cup 2026 format guide</p>
+                <span className="sticker-tilt inline-flex rounded-full px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-fuchsia-100">
+                  3RD PLACE
+                </span>
+              </div>
+              <h1 className="neon-title glow-text mt-5 max-w-5xl text-5xl font-black leading-[0.86] text-white sm:text-7xl">
+                Third-place chaos, explained.
+              </h1>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300 sm:text-lg">
+                Twelve groups. Twelve third-placed teams. Eight survive. This page
+                tracks the cut line and explains the tiebreaker signal without fake certainty.
+              </p>
 
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/groups"
-              className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-emerald-400 px-6 text-sm font-black text-slate-950 transition hover:bg-emerald-300"
-            >
-              View groups
-            </Link>
-            <Link
-              href="/fixtures"
-              className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-6 text-sm font-bold text-white transition hover:bg-white/10"
-            >
-              Fixtures
-            </Link>
-            <Link
-              href="/live"
-              className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-6 text-sm font-bold text-white transition hover:bg-white/10"
-            >
-              Live centre
-            </Link>
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <Link href="/groups" className="glow-button-primary">
+                  View groups
+                </Link>
+                <Link href="/fixtures" className="glow-button-secondary">
+                  Fixtures
+                </Link>
+                <Link href="/live" className="glow-button-secondary">
+                  Live centre
+                </Link>
+              </div>
+            </div>
+
+            <div className="grid gap-3 sm:min-w-72">
+              <div className="rounded-3xl border border-lime-300/25 bg-lime-300/10 p-5">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-lime-200">
+                  Qualify
+                </p>
+                <p className="mt-2 text-5xl font-black text-white">8</p>
+              </div>
+              <div className="rounded-3xl border border-fuchsia-300/25 bg-fuchsia-400/10 p-5">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-200">
+                  Eliminated
+                </p>
+                <p className="mt-2 text-5xl font-black text-white">4</p>
+              </div>
+            </div>
           </div>
         </section>
 
         <section className="mt-8 grid gap-6 lg:grid-cols-3">
           {[
             {
-              title: "Why third place matters in 2026",
-              copy: "A team can finish third in its group and still reach the knockouts. That means some final group games can matter even when a team cannot finish first or second.",
+              badge: "Why",
+              title: "Third place matters",
+              copy: "A team can finish third and still reach the knockouts, so final group games can stay chaotic even outside first and second.",
             },
             {
-              title: "How many third-placed teams qualify?",
-              copy: "Twelve teams finish third across Groups A to L. Eight qualify for the Round of 32 and four are eliminated.",
+              badge: "Cut",
+              title: "Eight go through",
+              copy: "Twelve teams finish third. Eight qualify for the Round of 32 and four fall below the tournament cut.",
             },
             {
-              title: "How the table works",
-              copy: "The third-placed teams are compared across all groups using group-stage results, not just their position inside one group.",
+              badge: "Signal",
+              title: "Cross-group ranking",
+              copy: "Third-placed teams are compared across all groups using their full group-stage results.",
             },
           ].map((item) => (
-            <article
-              key={item.title}
-              className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-5"
-            >
-              <h2 className="text-xl font-black text-white">{item.title}</h2>
-              <p className="mt-3 text-sm leading-6 text-slate-300">
-                {item.copy}
-              </p>
+            <article key={item.title} className="neon-card rounded-[2rem] p-5">
+              <span className="neon-badge neon-badge-cyan">{item.badge}</span>
+              <h2 className="mt-4 text-2xl font-black uppercase text-white">{item.title}</h2>
+              <p className="mt-3 text-sm leading-6 text-slate-300">{item.copy}</p>
             </article>
           ))}
         </section>
 
-        <section className="mt-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-6">
-          <h2 className="text-2xl font-black text-white">
+        <section className="neon-panel mt-8 rounded-[2rem] p-6">
+          <p className="neon-kicker">Tiebreaker stack</p>
+          <h2 className="mt-4 text-3xl font-black uppercase text-white">
             Tiebreakers explained
           </h2>
           <p className="mt-3 text-sm leading-6 text-slate-300">
             Third-placed teams are ranked by points, goal difference, goals
             scored, team conduct / fair play score if available, and FIFA
             ranking if still tied. Some tiebreakers may update when official
-            data becomes available, so this page avoids fake certainty.
+            data becomes available.
           </p>
           <ol className="mt-5 grid gap-3 text-sm text-slate-200 md:grid-cols-2">
             {[
@@ -171,11 +184,12 @@ export default async function BestThirdPlacedTeamsPage() {
               "Team conduct / fair play score if available",
               "FIFA ranking if still tied and available",
               "Stable team-name fallback only when data is missing",
-            ].map((item) => (
+            ].map((item, index) => (
               <li
                 key={item}
-                className="rounded-2xl border border-white/10 bg-slate-950/40 p-4"
+                className="rounded-2xl border border-white/10 bg-slate-950/45 p-4"
               >
+                <span className="mr-2 text-lime-200">#{index + 1}</span>
                 {item}
               </li>
             ))}
@@ -190,49 +204,39 @@ export default async function BestThirdPlacedTeamsPage() {
         </div>
 
         <section className="mt-8 grid gap-6 lg:grid-cols-2">
-          <article className="rounded-[2rem] border border-emerald-400/15 bg-emerald-400/[0.05] p-6">
-            <h2 className="text-2xl font-black text-white">
-              Who is currently qualifying?
+          <article className="neon-card rounded-[2rem] border-lime-300/20 bg-lime-300/[0.06] p-6">
+            <span className="neon-badge">Top 8</span>
+            <h2 className="mt-4 text-2xl font-black uppercase text-white">
+              Currently above the cut
             </h2>
             <p className="mt-3 text-sm leading-6 text-slate-300">
-              Teams ranked 1–8 in the live third-place table are currently
-              above the cut. This remains provisional until all group matches
-              and official tiebreakers are complete.
+              Teams ranked 1–8 in the live third-place table are currently in
+              the Round of 32 picture.
             </p>
           </article>
 
-          <article className="rounded-[2rem] border border-rose-400/15 bg-rose-400/[0.05] p-6">
-            <h2 className="text-2xl font-black text-white">
-              Who is currently eliminated?
+          <article className="neon-card rounded-[2rem] border-fuchsia-300/20 bg-fuchsia-400/[0.06] p-6">
+            <span className="neon-badge neon-badge-pink">Bottom 4</span>
+            <h2 className="mt-4 text-2xl font-black uppercase text-white">
+              Currently outside the cut
             </h2>
             <p className="mt-3 text-sm leading-6 text-slate-300">
-              Teams ranked 9–12 are currently outside the cut. They may need
-              more points, a goal difference swing, or results elsewhere.
+              Teams ranked 9–12 are below the line and may need points, goal
+              difference swings, or help elsewhere.
             </p>
           </article>
         </section>
 
-        <section className="mt-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-6">
-          <h2 className="text-2xl font-black text-white">
-            What happens after the group stage?
-          </h2>
-          <p className="mt-3 text-sm leading-6 text-slate-300">
-            The eight qualifying third-placed teams are placed into the Round of
-            32 bracket. The exact matchups depend on which groups produce the
-            eight qualifying third-placed teams, so the opponent is not always
-            obvious until the final combination is known.
-          </p>
-        </section>
-
-        <section className="mt-8 rounded-[2rem] border border-white/10 bg-white/[0.045] p-6">
-          <h2 className="text-2xl font-black text-white">FAQ</h2>
+        <section className="neon-panel mt-8 rounded-[2rem] p-6">
+          <p className="neon-kicker">FAQ</p>
+          <h2 className="mt-4 text-3xl font-black uppercase text-white">Format questions</h2>
           <div className="mt-5 grid gap-4">
             {faqs.map((item) => (
               <article
                 key={item.question}
-                className="rounded-2xl border border-white/10 bg-slate-950/40 p-4"
+                className="rounded-2xl border border-cyan-300/15 bg-slate-950/45 p-4"
               >
-                <h3 className="font-black text-white">{item.question}</h3>
+                <h3 className="font-black uppercase text-white">{item.question}</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-300">
                   {item.answer}
                 </p>

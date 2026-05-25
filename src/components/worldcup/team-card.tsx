@@ -1,3 +1,4 @@
+
 import Link from "next/link";
 import type { Standing, Team } from "@/lib/data/worldcup";
 import { teamSlug } from "@/lib/worldcup/format";
@@ -11,43 +12,48 @@ export function TeamCard({ team, standing }: TeamCardProps) {
   return (
     <Link
       href={`/teams/${teamSlug(team.name, team.api_team_id)}`}
-      className="group rounded-3xl border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-slate-950/30 transition hover:-translate-y-1 hover:border-emerald-400/30"
+      className="neon-card group rounded-[2rem] p-5"
     >
       <div className="flex items-center gap-4">
-        {team.logo_url ? (
-          <img
-            src={team.logo_url}
-            alt={`${team.name} logo`}
-            className="h-14 w-14 rounded-full object-contain"
-            loading="lazy"
-          />
-        ) : (
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/10 text-lg font-black text-white">
-            {team.name.slice(0, 2).toUpperCase()}
-          </div>
-        )}
+        <span className="flex h-16 w-16 items-center justify-center rounded-[1.35rem] border border-lime-300/25 bg-white/10 p-2 shadow-[0_0_24px_rgba(163,255,18,0.10)]">
+          {team.logo_url ? (
+            <img
+              src={team.logo_url}
+              alt={`${team.name} logo`}
+              className="h-full w-full rounded-xl object-contain"
+              loading="lazy"
+            />
+          ) : (
+            <span className="text-lg font-black text-white">
+              {team.name.slice(0, 2).toUpperCase()}
+            </span>
+          )}
+        </span>
 
         <div className="min-w-0">
-          <h2 className="truncate text-lg font-black text-white group-hover:text-emerald-200">
+          <p className="neon-badge neon-badge-cyan">
+            {standing?.group_name ?? "Group TBC"}
+          </p>
+          <h2 className="mt-2 truncate text-xl font-black uppercase tracking-tight text-white group-hover:text-lime-200">
             {team.name}
           </h2>
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm font-semibold text-slate-400">
             {team.code ?? team.country ?? "Code TBC"}
           </p>
         </div>
       </div>
 
-      <div className="mt-5 flex flex-wrap gap-2">
-        <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-slate-300">
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        <span className="rounded-2xl border border-white/10 bg-slate-950/45 px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-slate-300">
           {team.country ?? "Country TBC"}
         </span>
         {standing ? (
-          <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-200">
-            {standing.group_name} · Rank {standing.rank ?? "-"}
+          <span className="rounded-2xl border border-lime-300/25 bg-lime-300/10 px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-lime-100">
+            Rank {standing.rank ?? "-"}
           </span>
         ) : (
-          <span className="rounded-full bg-slate-400/10 px-3 py-1 text-xs font-semibold text-slate-300">
-            Group TBC
+          <span className="rounded-2xl border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-fuchsia-100">
+            Signal TBC
           </span>
         )}
       </div>

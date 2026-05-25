@@ -1,3 +1,4 @@
+
 import { getFixtureDisplayStatus } from "@/lib/worldcup/format";
 
 type FixtureStatusBadgeProps = {
@@ -6,10 +7,10 @@ type FixtureStatusBadgeProps = {
 };
 
 const styles = {
-  upcoming: "border-sky-400/30 bg-sky-400/10 text-sky-200",
-  live: "border-rose-400/40 bg-rose-400/15 text-rose-200",
-  finished: "border-emerald-400/30 bg-emerald-400/10 text-emerald-200",
-  postponed: "border-amber-400/30 bg-amber-400/10 text-amber-200",
+  upcoming: "border-cyan-300/35 bg-cyan-300/10 text-cyan-100 shadow-[0_0_18px_rgba(34,211,238,0.13)]",
+  live: "border-fuchsia-300/45 bg-fuchsia-400/15 text-fuchsia-100 shadow-[0_0_20px_rgba(255,43,214,0.20)]",
+  finished: "border-lime-300/35 bg-lime-300/10 text-lime-100 shadow-[0_0_18px_rgba(163,255,18,0.13)]",
+  postponed: "border-amber-300/35 bg-amber-300/10 text-amber-100",
   cancelled: "border-slate-400/30 bg-slate-400/10 text-slate-200",
   unknown: "border-white/10 bg-white/10 text-slate-200",
 };
@@ -18,9 +19,9 @@ const labels = {
   upcoming: "Upcoming",
   live: "Live",
   finished: "Finished",
-  postponed: "Postponed",
+  postponed: "Changed",
   cancelled: "Cancelled",
-  unknown: "Status TBC",
+  unknown: "Signal TBC",
 };
 
 export function FixtureStatusBadge({
@@ -32,8 +33,9 @@ export function FixtureStatusBadge({
   return (
     <span
       title={statusLong ?? statusShort ?? undefined}
-      className={`inline-flex rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] ${styles[displayStatus]}`}
+      className={`inline-flex rounded-full border px-3 py-1 text-xs font-black uppercase tracking-[0.18em] ${styles[displayStatus]}`}
     >
+      {displayStatus === "live" ? "● " : ""}
       {labels[displayStatus]}
     </span>
   );
