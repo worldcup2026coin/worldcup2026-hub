@@ -3,7 +3,6 @@ import type { MetadataRoute } from "next";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { absoluteUrl } from "@/lib/seo";
 import { fixtureSlug, teamSlug } from "@/lib/worldcup/format";
-import { playerSlug } from "@/lib/data/players";
 import {
   blogCategories,
   getBlogCategorySlug,
@@ -33,11 +32,6 @@ type PredictionTipRow = {
   fixture_id: string;
 };
 
-type SitemapPlayer = {
-  api_player_id: number;
-  name: string | null;
-};
-
 function asTeams(data: unknown): SitemapTeam[] {
   return (data ?? []) as SitemapTeam[];
 }
@@ -52,10 +46,6 @@ function asBlogPosts(data: unknown): SitemapBlogPost[] {
 
 function asPredictionTipRows(data: unknown): PredictionTipRow[] {
   return (data ?? []) as PredictionTipRow[];
-}
-
-function asPlayers(data: unknown): SitemapPlayer[] {
-  return (data ?? []) as SitemapPlayer[];
 }
 
 function page(
@@ -85,29 +75,20 @@ export async function getDynamicSitemap(): Promise<MetadataRoute.Sitemap> {
     page("/news", "daily", 0.85),
     page("/stadiums", "weekly", 0.75),
     page("/community", "daily", 0.8),
-    page("/top-scorers", "hourly", 0.82),
-    page("/top-assists", "hourly", 0.82),
-    page("/top-cards", "hourly", 0.82),
     page("/privacy", "yearly", 0.2),
     page("/terms", "yearly", 0.2),
   ];
 
-  const [
-    teamsResult,
-    fixturesResult,
-    blogResult,
-    predictionTipsResult,
-    playersResult,
-  ] = await Promise.all([
-    supabase.from("teams").select("id, api_team_id, name, logo_url, updated_at"),
-    supabase.from("fixtures").select("*"),
-    supabase
-      .from("blog_posts")
-      .select("slug, updated_at, published_at")
-      .eq("status", "published"),
-    supabase.from("predictions_tips").select("fixture_id").eq("status", "published"),
-    supabase.from("players").select("api_player_id, name").order("name", { ascending: true }),
-  ]);
+  const [teamsResult, fixturesResult, blogResult, predictionTipsResult] =
+    await Promise.all([
+      supabase.from("teams").select("id, api_team_id, name, logo_url, updated_at"),
+      supabase.from("fixtures").select("*"),
+      supabase
+        .from("blog_posts")
+        .select("slug, updated_at, published_at")
+        .eq("status", "published"),
+      supabase.from("predictions_tips").select("fixture_id").eq("status", "published"),
+    ]);
 
   const teams = teamsResult.error ? [] : asTeams(teamsResult.data);
   const fixtures = fixturesResult.error ? [] : asFixtures(fixturesResult.data);
@@ -115,7 +96,6 @@ export async function getDynamicSitemap(): Promise<MetadataRoute.Sitemap> {
   const predictionTipRows = predictionTipsResult.error
     ? []
     : asPredictionTipRows(predictionTipsResult.data);
-  const players = playersResult.error ? [] : asPlayers(playersResult.data);
 
   const fixtureMap = new Map(fixtures.map((fixture) => [fixture.id, fixture]));
   const predictionFixtureIds = Array.from(
@@ -124,10 +104,6 @@ export async function getDynamicSitemap(): Promise<MetadataRoute.Sitemap> {
 
   const teamPages = teams.map((team) =>
     page(`/teams/${teamSlug(team.name, team.api_team_id)}`, "weekly", 0.75, team.updated_at)
-  );
-
-  const playerPages = players.map((player) =>
-    page(`/players/${playerSlug(player.name, player.api_player_id)}`, "weekly", 0.65)
   );
 
   const matchPages = fixtures.map((fixture) =>
@@ -172,7 +148,6 @@ export async function getDynamicSitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticPages,
     ...teamPages,
-    ...playerPages,
     ...matchPages,
     ...predictionPages,
     ...newsPages,

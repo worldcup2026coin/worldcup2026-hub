@@ -1,11 +1,20 @@
 $ErrorActionPreference = "Stop"
 
-$apiRoutes = Get-ChildItem ".\app\api" -Recurse -File -Filter "route.*" -ErrorAction SilentlyContinue
+$possibleRoots = @(
+  ".\src\app\api",
+  ".\app\api"
+)
 
-if (-not $apiRoutes) {
-  Write-Host "No app/api route files found." -ForegroundColor Yellow
-  exit 0
+$apiRoot = $possibleRoots | Where-Object { Test-Path $_ } | Select-Object -First 1
+
+if (-not $apiRoot) {
+  Write-Host "No app/api route folder found." -ForegroundColor Red
+  exit 1
 }
+
+Write-Host "Scanning API routes under $apiRoot" -ForegroundColor Cyan
+
+$apiRoutes = Get-ChildItem $apiRoot -Recurse -File -Filter "route.*" -ErrorAction SilentlyContinue
 
 $patterns = @(
   "CRON_SECRET",
@@ -38,5 +47,4 @@ $hits | Export-Csv -NoTypeInformation -Path $csvPath
 $hits | Format-Table -AutoSize
 
 Write-Host ""
-Write-Host "Saved API route inventory to $csvPath"
-Write-Host "Use this to identify which routes must reject invalid secrets and which routes should not be hit repeatedly." -ForegroundColor Yellow
+Write-Host "Saved API route inventory to $csvPath" -ForegroundColor Green
