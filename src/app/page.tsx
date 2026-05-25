@@ -1,11 +1,13 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CountdownTimer } from "@/components/worldcup/countdown-timer";
 import { EmailSignupForm } from "@/components/community/email-signup-form";
 import { PollCard } from "@/components/community/poll-card";
 import { Container } from "@/components/ui/container";
 import { fixtureSlug, teamSlug } from "@/lib/worldcup/format";
 import { createPageMetadata } from "@/lib/seo";
+import { getOpeningFixtureCountdownTarget } from "@/lib/data/countdown";
 import {
   getHomepagePolishData,
   type HomeFixture,
@@ -145,6 +147,7 @@ function StatTile({
 
 export default async function HomePage() {
   const data = await getHomepagePolishData();
+  const countdownTarget = await getOpeningFixtureCountdownTarget();
   const featuredMatch = data.featuredMatch;
 
   return (
@@ -454,3 +457,4 @@ export default async function HomePage() {
     </div>
   );
 }
+
