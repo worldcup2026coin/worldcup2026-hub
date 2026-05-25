@@ -1,22 +1,32 @@
 import "server-only";
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { getRequiredServerEnv } from "@/lib/env";
 
-export function createSupabaseAdminClient(): SupabaseClient {
-  const supabaseUrl = getRequiredServerEnv("NEXT_PUBLIC_SUPABASE_URL");
-  const supabaseSecretKey =
-    process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+import { createClient } from "@supabase/supabase-js";
 
-  if (!supabaseSecretKey || supabaseSecretKey.trim().length === 0) {
-    throw new Error(
-      "Missing SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY server environment variable."
-    );
+function getSupabaseUrl() {
+  const value = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+  if (!value) {
+    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL");
   }
 
-  return createClient(supabaseUrl, supabaseSecretKey, {
+  return value;
+}
+
+function getSupabaseServiceRoleKey() {
+  const value = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!value) {
+    throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY");
+  }
+
+  return value;
+}
+
+export function createSupabaseAdminClient() {
+  return createClient(getSupabaseUrl(), getSupabaseServiceRoleKey(), {
     auth: {
-      autoRefreshToken: false,
       persistSession: false,
+      autoRefreshToken: false,
     },
   });
 }

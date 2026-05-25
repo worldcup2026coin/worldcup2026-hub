@@ -106,3 +106,28 @@ export async function apiFootballGetAllPages<T>(
     firstEnvelope,
   };
 }
+
+export type ApiFootballResponse<T> = {
+  get: string;
+  parameters: Record<string, string>;
+  errors: unknown[] | Record<string, unknown>;
+  results: number;
+  paging?: {
+    current: number;
+    total: number;
+  };
+  response: T;
+};
+
+export type ApiFootballRequestResult<T> = {
+  data: ApiFootballResponse<T>;
+  apiRequestsUsed: number;
+};
+
+export function getWorldCupLeagueId() {
+  return Number(process.env.API_FOOTBALL_LEAGUE_ID || "1");
+}
+
+export function getWorldCupSeason() {
+  return Number(process.env.API_FOOTBALL_SEASON || "2026");
+}
