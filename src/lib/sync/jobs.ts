@@ -1,3 +1,4 @@
+import { runApiFootballSquadsChunkSync } from "./api-football-squads";
 import { runApiFootballFullIngestSync } from "./api-football-full-ingest";
 import { runApiFootballStandingsSync } from "./api-football-standings";
 import { runApiFootballTeamsSync } from "./api-football-teams";
@@ -59,4 +60,35 @@ export async function runMissingDataBackfillJob() {
 }
 export async function runFullSyncJob() {
   return runApiFootballFullIngestSync();
+}
+export async function runTeamSquadsSync1Job() {
+  return runApiFootballSquadsChunkSync({
+    offset: 0,
+    limit: 12,
+    jobName: "team-squads-sync-1",
+  });
+}
+
+export async function runTeamSquadsSync2Job() {
+  return runApiFootballSquadsChunkSync({
+    offset: 12,
+    limit: 12,
+    jobName: "team-squads-sync-2",
+  });
+}
+
+export async function runTeamSquadsSync3Job() {
+  return runApiFootballSquadsChunkSync({
+    offset: 24,
+    limit: 12,
+    jobName: "team-squads-sync-3",
+  });
+}
+
+export async function runTeamSquadsSync4Job() {
+  return runApiFootballSquadsChunkSync({
+    offset: 36,
+    limit: 12,
+    jobName: "team-squads-sync-4",
+  });
 }

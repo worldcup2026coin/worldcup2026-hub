@@ -20,7 +20,11 @@ export type SyncJobName =
   | "enrichment-sync"
   | "finalization-sync"
   | "missing-data-backfill"
-  | "full-sync";
+  | "full-sync"
+  | "team-squads-sync-1"
+  | "team-squads-sync-2"
+  | "team-squads-sync-3"
+  | "team-squads-sync-4";
 
 export type SyncJobStatus = "started" | "success" | "partial" | "failed";
 
@@ -38,6 +42,7 @@ export type SyncJobSummary = {
   message: string;
   details?: Record<string, unknown>;
 };
+
 
 
 

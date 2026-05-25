@@ -324,3 +324,25 @@ export async function fetchWorldCupTopRedCards() {
     season: getWorldCupSeason(),
   });
 }
+
+export type ApiFootballSquadItem = {
+  team: {
+    id: number;
+    name: string;
+    logo: string | null;
+  };
+  players: Array<{
+    id: number;
+    name: string;
+    age: number | null;
+    number: number | null;
+    position: string | null;
+    photo: string | null;
+  }>;
+};
+
+export async function fetchSquadByTeam(teamId: number) {
+  return apiFootballGet<ApiFootballSquadItem[]>("/players/squads", {
+    team: teamId,
+  });
+}
