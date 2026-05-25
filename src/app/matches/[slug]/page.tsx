@@ -8,6 +8,9 @@ import { MatchLineups } from "@/components/matches/match-lineups";
 import { MatchPollPlaceholder } from "@/components/matches/match-poll-placeholder";
 import { PollCard } from "@/components/community/poll-card";
 import { MatchPreviewBlock } from "@/components/matches/match-preview-block";
+import { ApiFootballPredictionCard } from "@/components/matches/api-football-prediction-card";
+import { MatchHeadToHeadCard } from "@/components/matches/match-head-to-head-card";
+import { MatchOddsSnapshot } from "@/components/matches/match-odds-snapshot";
 import { MatchShareButtons } from "@/components/matches/match-share-buttons";
 import { MatchStats } from "@/components/matches/match-stats";
 import { EmailSignupForm } from "@/components/community/email-signup-form";
@@ -92,7 +95,16 @@ export default async function MatchPage({ params }: MatchPageProps) {
     permanentRedirect(`/matches/${data.canonicalSlug}`);
   }
 
-  const { fixture, canonicalSlug, events, stats, lineups } = data;
+  const {
+    fixture,
+    canonicalSlug,
+    events,
+    stats,
+    lineups,
+    apiPrediction,
+    apiOdds,
+    headToHead,
+  } = data;
 
   const [predictionContent, fixturePolls] = await Promise.all([
     getPredictionContentForFixture(fixture.id),
@@ -144,6 +156,9 @@ export default async function MatchPage({ params }: MatchPageProps) {
         <div className="mt-8 grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
           <div className="grid gap-6">
             <MatchPreviewBlock fixture={fixture} />
+            <ApiFootballPredictionCard prediction={apiPrediction} />
+            <MatchOddsSnapshot odds={apiOdds} />
+            <MatchHeadToHeadCard headToHead={headToHead} />
             <MatchEventsTimeline events={events} />
             <MatchStats fixture={fixture} stats={stats} />
             <MatchLineups lineups={lineups} />
@@ -188,6 +203,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
     </div>
   );
 }
+
 
 
 

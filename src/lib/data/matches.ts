@@ -57,6 +57,48 @@ export type MatchLineup = {
   updated_at: string;
 };
 
+export type MatchPrediction = {
+  id: string;
+  api_fixture_id: number;
+  winner_name: string | null;
+  winner_comment: string | null;
+  advice: string | null;
+  percent_home: string | null;
+  percent_draw: string | null;
+  percent_away: string | null;
+  raw: unknown;
+  api_raw_json: unknown;
+  last_synced_at: string | null;
+  updated_at: string;
+};
+
+export type MatchOddsRecord = {
+  id: string;
+  api_fixture_id: number;
+  bookmaker_id: number | null;
+  bookmaker_name: string | null;
+  bet_id: number | null;
+  bet_name: string | null;
+  values: unknown;
+  raw: unknown;
+  api_raw_json: unknown;
+  last_synced_at: string | null;
+  updated_at: string;
+};
+
+export type MatchHeadToHead = {
+  id: string;
+  api_fixture_id: number;
+  home_team_api_id: number;
+  away_team_api_id: number;
+  h2h_key: string;
+  matches: unknown;
+  raw: unknown;
+  api_raw_json: unknown;
+  last_synced_at: string | null;
+  updated_at: string;
+};
+
 function asFixture(data: unknown): Fixture | null {
   return (data ?? null) as Fixture | null;
 }
@@ -71,6 +113,18 @@ function asMatchStatistics(data: unknown): MatchStatistic[] {
 
 function asMatchLineups(data: unknown): MatchLineup[] {
   return (data ?? []) as MatchLineup[];
+}
+
+function asMatchPrediction(data: unknown): MatchPrediction | null {
+  return (data ?? null) as MatchPrediction | null;
+}
+
+function asMatchOddsRecords(data: unknown): MatchOddsRecord[] {
+  return (data ?? []) as MatchOddsRecord[];
+}
+
+function asMatchHeadToHead(data: unknown): MatchHeadToHead | null {
+  return (data ?? null) as MatchHeadToHead | null;
 }
 
 function isMissingOptionalTableError(error: { code?: string; message?: string }) {
@@ -197,6 +251,59 @@ export async function getMatchLineups(apiFixtureId: number) {
   return asMatchLineups(data);
 }
 
+export async function getFixturePrediction(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("fixture_predictions")
+    .select("*")
+    .eq("api_fixture_id", apiFixtureId)
+    .maybeSingle();
+
+  if (error) {
+    if (isMissingOptionalTableError(error)) return null;
+    throw new Error(`Failed to load fixture prediction: ${error.message}`);
+  }
+
+  return asMatchPrediction(data);
+}
+
+export async function getFixtureOdds(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("odds_records")
+    .select("*")
+    .eq("api_fixture_id", apiFixtureId)
+    .order("bookmaker_name", { ascending: true })
+    .order("bet_name", { ascending: true })
+    .limit(24);
+
+  if (error) {
+    if (isMissingOptionalTableError(error)) return [];
+    throw new Error(`Failed to load fixture odds: ${error.message}`);
+  }
+
+  return asMatchOddsRecords(data);
+}
+
+export async function getFixtureHeadToHead(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("fixture_head_to_head")
+    .select("*")
+    .eq("api_fixture_id", apiFixtureId)
+    .maybeSingle();
+
+  if (error) {
+    if (isMissingOptionalTableError(error)) return null;
+    throw new Error(`Failed to load fixture head-to-head: ${error.message}`);
+  }
+
+  return asMatchHeadToHead(data);
+}
+
 export async function getMatchPageData(slug: string) {
   const match = await getMatchBySlug(slug);
 
@@ -204,16 +311,24 @@ export async function getMatchPageData(slug: string) {
     return null;
   }
 
-  const [events, stats, lineups] = await Promise.all([
-    getMatchEvents(match.fixture.api_fixture_id),
-    getMatchStats(match.fixture.api_fixture_id),
-    getMatchLineups(match.fixture.api_fixture_id),
-  ]);
+  const [events, stats, lineups, apiPrediction, apiOdds, headToHead] =
+    await Promise.all([
+      getMatchEvents(match.fixture.api_fixture_id),
+      getMatchStats(match.fixture.api_fixture_id),
+      getMatchLineups(match.fixture.api_fixture_id),
+      getFixturePrediction(match.fixture.api_fixture_id),
+      getFixtureOdds(match.fixture.api_fixture_id),
+      getFixtureHeadToHead(match.fixture.api_fixture_id),
+    ]);
 
   return {
     ...match,
     events,
     stats,
     lineups,
+    apiPrediction,
+    apiOdds,
+    headToHead,
   };
 }
+
