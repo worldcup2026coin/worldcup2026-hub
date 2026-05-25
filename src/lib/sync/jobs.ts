@@ -1,3 +1,4 @@
+import { runApiFootballMatchdayDataChunkSync } from "./api-football-matchday-data";
 import { runApiFootballMatchContextChunkSync } from "./api-football-match-context";
 import { runApiFootballSquadsChunkSync } from "./api-football-squads";
 import { runApiFootballFullIngestSync } from "./api-football-full-ingest";
@@ -139,4 +140,27 @@ export async function runMatchContextSync6Job() {
     limit: 12,
     jobName: "match-context-sync-6",
   });
+}
+export async function runMatchdayDataSync1Job() {
+  return runApiFootballMatchdayDataChunkSync({ offset: 0, limit: 12, jobName: "matchday-data-sync-1" });
+}
+
+export async function runMatchdayDataSync2Job() {
+  return runApiFootballMatchdayDataChunkSync({ offset: 12, limit: 12, jobName: "matchday-data-sync-2" });
+}
+
+export async function runMatchdayDataSync3Job() {
+  return runApiFootballMatchdayDataChunkSync({ offset: 24, limit: 12, jobName: "matchday-data-sync-3" });
+}
+
+export async function runMatchdayDataSync4Job() {
+  return runApiFootballMatchdayDataChunkSync({ offset: 36, limit: 12, jobName: "matchday-data-sync-4" });
+}
+
+export async function runMatchdayDataSync5Job() {
+  return runApiFootballMatchdayDataChunkSync({ offset: 48, limit: 12, jobName: "matchday-data-sync-5" });
+}
+
+export async function runMatchdayDataSync6Job() {
+  return runApiFootballMatchdayDataChunkSync({ offset: 60, limit: 12, jobName: "matchday-data-sync-6" });
 }
