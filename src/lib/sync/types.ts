@@ -24,7 +24,13 @@ export type SyncJobName =
   | "team-squads-sync-1"
   | "team-squads-sync-2"
   | "team-squads-sync-3"
-  | "team-squads-sync-4";
+  | "team-squads-sync-4"
+  | "match-context-sync-1"
+  | "match-context-sync-2"
+  | "match-context-sync-3"
+  | "match-context-sync-4"
+  | "match-context-sync-5"
+  | "match-context-sync-6";
 
 export type SyncJobStatus = "started" | "success" | "partial" | "failed";
 
@@ -42,6 +48,7 @@ export type SyncJobSummary = {
   message: string;
   details?: Record<string, unknown>;
 };
+
 
 
 

@@ -1,3 +1,4 @@
+import { runApiFootballMatchContextChunkSync } from "./api-football-match-context";
 import { runApiFootballSquadsChunkSync } from "./api-football-squads";
 import { runApiFootballFullIngestSync } from "./api-football-full-ingest";
 import { runApiFootballStandingsSync } from "./api-football-standings";
@@ -90,5 +91,52 @@ export async function runTeamSquadsSync4Job() {
     offset: 36,
     limit: 12,
     jobName: "team-squads-sync-4",
+  });
+}
+export async function runMatchContextSync1Job() {
+  return runApiFootballMatchContextChunkSync({
+    offset: 0,
+    limit: 12,
+    jobName: "match-context-sync-1",
+  });
+}
+
+export async function runMatchContextSync2Job() {
+  return runApiFootballMatchContextChunkSync({
+    offset: 12,
+    limit: 12,
+    jobName: "match-context-sync-2",
+  });
+}
+
+export async function runMatchContextSync3Job() {
+  return runApiFootballMatchContextChunkSync({
+    offset: 24,
+    limit: 12,
+    jobName: "match-context-sync-3",
+  });
+}
+
+export async function runMatchContextSync4Job() {
+  return runApiFootballMatchContextChunkSync({
+    offset: 36,
+    limit: 12,
+    jobName: "match-context-sync-4",
+  });
+}
+
+export async function runMatchContextSync5Job() {
+  return runApiFootballMatchContextChunkSync({
+    offset: 48,
+    limit: 12,
+    jobName: "match-context-sync-5",
+  });
+}
+
+export async function runMatchContextSync6Job() {
+  return runApiFootballMatchContextChunkSync({
+    offset: 60,
+    limit: 12,
+    jobName: "match-context-sync-6",
   });
 }
