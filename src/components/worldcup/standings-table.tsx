@@ -109,3 +109,4 @@ export function StandingsTable({ groupName, rows }: StandingsTableProps) {
     </section>
   );
 }
+

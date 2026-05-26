@@ -197,7 +197,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
           id="overview"
           className="scroll-mt-24 grid min-w-0 gap-6 lg:grid-cols-[0.9fr_1.1fr]"
         >
-          <aside className="rounded-3xl border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/30">
+          <aside className="w-full max-w-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/30">
             <div className="flex min-w-0 items-center gap-4">
               {team.logo_url ? (
                 <Image
@@ -291,7 +291,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
           </aside>
 
           <div className="grid min-w-0 gap-6">
-            <section className="rounded-3xl border border-lime-300/20 bg-lime-300/[0.08] p-6 shadow-2xl shadow-slate-950/30">
+            <section className="w-full max-w-full overflow-hidden rounded-3xl border border-lime-300/20 bg-lime-300/[0.08] p-6 shadow-2xl shadow-slate-950/30">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-lime-200">
                 Next match
               </p>
@@ -347,7 +347,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
 
             <section
               id="group"
-              className="scroll-mt-24 rounded-3xl border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/30"
+              className="scroll-mt-24 w-full max-w-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/30"
             >
               {standing && groupStandings.length > 0 ? (
                 <StandingsTable
@@ -364,7 +364,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
 
             <section
               id="coach"
-              className="scroll-mt-24 rounded-3xl border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/30"
+              className="scroll-mt-24 w-full max-w-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/30"
             >
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-emerald-300">
                 Coach
@@ -391,7 +391,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
         </section>
 
         <section className="mt-10 scroll-mt-24" id="squad">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-emerald-300">
                 Key players
@@ -418,7 +418,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
                     player.player_name,
                     player.api_player_id
                   )}`}
-                  className="rounded-3xl border border-white/10 bg-white/[0.055] p-5 transition hover:border-lime-300/35 hover:bg-lime-300/10"
+                  className="w-full max-w-full overflow-hidden rounded-3xl border border-white/10 bg-white/[0.055] p-5 transition hover:border-lime-300/35 hover:bg-lime-300/10"
                 >
                   <span className="neon-badge neon-badge-cyan">
                     {getPlayerLabel(player)}
@@ -436,7 +436,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
           )}
 
           <div className="mt-8 rounded-3xl border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/30">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-emerald-300">
                   Squad
@@ -588,6 +588,9 @@ export default async function TeamPage({ params }: TeamPageProps) {
     </>
   );
 }
+
+
+
 
 
 

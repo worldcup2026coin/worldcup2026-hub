@@ -66,7 +66,7 @@ export function MatchCountdown({
       <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-100">
         {label}
       </p>
-      <div className="mt-3 grid grid-cols-3 gap-2">
+      <div data-countdown-grid className="mt-4 grid grid-cols-3 gap-2 max-[430px]:gap-1 max-[430px]:gap-1">
         {[
           ["Days", timeLeft.days],
           ["Hours", timeLeft.hours],
@@ -74,7 +74,7 @@ export function MatchCountdown({
         ].map(([unit, value]) => (
           <div
             key={unit}
-            className="rounded-xl border border-white/10 bg-slate-950/45 p-3 text-center"
+            data-countdown-unit className="min-w-0 rounded-xl border border-white/10 bg-slate-950/45 p-3 text-center max-[430px]:p-2"
           >
             <p className="text-2xl font-black text-white">{value}</p>
             <p className="mt-1 text-[0.62rem] font-black uppercase tracking-[0.16em] text-slate-400">
@@ -86,3 +86,4 @@ export function MatchCountdown({
     </div>
   );
 }
+

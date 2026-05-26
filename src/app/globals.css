@@ -564,3 +564,373 @@ body:has([data-team-page]) main {
     white-space: nowrap;
   }
 }
+
+/* Launch mobile layout QA fixes */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  width: 100%;
+}
+
+/* Homepage countdown must stack cleanly on mobile */
+[data-home-page] [data-home-countdown],
+[data-match-countdown] {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+[data-home-page] [data-home-countdown-intro] {
+  margin-bottom: 1.5rem;
+  line-height: 1.65;
+}
+
+@media (max-width: 430px) {
+  [data-home-page] [data-home-countdown-intro] {
+    margin-bottom: 1.75rem;
+  }
+
+  [data-match-countdown] {
+    padding: 1rem;
+  }
+
+  [data-match-countdown] [data-countdown-grid] {
+    gap: 0.25rem;
+  }
+
+  [data-match-countdown] [data-countdown-unit] {
+    min-width: 0;
+    padding-left: 0.35rem;
+    padding-right: 0.35rem;
+  }
+}
+
+/* Team detail pages: fix internal mobile overflow instead of only clipping page overflow */
+[data-team-page] {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+[data-team-page] *,
+[data-team-page] *::before,
+[data-team-page] *::after {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+[data-team-page] section,
+[data-team-page] article,
+[data-team-page] aside,
+[data-team-page] div {
+  max-width: 100%;
+}
+
+[data-team-page] img,
+[data-team-page] svg {
+  max-width: 100%;
+}
+
+[data-team-page] h1,
+[data-team-page] h2,
+[data-team-page] h3,
+[data-team-page] p,
+[data-team-page] a,
+[data-team-page] span {
+  overflow-wrap: anywhere;
+}
+
+[data-team-page] table {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  [data-team-page] {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  [data-team-page] section,
+  [data-team-page] article,
+  [data-team-page] aside {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  [data-team-page] .neon-card {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  [data-team-page] table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  [data-team-page] [data-team-mobile-scroll] {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Final mobile launch layout fixes: real containment, not just masking */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Homepage countdown: prevent intro/timer collision on 360-430px */
+[data-home-page] {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+[data-home-countdown-title] {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+[data-home-countdown-intro] {
+  display: block;
+  margin-bottom: 1.75rem !important;
+  line-height: 1.65 !important;
+  max-width: 100%;
+}
+
+[data-home-countdown-title] ~ p {
+  margin-bottom: 1.75rem !important;
+}
+
+[data-home-countdown-title] ~ div {
+  max-width: 100%;
+}
+
+[data-home-countdown-title] ~ div.grid,
+[data-home-page] .grid.grid-cols-4 {
+  max-width: 100%;
+  min-width: 0;
+  gap: 0.5rem;
+}
+
+[data-home-page] .grid.grid-cols-4 > * {
+  min-width: 0;
+}
+
+@media (max-width: 430px) {
+  [data-home-countdown-intro],
+  [data-home-countdown-title] ~ p {
+    margin-bottom: 2rem !important;
+    font-size: 1rem;
+    line-height: 1.7 !important;
+  }
+
+  [data-home-page] .grid.grid-cols-4 {
+    gap: 0.25rem !important;
+  }
+
+  [data-home-page] .grid.grid-cols-4 > * {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+
+  [data-home-page] .grid.grid-cols-4 [class*="text-6xl"],
+  [data-home-page] .grid.grid-cols-4 [class*="text-7xl"],
+  [data-home-page] .grid.grid-cols-4 [class*="text-8xl"] {
+    font-size: clamp(2.15rem, 11vw, 3rem) !important;
+    line-height: 1 !important;
+    letter-spacing: -0.04em;
+  }
+}
+
+@media (max-width: 380px) {
+  [data-home-page] .grid.grid-cols-4 [class*="text-5xl"],
+  [data-home-page] .grid.grid-cols-4 [class*="text-6xl"],
+  [data-home-page] .grid.grid-cols-4 [class*="text-7xl"],
+  [data-home-page] .grid.grid-cols-4 [class*="text-8xl"] {
+    font-size: clamp(1.95rem, 10vw, 2.65rem) !important;
+  }
+}
+
+/* Team pages: actual mobile containment */
+[data-team-page] {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+[data-team-page] *,
+[data-team-page] *::before,
+[data-team-page] *::after {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+[data-team-page] section,
+[data-team-page] article,
+[data-team-page] aside,
+[data-team-page] .neon-card {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+[data-team-page] img,
+[data-team-page] svg {
+  max-width: 100%;
+}
+
+[data-team-page] h1,
+[data-team-page] h2,
+[data-team-page] h3,
+[data-team-page] p,
+[data-team-page] a,
+[data-team-page] span {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  [data-team-page] {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  [data-team-page] section,
+  [data-team-page] article,
+  [data-team-page] aside,
+  [data-team-page] .neon-card {
+    width: 100% !important;
+    max-width: calc(100vw - 2rem) !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  [data-team-page] [class*="grid-cols-["] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  [data-team-page] .grid {
+    min-width: 0;
+  }
+
+  [data-team-page] .flex {
+    min-width: 0;
+  }
+
+  [data-team-page] h1,
+  [data-team-page] h2 {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  [data-team-page] h1 {
+    font-size: clamp(2.25rem, 12vw, 4rem);
+    line-height: 0.95;
+  }
+
+  [data-team-page] h2 {
+    font-size: clamp(1.75rem, 9vw, 3rem);
+    line-height: 1.05;
+  }
+
+  [data-team-page] table {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  [data-team-page] [data-team-scroll],
+  [data-team-page] [data-team-mobile-scroll],
+  [data-team-page] .overflow-x-auto {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  [data-team-page] nav,
+  [data-team-page] [role="navigation"] {
+    max-width: calc(100vw - 2rem);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  [data-team-page] a {
+    max-width: 100%;
+  }
+}
+
+/* Mobile countdowns inside team/match cards */
+@media (max-width: 430px) {
+  [data-team-page] .grid.grid-cols-3,
+  [data-team-page] .grid.grid-cols-4 {
+    gap: 0.25rem !important;
+  }
+
+  [data-team-page] .grid.grid-cols-3 > *,
+  [data-team-page] .grid.grid-cols-4 > * {
+    min-width: 0;
+    padding-left: 0.35rem !important;
+    padding-right: 0.35rem !important;
+  }
+}
+
+/* Final homepage countdown mobile fix: 2x2 timer grid on narrow screens */
+@media (max-width: 430px) {
+  [data-home-page] .grid.grid-cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.75rem !important;
+  }
+
+  [data-home-page] .grid.grid-cols-4 > * {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  [data-home-page] .grid.grid-cols-4 [class*="text-5xl"],
+  [data-home-page] .grid.grid-cols-4 [class*="text-6xl"],
+  [data-home-page] .grid.grid-cols-4 [class*="text-7xl"],
+  [data-home-page] .grid.grid-cols-4 [class*="text-8xl"] {
+    font-size: clamp(2.4rem, 13vw, 3.4rem) !important;
+    line-height: 1 !important;
+    letter-spacing: -0.04em;
+  }
+}
+
+@media (max-width: 380px) {
+  [data-home-page] .grid.grid-cols-4 {
+    gap: 0.6rem !important;
+  }
+
+  [data-home-page] .grid.grid-cols-4 [class*="text-5xl"],
+  [data-home-page] .grid.grid-cols-4 [class*="text-6xl"],
+  [data-home-page] .grid.grid-cols-4 [class*="text-7xl"],
+  [data-home-page] .grid.grid-cols-4 [class*="text-8xl"] {
+    font-size: clamp(2.1rem, 12vw, 3rem) !important;
+  }
+}
