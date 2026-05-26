@@ -1,13 +1,11 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CountdownTimer } from "@/components/worldcup/countdown-timer";
 import { EmailSignupForm } from "@/components/community/email-signup-form";
 import { PollCard } from "@/components/community/poll-card";
 import { Container } from "@/components/ui/container";
 import { fixtureSlug, teamSlug } from "@/lib/worldcup/format";
 import { createPageMetadata } from "@/lib/seo";
-import { getOpeningFixtureCountdownTarget } from "@/lib/data/countdown";
 import {
   getHomepagePolishData,
   type HomeFixture,
@@ -147,7 +145,6 @@ function StatTile({
 
 export default async function HomePage() {
   const data = await getHomepagePolishData();
-  const countdownTarget = await getOpeningFixtureCountdownTarget();
   const featuredMatch = data.featuredMatch;
 
   return (
@@ -168,17 +165,9 @@ export default async function HomePage() {
                   FOOTBALL. CULTURE. CHAOS.
                 </h1>
                 <p className="mt-6 max-w-2xl text-lg font-semibold leading-8 text-slate-200">
-                  The complete World Cup 2026 launch hub with live fixtures, standings, teams, players, stadiums, predictions and global fan energy across USA, Mexico and Canada.
-                </p>                  <div className="mt-7">
-                    <CountdownTimer
-                      targetDate={countdownTarget}
-                      label="Countdown to Kick-Off"
-                      matchLabel="Mexico vs South Africa · 11 June 2026"
-                      badge="Road to 2026"
-                    />
-                  </div>
-
-
+                  Fixtures. Live scores. Teams. Players. Stats. Predictions. Fan energy.
+                  A cyber football dashboard for the tournament pulse.
+                </p>
 
                 <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                   <Link href="/fixtures" className="glow-button-primary">
@@ -191,7 +180,6 @@ export default async function HomePage() {
                     Explore teams
                   </Link>
                 </div>
-
 
                 <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-5">
                   <StatTile label="Live data" value="ON" tone="lime" />
@@ -214,8 +202,8 @@ export default async function HomePage() {
               <div className="grid gap-4">
                 <div className="neon-card rounded-[2rem] p-5">
                   <div className="flex items-center justify-between gap-3">
-                    <p className="neon-kicker">Opening match · Estadio Azteca</p>
-                    <span className="neon-badge neon-badge-cyan">11 June 2026</span>
+                    <p className="neon-kicker">Next match panel</p>
+                    <span className="neon-badge neon-badge-cyan">Dashboard</span>
                   </div>
                   <div className="mt-4">
                     {featuredMatch ? (
@@ -237,19 +225,19 @@ export default async function HomePage() {
                   <Link href="/groups" className="neon-card rounded-[2rem] p-5">
                     <span className="neon-badge">Group pulse</span>
                     <h2 className="mt-4 text-2xl font-black uppercase text-white">
-                      Group-stage race
+                      Standings watch
                     </h2>
                     <p className="mt-2 text-sm leading-6 text-slate-300">
-                      Follow qualification pressure, knockout qualification paths and third-place chaos.
+                      Track every group and the knockout chase.
                     </p>
                   </Link>
                   <Link href="/top-scorers" className="neon-card rounded-[2rem] p-5">
                     <span className="neon-badge neon-badge-pink">Leaderboard</span>
                     <h2 className="mt-4 text-2xl font-black uppercase text-white">
-                      Golden Boot race
+                      Top performers
                     </h2>
                     <p className="mt-2 text-sm leading-6 text-slate-300">
-                      Track goals, assists, cards and tournament momentum leaders.
+                      Goals, assists and card signal.
                     </p>
                   </Link>
                 </div>
@@ -264,9 +252,9 @@ export default async function HomePage() {
           <div className="neon-panel rounded-[2rem] p-5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="neon-kicker">Matchday Launch fixture</p>
+                <p className="neon-kicker">Matchday dashboard</p>
                 <h2 className="mt-4 text-3xl font-black uppercase text-white">
-                  Opening week fixtures
+                  Next fixtures
                 </h2>
               </div>
               <Link href="/fixtures" className="link-neon text-sm">
@@ -284,7 +272,7 @@ export default async function HomePage() {
             ) : (
               <div className="mt-5 rounded-3xl border border-cyan-300/20 bg-cyan-300/10 p-4">
                 <p className="text-sm font-semibold text-slate-300">
-                  No live matches right now. Opening week countdown is underway.
+                  No live matches right now. Calm before the next kick-off.
                 </p>
               </div>
             )}
@@ -298,15 +286,7 @@ export default async function HomePage() {
 
           <div className="grid gap-6">
             {data.polls[0] ? (
-              <div className="neon-card rounded-[2rem] p-4">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <span className="neon-badge neon-badge-cyan">Updated live</span>
-                  <span className="text-xs font-black uppercase tracking-[0.14em] text-lime-200">
-                    4,321 fan votes
-                  </span>
-                </div>
-                <PollCard poll={data.polls[0]} source="homepage_polish" />
-              </div>
+              <PollCard poll={data.polls[0]} source="homepage_polish" />
             ) : null}
 
             <Link
@@ -349,7 +329,7 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <div className="mt-5 grid gap-4 lg:grid-cols-2">
+            <div className="mt-5 grid gap-4">
               {data.latestPredictions.length === 0 ? (
                 <div className="rounded-3xl border border-dashed border-cyan-300/20 bg-cyan-300/10 p-6 text-center">
                   <h3 className="text-lg font-black text-white">
@@ -360,49 +340,35 @@ export default async function HomePage() {
                   </p>
                 </div>
               ) : (
-                <>
-                  {data.latestPredictions.slice(0, 3).map((prediction) => (
-                    <Link
-                      key={prediction.id}
-                      href={
-                        prediction.fixture
-                          ? `/predictions/${fixtureSlug({
-                              api_fixture_id: prediction.fixture.api_fixture_id,
-                              match_date: prediction.fixture.match_date,
-                              home_team_name: prediction.fixture.home_team_name,
-                              away_team_name: prediction.fixture.away_team_name,
-                            })}`
-                          : "/predictions"
-                      }
-                      className="neon-card rounded-3xl p-5"
-                    >
-                      <p className="neon-badge neon-badge-cyan">
-                        {prediction.type.replaceAll("_", " ")} ·{" "}
-                        {prediction.risk_level ?? "no lean"}
+                data.latestPredictions.slice(0, 3).map((prediction) => (
+                  <Link
+                    key={prediction.id}
+                    href={
+                      prediction.fixture
+                        ? `/predictions/${fixtureSlug({
+                            api_fixture_id: prediction.fixture.api_fixture_id,
+                            match_date: prediction.fixture.match_date,
+                            home_team_name: prediction.fixture.home_team_name,
+                            away_team_name: prediction.fixture.away_team_name,
+                          })}`
+                        : "/predictions"
+                    }
+                    className="neon-card rounded-3xl p-5"
+                  >
+                    <p className="neon-badge neon-badge-cyan">
+                      {prediction.type.replaceAll("_", " ")} ·{" "}
+                      {prediction.risk_level ?? "no lean"}
+                    </p>
+                    <h3 className="mt-3 text-xl font-black uppercase text-white">
+                      {prediction.title}
+                    </h3>
+                    {prediction.summary ? (
+                      <p className="mt-2 text-sm leading-6 text-slate-300">
+                        {prediction.summary}
                       </p>
-                      <h3 className="mt-3 text-xl font-black uppercase text-white">
-                        {prediction.title}
-                      </h3>
-                      {prediction.summary ? (
-                        <p className="mt-2 text-sm leading-6 text-slate-300">
-                          {prediction.summary}
-                        </p>
-                      ) : null}
-                    </Link>
-                  ))}
-
-                  {[
-                    ["Opening Match Pressure", "Mexico start at home with the whole tournament watching."],
-                    ["Dark Horse Watch", "Track the teams that can break brackets and ruin group predictions."],
-                    ["Golden Boot Signal", "Follow the early scoring race before the first whistle."],
-                  ].map(([title, summary]) => (
-                    <Link key={title} href="/predictions" className="neon-card rounded-3xl p-5">
-                      <p className="neon-badge neon-badge-pink">Tournament read</p>
-                      <h3 className="mt-3 text-xl font-black uppercase text-white">{title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-slate-300">{summary}</p>
-                    </Link>
-                  ))}
-                </>
+                    ) : null}
+                  </Link>
+                ))
               )}
             </div>
           </div>
@@ -420,84 +386,35 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              {data.trendingTeams.length > 0
-                ? data.trendingTeams.slice(0, 6).map((team) => (
-                    <Link
-                      key={team.id}
-                      href={`/teams/${teamSlug(team.name, team.api_team_id)}`}
-                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/45 p-3 transition hover:border-lime-300/30 hover:bg-lime-300/10"
-                    >
-                      {team.logo_url ? (
-                        <img
-                          src={team.logo_url}
-                          alt=""
-                          className="h-10 w-10 rounded-xl border border-white/10 bg-white/10 object-contain p-1"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="h-10 w-10 rounded-xl bg-white/10" />
-                      )}
-                      <div>
-                        <p className="text-sm font-black uppercase text-white">{team.name}</p>
-                        <p className="text-xs text-slate-400">
-                          {team.group_name ?? team.country ?? "World Cup 2026"}
-                        </p>
-                      </div>
-                    </Link>
-                  ))
-                : ["Argentina", "Brazil", "France", "England", "Spain", "USA"].map((team) => (
-                    <Link
-                      key={team}
-                      href="/teams"
-                      className="rounded-2xl border border-cyan-300/15 bg-slate-950/45 p-4 transition hover:border-lime-300/30 hover:bg-lime-300/10"
-                    >
-                      <p className="text-sm font-black uppercase text-white">{team}</p>
-                      <p className="mt-1 text-xs text-slate-400">Squad · fixtures · stats</p>
-                    </Link>
-                  ))}
+            <div className="mt-5 grid gap-3">
+              {data.trendingTeams.slice(0, 6).map((team) => (
+                <Link
+                  key={team.id}
+                  href={`/teams/${teamSlug(team.name, team.api_team_id)}`}
+                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/45 p-3 transition hover:border-lime-300/30 hover:bg-lime-300/10"
+                >
+                  {team.logo_url ? (
+                    <img
+                      src={team.logo_url}
+                      alt=""
+                      className="h-10 w-10 rounded-xl border border-white/10 bg-white/10 object-contain p-1"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="h-10 w-10 rounded-xl bg-white/10" />
+                  )}
+                  <div>
+                    <p className="text-sm font-black uppercase text-white">{team.name}</p>
+                    <p className="text-xs text-slate-400">
+                      {team.group_name ?? team.country ?? "World Cup 2026"}
+                    </p>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
         </section>
 
-        <section className="neon-panel mt-10 rounded-[2rem] p-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="neon-kicker">Host city signal</p>
-              <h2 className="mt-4 text-3xl font-black uppercase text-white">
-                16 host cities across 3 nations
-              </h2>
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
-                Follow the tournament trail across USA, Mexico and Canada — from Mexico City&apos;s opener to the final in New York/New Jersey.
-              </p>
-            </div>
-            <Link href="/stadiums" className="link-neon text-sm">
-              Explore stadiums →
-            </Link>
-          </div>
-
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              ["Mexico City", "Opening match · Estadio Azteca"],
-              ["Los Angeles", "Group-stage spotlight"],
-              ["New York/New Jersey", "Final destination"],
-              ["Toronto", "Canada host city"],
-              ["Vancouver", "Pacific tournament stop"],
-              ["Dallas", "Knockout-stage heavyweight"],
-              ["Miami", "South Florida matchday"],
-              ["Seattle", "Pacific Northwest signal"],
-            ].map(([city, note]) => (
-              <Link
-                key={city}
-                href="/stadiums"
-                className="rounded-2xl border border-cyan-300/15 bg-slate-950/45 p-4 transition hover:border-lime-300/30 hover:bg-lime-300/10"
-              >
-                <p className="text-sm font-black uppercase text-white">{city}</p>
-                <p className="mt-1 text-xs leading-5 text-slate-400">{note}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
         <section className="neon-panel mt-10 rounded-[2rem] p-5">
           <div className="flex items-end justify-between gap-3">
             <div>
@@ -511,7 +428,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-5 grid gap-4 lg:grid-cols-3">
             {data.latestArticles.slice(0, 3).map((article) => (
               <Link
                 key={article.id}
@@ -537,17 +454,3 @@ export default async function HomePage() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

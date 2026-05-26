@@ -1,0 +1,1202 @@
+=== CURRENT HOMEPAGE / STADIUM / COMMUNITY CONTEXT ===
+
+
+================ src/app/page.tsx ================
+
+import type { Metadata } from "next";
+import Link from "next/link";
+import { CountdownTimer } from "@/components/worldcup/countdown-timer";
+import { EmailSignupForm } from "@/components/community/email-signup-form";
+import { PollCard } from "@/components/community/poll-card";
+import { Container } from "@/components/ui/container";
+import { fixtureSlug, teamSlug } from "@/lib/worldcup/format";
+import { createPageMetadata } from "@/lib/seo";
+import { getOpeningFixtureCountdownTarget } from "@/lib/data/countdown";
+import {
+  getHomepagePolishData,
+  type HomeFixture,
+} from "@/lib/data/homepage-polish";
+
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = createPageMetadata({
+  title: "World Cup 2026 Hub",
+  description:
+    "Follow World Cup 2026 fixtures, live scores, groups, teams, match pages, predictions, news, polls and fan community.",
+  path: "/",
+});
+
+function formatDateTime(value: string | null) {
+  if (!value) return "Date TBC";
+
+  return new Intl.DateTimeFormat("en-GB", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+function matchHref(fixture: HomeFixture) {
+  return `/matches/${fixtureSlug({
+    api_fixture_id: fixture.api_fixture_id,
+    match_date: fixture.match_date,
+    home_team_name: fixture.home_team_name,
+    away_team_name: fixture.away_team_name,
+  })}`;
+}
+
+function scoreText(fixture: HomeFixture) {
+  if (fixture.home_goals === null || fixture.away_goals === null) {
+    return "VS";
+  }
+
+  return `${fixture.home_goals} : ${fixture.away_goals}`;
+}
+
+function statusLabel(status: string | null) {
+  const value = String(status ?? "").toUpperCase();
+
+  if (["1H", "2H", "LIVE", "ET", "P"].includes(value)) return "Live now";
+  if (value === "HT") return "Half-time";
+  if (["FT", "AET", "PEN"].includes(value)) return "Finished";
+  if (["PST", "CANC", "ABD"].includes(value)) return "Changed";
+  return "Upcoming";
+}
+
+function MiniFixtureCard({ fixture }: { fixture: HomeFixture }) {
+  return (
+    <Link
+      href={matchHref(fixture)}
+      className="neon-card block rounded-[2rem] p-5"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <span className="neon-badge neon-badge-pink">
+          {statusLabel(fixture.status_short)}
+        </span>
+        <span className="text-xs font-black uppercase tracking-[0.14em] text-slate-400">
+          {formatDateTime(fixture.match_date)}
+        </span>
+      </div>
+
+      <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+        <div className="min-w-0 text-center">
+          {fixture.home_team_logo ? (
+            <img
+              src={fixture.home_team_logo}
+              alt=""
+              className="mx-auto h-14 w-14 rounded-2xl border border-white/10 bg-white/10 object-contain p-1"
+              loading="lazy"
+            />
+          ) : null}
+          <p className="mt-2 truncate text-sm font-black uppercase text-white">
+            {fixture.home_team_name ?? "Home"}
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-lime-300/25 bg-lime-300/10 px-4 py-3 text-center text-xl font-black text-white shadow-[0_0_22px_rgba(163,255,18,0.10)]">
+          {scoreText(fixture)}
+        </div>
+
+        <div className="min-w-0 text-center">
+          {fixture.away_team_logo ? (
+            <img
+              src={fixture.away_team_logo}
+              alt=""
+              className="mx-auto h-14 w-14 rounded-2xl border border-white/10 bg-white/10 object-contain p-1"
+              loading="lazy"
+            />
+          ) : null}
+          <p className="mt-2 truncate text-sm font-black uppercase text-white">
+            {fixture.away_team_name ?? "Away"}
+          </p>
+        </div>
+      </div>
+
+      <p className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+        {fixture.round ?? "World Cup 2026"}
+        {fixture.venue_name ? ` · ${fixture.venue_name}` : ""}
+      </p>
+    </Link>
+  );
+}
+
+function StatTile({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone: "lime" | "cyan" | "pink" | "gold";
+}) {
+  const toneClass = {
+    lime: "border-lime-300/30 bg-lime-300/10 text-lime-100",
+    cyan: "border-cyan-300/30 bg-cyan-300/10 text-cyan-100",
+    pink: "border-fuchsia-300/30 bg-fuchsia-400/10 text-fuchsia-100",
+    gold: "border-amber-300/30 bg-amber-300/10 text-amber-100",
+  }[tone];
+
+  return (
+    <div className={`rounded-3xl border p-4 ${toneClass}`}>
+      <p className="text-[0.65rem] font-black uppercase tracking-[0.18em] opacity-80">
+        {label}
+      </p>
+      <p className="mt-2 text-3xl font-black text-white">{value}</p>
+    </div>
+  );
+}
+
+export default async function HomePage() {
+  const data = await getHomepagePolishData();
+  const countdownTarget = await getOpeningFixtureCountdownTarget();
+  const featuredMatch = data.featuredMatch;
+
+  return (
+    <div className="pb-14">
+      <section className="px-4 py-8 sm:px-6 lg:px-8">
+        <Container className="px-0">
+          <div className="hero-panel rounded-[2.5rem] p-6 sm:p-10 lg:p-12">
+            <div className="relative z-10 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+              <div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="neon-kicker">World Cup 2026 hub</span>
+                  <span className="sticker-tilt inline-flex rounded-full px-3 py-2 text-xs font-black uppercase tracking-[0.18em] text-fuchsia-100">
+                    Fan chaos online
+                  </span>
+                </div>
+
+                <h1 className="neon-title glow-text mt-6 max-w-5xl text-5xl font-black leading-[0.82] text-white sm:text-7xl lg:text-8xl">
+                  WORLD CUP 2026.`n                    FOOTBALL. CHAOS.
+                </h1>
+                <p className="mt-6 max-w-2xl text-lg font-semibold leading-8 text-slate-200">
+                  Fixtures. Live scores. Teams. Players. Stats. Predictions. Fan energy.
+                  A cyber football Launch fixture for the tournament pulse.
+                </p>                  <div className="mt-7">
+                    <CountdownTimer
+                      targetDate={countdownTarget}
+                      label="Countdown to Kick-Off"
+                      matchLabel="Mexico vs South Africa · 11 June 2026"
+                      badge="Road to 2026"
+                    />
+                  </div>
+
+
+
+                <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                  <Link href="/fixtures" className="glow-button-primary">
+                    View fixtures
+                  </Link>
+                  <Link href="/live" className="glow-button-secondary">
+                    Live scores
+                  </Link>
+                  <Link href="/teams" className="glow-button-secondary">
+                    Explore teams
+                  </Link>
+                </div>
+
+
+                <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-5">
+                  <StatTile label="Live data" value="ON" tone="lime" />
+                  <StatTile label="Fan signal" value="24/7" tone="pink" />
+                  <StatTile label="Teams" value="48" tone="cyan" />
+                  <StatTile label="Matches" value="104" tone="gold" />
+                  <StatTile label="Groups" value="12" tone="lime" />
+                </div>
+
+                {data.latestSyncLog ? (
+                  <p className="mt-5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                    Data last synced:{" "}
+                    {formatDateTime(data.latestSyncLog.ended_at ?? data.latestSyncLog.started_at)}
+                    {" · "}
+                    {data.latestSyncLog.status}
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="grid gap-4">
+                <div className="neon-card rounded-[2rem] p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="neon-kicker">Opening match details</p>
+                    <span className="neon-badge neon-badge-cyan">Launch fixture</span>
+                  </div>
+                  <div className="mt-4">
+                    {featuredMatch ? (
+                      <MiniFixtureCard fixture={featuredMatch} />
+                    ) : (
+                      <div className="rounded-3xl border border-dashed border-white/15 bg-white/[0.04] p-8 text-center">
+                        <h2 className="text-2xl font-black text-white">
+                          Fixtures coming soon
+                        </h2>
+                        <p className="mt-3 text-sm text-slate-300">
+                          Once fixtures sync, the featured match lights up here.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Link href="/groups" className="neon-card rounded-[2rem] p-5">
+                    <span className="neon-badge">Group pulse</span>
+                    <h2 className="mt-4 text-2xl font-black uppercase text-white">
+                      Standings watch
+                    </h2>
+                    <p className="mt-2 text-sm leading-6 text-slate-300">
+                      Track every group and the knockout chase.
+                    </p>
+                  </Link>
+                  <Link href="/top-scorers" className="neon-card rounded-[2rem] p-5">
+                    <span className="neon-badge neon-badge-pink">Leaderboard</span>
+                    <h2 className="mt-4 text-2xl font-black uppercase text-white">
+                      Top performers
+                    </h2>
+                    <p className="mt-2 text-sm leading-6 text-slate-300">
+                      Goals, assists and card signal.
+                    </p>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <Container className="pt-4">
+        <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="neon-panel rounded-[2rem] p-5">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="neon-kicker">Matchday Launch fixture</p>
+                <h2 className="mt-4 text-3xl font-black uppercase text-white">
+                  Next fixtures
+                </h2>
+              </div>
+              <Link href="/fixtures" className="link-neon text-sm">
+                Full fixture list →
+              </Link>
+            </div>
+
+            {data.liveFixtures.length > 0 ? (
+              <div className="mt-5 rounded-3xl border border-fuchsia-300/25 bg-fuchsia-400/10 p-4">
+                <p className="text-sm font-black text-fuchsia-100">
+                  {data.liveFixtures.length} live match
+                  {data.liveFixtures.length === 1 ? "" : "es"} right now
+                </p>
+              </div>
+            ) : (
+              <div className="mt-5 rounded-3xl border border-cyan-300/20 bg-cyan-300/10 p-4">
+                <p className="text-sm font-semibold text-slate-300">
+                  No live matches right now. Calm before the next kick-off.
+                </p>
+              </div>
+            )}
+
+            <div className="mt-5 grid gap-4 xl:grid-cols-2">
+              {data.nextFixtures.slice(0, 4).map((fixture) => (
+                <MiniFixtureCard key={fixture.id} fixture={fixture} />
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-6">
+            {data.polls[0] ? (
+              <PollCard poll={data.polls[0]} source="homepage_polish" />
+            ) : null}
+
+            <Link
+              href="/best-third-placed-teams"
+              className="neon-card block rounded-[2rem] p-5"
+            >
+              <span className="sticker-tilt inline-flex rounded-full px-3 py-2 text-xs font-black uppercase tracking-[0.18em] text-fuchsia-100">
+                3RD PLACE SIGNAL
+              </span>
+              <h2 className="mt-4 text-3xl font-black uppercase text-white">
+                Best third-placed teams
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-slate-300">
+                Eight third-placed teams can still reach the knockouts. This is
+                where the group-stage chaos gets serious.
+              </p>
+              <span className="mt-5 inline-flex text-sm font-black text-lime-200">
+                View third-place table →
+              </span>
+            </Link>
+            <EmailSignupForm
+              source="homepage_polish"
+              title="Get matchday updates"
+              description="Join the fan signal for World Cup updates, feature launches and community highlights."
+            />
+          </div>
+        </section>
+
+        <section className="mt-10 grid gap-6 lg:grid-cols-3">
+          <div className="neon-panel rounded-[2rem] p-5 lg:col-span-2">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <p className="neon-kicker">Prediction signal</p>
+                <h2 className="mt-4 text-3xl font-black uppercase text-white">
+                  Fan insights and match reads
+                </h2>
+              </div>
+              <Link href="/predictions" className="link-neon text-sm">
+                All predictions →
+              </Link>
+            </div>
+
+            <div className="mt-5 grid gap-4">
+              {data.latestPredictions.length === 0 ? (
+                <div className="rounded-3xl border border-dashed border-cyan-300/20 bg-cyan-300/10 p-6 text-center">
+                  <h3 className="text-lg font-black text-white">
+                    No prediction signal yet
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-300">
+                    Publish prediction rows in Supabase and they will light up here.
+                  </p>
+                </div>
+              ) : (
+                data.latestPredictions.slice(0, 3).map((prediction) => (
+                  <Link
+                    key={prediction.id}
+                    href={
+                      prediction.fixture
+                        ? `/predictions/${fixtureSlug({
+                            api_fixture_id: prediction.fixture.api_fixture_id,
+                            match_date: prediction.fixture.match_date,
+                            home_team_name: prediction.fixture.home_team_name,
+                            away_team_name: prediction.fixture.away_team_name,
+                          })}`
+                        : "/predictions"
+                    }
+                    className="neon-card rounded-3xl p-5"
+                  >
+                    <p className="neon-badge neon-badge-cyan">
+                      {prediction.type.replaceAll("_", " ")} ·{" "}
+                      {prediction.risk_level ?? "no lean"}
+                    </p>
+                    <h3 className="mt-3 text-xl font-black uppercase text-white">
+                      {prediction.title}
+                    </h3>
+                    {prediction.summary ? (
+                      <p className="mt-2 text-sm leading-6 text-slate-300">
+                        {prediction.summary}
+                      </p>
+                    ) : null}
+                  </Link>
+                ))
+              )}
+            </div>
+          </div>
+
+          <div className="neon-panel rounded-[2rem] p-5">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <p className="neon-kicker">Team radar</p>
+                <h2 className="mt-4 text-3xl font-black uppercase text-white">
+                  Team pages
+                </h2>
+              </div>
+              <Link href="/teams" className="link-neon text-sm">
+                Teams →
+              </Link>
+            </div>
+
+            <div className="mt-5 grid gap-3">
+              {data.trendingTeams.slice(0, 6).map((team) => (
+                <Link
+                  key={team.id}
+                  href={`/teams/${teamSlug(team.name, team.api_team_id)}`}
+                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/45 p-3 transition hover:border-lime-300/30 hover:bg-lime-300/10"
+                >
+                  {team.logo_url ? (
+                    <img
+                      src={team.logo_url}
+                      alt=""
+                      className="h-10 w-10 rounded-xl border border-white/10 bg-white/10 object-contain p-1"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="h-10 w-10 rounded-xl bg-white/10" />
+                  )}
+                  <div>
+                    <p className="text-sm font-black uppercase text-white">{team.name}</p>
+                    <p className="text-xs text-slate-400">
+                      {team.group_name ?? team.country ?? "World Cup 2026"}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="neon-panel mt-10 rounded-[2rem] p-5">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="neon-kicker">Football internet</p>
+              <h2 className="mt-4 text-3xl font-black uppercase text-white">
+                News, guides and fan culture
+              </h2>
+            </div>
+            <Link href="/news" className="link-neon text-sm">
+              News hub →
+            </Link>
+          </div>
+
+          <div className="mt-5 grid gap-4 lg:grid-cols-3">
+            {data.latestArticles.slice(0, 3).map((article) => (
+              <Link
+                key={article.id}
+                href={`/news/${article.slug}`}
+                className="neon-card rounded-3xl p-5"
+              >
+                <p className="neon-badge neon-badge-pink">
+                  {article.category.replaceAll("_", " ")}
+                </p>
+                <h3 className="mt-4 text-xl font-black uppercase text-white">
+                  {article.title}
+                </h3>
+                {article.excerpt ? (
+                  <p className="mt-2 text-sm leading-6 text-slate-300">
+                    {article.excerpt}
+                  </p>
+                ) : null}
+              </Link>
+            ))}
+          </div>
+        </section>
+      </Container>
+    </div>
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+================ src/components/worldcup/countdown-timer.tsx ================
+"use client";
+
+import { useEffect, useState } from "react";
+
+type CountdownTimerProps = {
+  targetDate: string;
+  label?: string;
+  matchLabel?: string;
+  badge?: string;
+};
+
+type TimeLeft = {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  isLive: boolean;
+};
+
+function getTimeLeft(targetDate: string): TimeLeft {
+  const target = new Date(targetDate).getTime();
+  const difference = Math.max(0, target - Date.now());
+
+  if (!Number.isFinite(target) || difference <= 0) {
+    return { days: 0, hours: 0, minutes: 0, seconds: 0, isLive: true };
+  }
+
+  return {
+    days: Math.floor(difference / 86400000),
+    hours: Math.floor((difference / 3600000) % 24),
+    minutes: Math.floor((difference / 60000) % 60),
+    seconds: Math.floor((difference / 1000) % 60),
+    isLive: false,
+  };
+}
+
+function pad(value: number) {
+  return String(value).padStart(2, "0");
+}
+
+function formatLocalKickoff(targetDate: string) {
+  const date = new Date(targetDate);
+  if (Number.isNaN(date.getTime())) return "Loading";
+
+  return new Intl.DateTimeFormat(undefined, {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZoneName: "short",
+  }).format(date);
+}
+
+export function CountdownTimer({
+  targetDate,
+  label = "Countdown to Kick-Off",
+  matchLabel = "Mexico vs South Africa · 11 June 2026",
+  badge = "Road to 2026",
+}: CountdownTimerProps) {
+  const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
+  const [localKickoff, setLocalKickoff] = useState("Loading");
+
+  useEffect(() => {
+    const update = () => {
+      setTimeLeft(getTimeLeft(targetDate));
+      setLocalKickoff(formatLocalKickoff(targetDate));
+    };
+
+    const timeout = window.setTimeout(update, 0);
+    const interval = window.setInterval(update, 1000);
+
+    return () => {
+      window.clearTimeout(timeout);
+      window.clearInterval(interval);
+    };
+  }, [targetDate]);
+
+  return (
+    <section className="neon-card neon-card-hot relative overflow-hidden rounded-[2rem] p-4 shadow-[0_0_60px_rgba(163,230,53,0.18)] sm:p-5">
+      <div className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-lime-400/25 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-12 left-6 h-32 w-32 rounded-full bg-fuchsia-500/20 blur-3xl" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(163,230,53,0.045)_1px,transparent_1px),linear-gradient(0deg,rgba(34,211,238,0.035)_1px,transparent_1px)] bg-[size:38px_38px]" />
+
+      <div className="relative">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="neon-badge neon-badge-lime">{badge}</span>
+            <span className="neon-badge neon-badge-pink">Kick-off signal loading</span>
+          </div>
+          <p className="hidden text-xs font-black uppercase tracking-[0.18em] text-lime-200 xl:block">
+            48 teams · 104 matches · one trophy
+          </p>
+        </div>
+
+        <div className="mt-4 grid gap-4 xl:grid-cols-[0.75fr_1.25fr] xl:items-center">
+          <div>
+            <h2 className="text-2xl font-black uppercase tracking-tight text-white drop-shadow-[0_0_18px_rgba(163,230,53,0.25)] sm:text-3xl">
+              {label}
+            </h2>
+            <p className="mt-1 text-sm font-black text-lime-100">
+              {matchLabel}
+            </p>
+            <p className="mt-1 text-sm leading-6 text-slate-300">
+              The road to World Cup 2026 starts here.
+            </p>
+          </div>
+
+          {!timeLeft ? (
+            <div className="grid grid-cols-4 gap-2">
+              {["DAYS", "HRS", "MIN", "SEC"].map((unit) => (
+                <div key={unit} className="rounded-2xl border border-white/10 bg-black/50 p-3 text-center">
+                  <div className="h-9 animate-pulse rounded-xl bg-white/10" />
+                  <p className="mt-2 text-[0.6rem] font-black uppercase tracking-[0.2em] text-slate-500">{unit}</p>
+                </div>
+              ))}
+            </div>
+          ) : timeLeft.isLive ? (
+            <div className="rounded-3xl border border-lime-300/40 bg-lime-300/10 px-6 py-5 text-center">
+              <p className="text-2xl font-black uppercase text-lime-100">World Cup 2026 is live.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-4 gap-2">
+              {[
+                ["DAYS", timeLeft.days],
+                ["HRS", pad(timeLeft.hours)],
+                ["MIN", pad(timeLeft.minutes)],
+                ["SEC", pad(timeLeft.seconds)],
+              ].map(([unit, value]) => (
+                <div
+                  key={unit}
+                  className={`min-w-0 rounded-2xl border bg-black/60 p-3 text-center ${
+                    unit === "SEC"
+                      ? "border-fuchsia-300/35 shadow-[0_0_28px_rgba(217,70,239,0.2)]"
+                      : "border-lime-300/25 shadow-[0_0_22px_rgba(34,211,238,0.13)]"
+                  }`}
+                >
+                  <p className="font-mono text-3xl font-black text-lime-200 sm:text-4xl">{value}</p>
+                  <p className="mt-1 text-[0.6rem] font-black uppercase tracking-[0.2em] text-cyan-200">{unit}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="mt-4 grid gap-2 text-[0.65rem] font-black uppercase tracking-[0.14em] text-slate-400 sm:grid-cols-3">
+          <p className="rounded-2xl border border-white/10 bg-black/30 px-3 py-2">
+            Mexico City · 15:00
+          </p>
+          <p className="rounded-2xl border border-white/10 bg-black/30 px-3 py-2">
+            UTC · 21:00
+          </p>
+          <p className="rounded-2xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-cyan-100" suppressHydrationWarning>
+            Your time · {localKickoff}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+
+================ src/lib/data/countdown.ts ================
+import { getFixturesPageData } from "@/lib/data/worldcup";
+
+export const OPENING_FIXTURE_FALLBACK_UTC = "2026-06-11T21:00:00Z";
+
+function isValidDate(value: string | null | undefined) {
+  if (!value) return false;
+  return Number.isFinite(new Date(value).getTime());
+}
+
+function normaliseTeamName(value: string | null | undefined) {
+  return String(value ?? "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function isMexicoSouthAfricaFixture(fixture: {
+  home_team_name?: string | null;
+  away_team_name?: string | null;
+  match_date?: string | null;
+}) {
+  const home = normaliseTeamName(fixture.home_team_name);
+  const away = normaliseTeamName(fixture.away_team_name);
+
+  const isOpeningPair =
+    (home.includes("mexico") && away.includes("south africa")) ||
+    (home.includes("south africa") && away.includes("mexico"));
+
+  if (!isOpeningPair) return false;
+
+  if (!fixture.match_date) return true;
+
+  return fixture.match_date.startsWith("2026-06-11");
+}
+
+export async function getOpeningFixtureCountdownTarget() {
+  try {
+    const { fixtures } = await getFixturesPageData();
+    const openingFixture = fixtures.find(isMexicoSouthAfricaFixture);
+
+    const kickoff =
+      (openingFixture as { kickoff_at?: string | null } | undefined)
+        ?.kickoff_at ??
+      openingFixture?.match_date ??
+      null;
+
+    if (isValidDate(kickoff)) {
+      return new Date(kickoff as string).toISOString();
+    }
+  } catch {
+    // Keep the homepage resilient if Supabase is unavailable during rendering.
+  }
+
+  return OPENING_FIXTURE_FALLBACK_UTC;
+}
+
+
+
+================ src/app/stadiums/page.tsx ================
+import { RouteShell } from "@/components/routes/route-shell";
+import { routeContent } from "@/lib/placeholder-data";
+
+export const metadata = {
+  title: "Stadiums",
+  description: "World Cup 2026 stadiums and host cities shell.",
+};
+
+export default function StadiumsPage() {
+  return <RouteShell content={routeContent.stadiums} />;
+}
+
+
+
+================ src/app/community/page.tsx ================
+import type { Metadata } from "next";
+import { CommunityCTA } from "@/components/community/community-cta";
+import { CommunityRules } from "@/components/community/community-rules";
+import { EmailSignupForm } from "@/components/community/email-signup-form";
+import { FanCulturePanel } from "@/components/community/fan-culture-panel";
+import { PollCard } from "@/components/community/poll-card";
+import { PredictionGameTeaser } from "@/components/community/prediction-game-teaser";
+import { SocialShareButtons } from "@/components/community/social-share-buttons";
+import { Container } from "@/components/ui/container";
+import { PageHeader } from "@/components/worldcup/page-header";
+import { getCommunityPagePolls } from "@/lib/data/community";
+import { getPublicSiteUrl } from "@/lib/data/matches";
+
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "World Cup 2026 Community",
+  description:
+    "Join World Cup 2026 Hub community polls, fan updates, social sharing and football-first fan culture.",
+};
+
+export default async function CommunityPage() {
+  const polls = await getCommunityPagePolls();
+  const siteUrl = getPublicSiteUrl();
+
+  return (
+    <>
+      <PageHeader
+        eyebrow="Community"
+        title="World Cup 2026 fan community"
+        description="Polls, social sharing, email updates and football-first fan culture for World Cup 2026."
+        meta="Football-first · Social-shareable · No open comments yet"
+      />
+
+      <Container className="pb-14">
+        <CommunityCTA />
+
+        <div className="mt-8 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+          <div className="grid gap-6">
+            <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5">
+              <p className="text-sm font-black uppercase tracking-[0.2em] text-emerald-300">
+                Fan polls
+              </p>
+
+              <h2 className="mt-2 text-2xl font-black text-white">
+                Have your say
+              </h2>
+
+              {polls.length === 0 ? (
+                <div className="mt-5 rounded-3xl border border-dashed border-white/15 bg-white/[0.04] p-6 text-center">
+                  <h3 className="text-lg font-black text-white">
+                    No polls published yet
+                  </h3>
+                  <p className="mt-2 text-sm text-slate-300">
+                    Publish polls in Supabase and they will appear here.
+                  </p>
+                </div>
+              ) : (
+                <div className="mt-5 grid gap-4 lg:grid-cols-2">
+                  {polls.map((poll) => (
+                    <PollCard key={poll.id} poll={poll} source="community_page" />
+                  ))}
+                </div>
+              )}
+            </section>
+
+            <PredictionGameTeaser />
+            <FanCulturePanel />
+            <CommunityRules />
+          </div>
+
+          <aside className="grid content-start gap-6">
+            <EmailSignupForm source="community_page" />
+
+            <SocialShareButtons
+              shareText="Join the World Cup 2026 Hub fan community"
+              shareUrl={`${siteUrl}/community`}
+            />
+          </aside>
+        </div>
+      </Container>
+    </>
+  );
+}
+
+
+
+================ src/app/news/page.tsx ================
+import type { Metadata } from "next";
+import Link from "next/link";
+import { BlogCard } from "@/components/blog/blog-card";
+import { BlogHero } from "@/components/blog/blog-hero";
+import { CategoryBadge } from "@/components/blog/category-badge";
+import { Container } from "@/components/ui/container";
+import { PageHeader } from "@/components/worldcup/page-header";
+import {
+  blogCategories,
+  getBlogCategorySlug,
+  getFeaturedBlogPosts,
+  getPublishedBlogPosts,
+} from "@/lib/data/blog";
+
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "World Cup 2026 News, Guides & Fan Culture",
+  description:
+    "Read World Cup 2026 match previews, team guides, group previews, stadium guides, fan culture posts and community roundups.",
+  openGraph: {
+    title: "World Cup 2026 News, Guides & Fan Culture",
+    description:
+      "Football-first World Cup 2026 content including previews, team guides, stadium guides and fan culture.",
+    type: "website",
+  },
+};
+
+export default async function NewsPage() {
+  const [featuredPosts, latestPosts] = await Promise.all([
+    getFeaturedBlogPosts(3),
+    getPublishedBlogPosts(12),
+  ]);
+
+  const heroPost = featuredPosts[0] ?? latestPosts[0] ?? null;
+  const heroId = heroPost?.id;
+  const remainingPosts = latestPosts.filter((post) => post.id !== heroId);
+
+  return (
+    <>
+      <PageHeader
+        eyebrow="News"
+        title="World Cup 2026 news, guides and fan culture"
+        description="Football-first articles, explainers and social-shareable guides powered by Supabase."
+        meta="Match previews · Team guides · Fan culture"
+      />
+
+      <Container className="pb-14">
+        <BlogHero post={heroPost} />
+
+        <section className="mt-10 rounded-[2rem] border border-white/10 bg-white/[0.04] p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-300">
+                Categories
+              </p>
+              <h2 className="mt-2 text-2xl font-black text-white">
+                Browse content by topic
+              </h2>
+            </div>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            {blogCategories.map((category) => (
+              <CategoryBadge key={category} category={category} />
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-10">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-300">
+                Latest posts
+              </p>
+              <h2 className="mt-2 text-2xl font-black text-white">
+                Fresh from the hub
+              </h2>
+            </div>
+            <Link
+              href={`/news/category/${getBlogCategorySlug("match_previews")}`}
+              className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 text-sm font-bold text-white transition hover:bg-white/10"
+            >
+              Match previews
+            </Link>
+          </div>
+
+          {remainingPosts.length === 0 ? (
+            <div className="mt-6 rounded-3xl border border-dashed border-white/15 bg-white/[0.04] p-6 text-center">
+              <h3 className="text-lg font-black text-white">No more posts yet</h3>
+              <p className="mt-2 text-sm text-slate-300">
+                Publish more rows in Supabase and they will appear here.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-6 grid gap-4 lg:grid-cols-3">
+              {remainingPosts.map((post) => (
+                <BlogCard key={post.id} post={post} />
+              ))}
+            </div>
+          )}
+        </section>
+      </Container>
+    </>
+  );
+}
+
+
+
+================ src/app/not-found.tsx ================
+
+import Link from "next/link";
+import { Container } from "@/components/ui/container";
+
+export default function NotFound() {
+  return (
+    <div className="py-16">
+      <Container>
+        <div className="hero-panel rounded-[2.25rem] p-8 text-center">
+          <p className="neon-kicker mx-auto">404 signal lost</p>
+          <h1 className="neon-title glow-text mt-5 text-5xl font-black text-white sm:text-7xl">
+            Page not found
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-300">
+            This route has gone offside, moved, or does not exist yet.
+          </p>
+
+          <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+            <Link href="/" className="glow-button-primary">
+              Back home
+            </Link>
+            <Link href="/fixtures" className="glow-button-secondary">
+              View fixtures
+            </Link>
+          </div>
+        </div>
+      </Container>
+    </div>
+  );
+}
+
+
+
+================ src/components/layout/site-header.tsx ================
+
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { Container } from "@/components/ui/container";
+import { siteConfig } from "@/lib/site";
+
+export function SiteHeader() {
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+
+  function isActive(href: string) {
+    if (href === "/") {
+      return pathname === "/";
+    }
+
+    return pathname.startsWith(href);
+  }
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-lime-300/15 bg-[#02030a]/90 shadow-[0_0_38px_rgba(34,211,238,0.08)] backdrop-blur-2xl">
+      <Container>
+        <div className="flex min-h-[4.75rem] items-center justify-between gap-4">
+          <Link href="/" className="group flex items-center gap-3">
+            <span className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-lime-300/45 bg-lime-300 text-lg font-black text-slate-950 shadow-[0_0_26px_rgba(163,255,18,0.32)]">
+              <span className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.75),transparent_32%)]" />
+              <span className="relative">26</span>
+            </span>
+            <span>
+              <span className="block text-base font-black uppercase leading-none tracking-[0.18em] text-white group-hover:text-lime-200">
+                WC26 HUB
+              </span>
+              <span className="mt-1 block text-[0.68rem] font-bold uppercase tracking-[0.18em] text-cyan-200/80">
+                Football signal · fan chaos
+              </span>
+            </span>
+          </Link>
+
+          <nav
+            className="hidden rounded-full border border-cyan-300/15 bg-white/[0.045] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] lg:flex"
+            aria-label="Main"
+          >
+            {siteConfig.navLinks.map((link) => {
+              const active = isActive(link.href);
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`relative rounded-full px-3.5 py-2 text-xs font-black uppercase tracking-[0.13em] transition ${
+                    active
+                      ? "bg-lime-300 text-slate-950 shadow-[0_0_20px_rgba(163,255,18,0.36)]"
+                      : "text-slate-300 hover:bg-fuchsia-400/10 hover:text-white hover:shadow-[0_0_18px_rgba(255,43,214,0.14)]"
+                  }`}
+                >
+                  {active ? (
+                    <span className="absolute inset-x-3 -bottom-1 h-px bg-lime-200 shadow-[0_0_14px_rgba(163,255,18,0.75)]" />
+                  ) : null}
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="hidden items-center gap-3 xl:flex">
+            <span className="neon-badge neon-badge-cyan">Fan signal</span>
+            <span className="neon-badge">Live data</span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsOpen((current) => !current)}
+            className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-300/25 bg-white/[0.06] text-2xl font-black text-white shadow-[0_0_20px_rgba(34,211,238,0.12)] lg:hidden"
+            aria-label="Toggle navigation menu"
+            aria-expanded={isOpen}
+          >
+            {isOpen ? "×" : "☰"}
+          </button>
+        </div>
+
+        {isOpen ? (
+          <nav
+            className="grid gap-2 border-t border-cyan-300/15 py-4 lg:hidden"
+            aria-label="Mobile"
+          >
+            <div className="mb-2 flex flex-wrap gap-2">
+              <span className="neon-badge neon-badge-cyan">Fan signal</span>
+              <span className="neon-badge">Live data</span>
+            </div>
+
+            {siteConfig.navLinks.map((link) => {
+              const active = isActive(link.href);
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`rounded-2xl border px-4 py-3 text-sm font-black uppercase tracking-[0.12em] transition ${
+                    active
+                      ? "border-lime-300/50 bg-lime-300 text-slate-950 shadow-[0_0_20px_rgba(163,255,18,0.28)]"
+                      : "border-white/10 bg-white/[0.055] text-slate-200 hover:border-fuchsia-300/40 hover:bg-fuchsia-400/10"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+        ) : null}
+      </Container>
+    </header>
+  );
+}
+
+
+
+================ src/components/layout/site-footer.tsx ================
+
+import Link from "next/link";
+import { Container } from "@/components/ui/container";
+import { siteConfig } from "@/lib/site";
+
+export function SiteFooter() {
+  return (
+    <footer className="relative overflow-hidden border-t border-cyan-300/15 bg-[#02030a]">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_10%_0%,rgba(163,255,18,0.12),transparent_28rem),radial-gradient(circle_at_80%_20%,rgba(255,43,214,0.12),transparent_26rem)]" />
+      <Container className="relative py-12">
+        <div className="grid gap-8 rounded-[2rem] border border-cyan-300/15 bg-white/[0.035] p-6 shadow-[0_0_42px_rgba(34,211,238,0.08)] md:grid-cols-[1.35fr_1fr_1fr]">
+          <div>
+            <span className="neon-badge">Tournament pulse</span>
+            <p className="mt-4 text-2xl font-black uppercase tracking-tight text-white">
+              WC26 HUB
+            </p>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300">
+              A football-first World Cup 2026 dashboard with fixtures, live scores,
+              teams, players, leaderboards, predictions, polls and matchday energy.
+            </p>
+          </div>
+
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-lime-200">
+              Sections
+            </p>
+            <div className="mt-4 grid gap-2">
+              <Link href="/best-third-placed-teams" className="text-sm font-semibold text-slate-400 transition hover:text-lime-200">
+                3rd place signal
+              </Link>
+              {siteConfig.navLinks.slice(1, 7).map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-semibold text-slate-400 transition hover:text-lime-200"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-fuchsia-200">
+              Community
+            </p>
+            <div className="mt-4 grid gap-2">
+              {siteConfig.socialLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className="text-sm font-semibold text-slate-400 transition hover:text-fuchsia-200"
+                >
+                  {link.label}
+                </a>
+              ))}
+              <Link href="/privacy" className="text-sm font-semibold text-slate-400 transition hover:text-white">
+                Privacy
+              </Link>
+              <Link href="/terms" className="text-sm font-semibold text-slate-400 transition hover:text-white">
+                Terms
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-col gap-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+          <p>© 2026 World Cup 2026 Hub · built for tournament mode.</p>
+          <p>Supabase + API-Football sync · no wallet, no buy flow, just football signal.</p>
+        </div>
+      </Container>
+    </footer>
+  );
+}
+
+
+
+================ src/lib/site.ts ================
+export const siteConfig = {
+  name: "World Cup 2026 Hub",
+  shortName: "WC26 Hub",
+  description:
+    "An API-first World Cup 2026 fan hub for fixtures, live scores, groups, teams, predictions, news, stadiums, and community.",
+  navLinks: [
+    { href: "/", label: "Home" },
+    { href: "/fixtures", label: "Fixtures" },
+    { href: "/live", label: "Live" },
+    { href: "/groups", label: "Groups" },
+    { href: "/best-third-placed-teams", label: "3rd Place" },
+    { href: "/teams", label: "Teams" },
+    { href: "/top-scorers", label: "Scorers" },
+    { href: "/top-assists", label: "Assists" },
+    { href: "/top-cards", label: "Cards" },
+    { href: "/predictions", label: "Predictions" },
+    { href: "/news", label: "News" },
+    { href: "/stadiums", label: "Stadiums" },
+    { href: "/community", label: "Community" },
+  ],
+  socialLinks: [
+    { href: "#", label: "Telegram" },
+    { href: "#", label: "X" },
+    { href: "#", label: "Email" },
+  ],
+} as const;
+
+
+
+=== STADIUM RELATED FILES ===
+
+
+================ src\app\stadiums\page.tsx ================
+import { RouteShell } from "@/components/routes/route-shell";
+import { routeContent } from "@/lib/placeholder-data";
+
+export const metadata = {
+  title: "Stadiums",
+  description: "World Cup 2026 stadiums and host cities shell.",
+};
+
+export default function StadiumsPage() {
+  return <RouteShell content={routeContent.stadiums} />;
+}
+

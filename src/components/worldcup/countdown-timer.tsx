@@ -92,7 +92,7 @@ export function CountdownTimer({
           </p>
         </div>
 
-        <div className="mt-4 grid gap-4 xl:grid-cols-[0.75fr_1.25fr] xl:items-center">
+        <div className="mt-3 grid gap-4 xl:grid-cols-[0.68fr_1.32fr] xl:items-center">
           <div>
             <h2 className="text-2xl font-black uppercase tracking-tight text-white drop-shadow-[0_0_18px_rgba(163,230,53,0.25)] sm:text-3xl">
               {label}
@@ -101,12 +101,12 @@ export function CountdownTimer({
               {matchLabel}
             </p>
             <p className="mt-1 text-sm leading-6 text-slate-300">
-              The road to World Cup 2026 starts here.
+              48 nations. 104 matches. Three host countries. One month that stops the world.
             </p>
           </div>
 
           {!timeLeft ? (
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-3 min-w-0">
               {["DAYS", "HRS", "MIN", "SEC"].map((unit) => (
                 <div key={unit} className="rounded-2xl border border-white/10 bg-black/50 p-3 text-center">
                   <div className="h-9 animate-pulse rounded-xl bg-white/10" />
@@ -119,7 +119,7 @@ export function CountdownTimer({
               <p className="text-2xl font-black uppercase text-lime-100">World Cup 2026 is live.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-3 min-w-0">
               {[
                 ["DAYS", timeLeft.days],
                 ["HRS", pad(timeLeft.hours)],
@@ -128,13 +128,13 @@ export function CountdownTimer({
               ].map(([unit, value]) => (
                 <div
                   key={unit}
-                  className={`min-w-0 rounded-2xl border bg-black/60 p-3 text-center ${
+                  className={`min-w-0 rounded-[1.7rem] border bg-black/70 px-5 py-4 text-center ${
                     unit === "SEC"
                       ? "border-fuchsia-300/35 shadow-[0_0_28px_rgba(217,70,239,0.2)]"
                       : "border-lime-300/25 shadow-[0_0_22px_rgba(34,211,238,0.13)]"
                   }`}
                 >
-                  <p className="font-mono text-3xl font-black text-lime-200 sm:text-4xl">{value}</p>
+                  <p className="font-mono text-4xl font-black tracking-tight text-lime-200 sm:text-5xl">{value}</p>
                   <p className="mt-1 text-[0.6rem] font-black uppercase tracking-[0.2em] text-cyan-200">{unit}</p>
                 </div>
               ))}
@@ -142,12 +142,12 @@ export function CountdownTimer({
           )}
         </div>
 
-        <div className="mt-4 grid gap-2 text-[0.65rem] font-black uppercase tracking-[0.14em] text-slate-400 sm:grid-cols-3">
+        <div className="mt-3 grid gap-2 text-[0.6rem] font-black uppercase tracking-[0.14em] text-slate-400 sm:grid-cols-[0.9fr_0.9fr_1.2fr]">
           <p className="rounded-2xl border border-white/10 bg-black/30 px-3 py-2">
-            Mexico City · 15:00
+            Mexico City · 15:00 local
           </p>
           <p className="rounded-2xl border border-white/10 bg-black/30 px-3 py-2">
-            UTC · 21:00
+            UTC · 21:00 kick-off
           </p>
           <p className="rounded-2xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-cyan-100" suppressHydrationWarning>
             Your time · {localKickoff}
@@ -157,3 +157,4 @@ export function CountdownTimer({
     </section>
   );
 }
+

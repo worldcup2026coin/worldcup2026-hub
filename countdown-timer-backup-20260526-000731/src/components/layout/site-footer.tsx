@@ -12,12 +12,11 @@ export function SiteFooter() {
           <div>
             <span className="neon-badge">Tournament pulse</span>
             <p className="mt-4 text-2xl font-black uppercase tracking-tight text-white">
-              World Cup 2026 Hub
+              WC26 HUB
             </p>
             <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300">
-              104 matches. 48 teams. 16 host cities. 3 nations. 1 trophy.
-              Follow every fixture, group table, goal, prediction and knockout race
-              from opening match to the final.
+              A football-first World Cup 2026 dashboard with fixtures, live scores,
+              teams, players, leaderboards, predictions, polls and matchday energy.
             </p>
           </div>
 
@@ -73,4 +72,3 @@ export function SiteFooter() {
     </footer>
   );
 }
-
