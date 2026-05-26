@@ -165,12 +165,21 @@ export default async function HomePage() {
                 </div>
 
                 <h1 className="neon-title glow-text mt-6 max-w-5xl text-5xl font-black leading-[0.82] text-white sm:text-7xl lg:text-8xl">
-                  FOOTBALL. CULTURE. CHAOS.
+                  WORLD CUP 2026.`n                    FOOTBALL. CHAOS.
                 </h1>
                 <p className="mt-6 max-w-2xl text-lg font-semibold leading-8 text-slate-200">
                   Fixtures. Live scores. Teams. Players. Stats. Predictions. Fan energy.
-                  A cyber football dashboard for the tournament pulse.
-                </p>
+                  A cyber football Launch fixture for the tournament pulse.
+                </p>                  <div className="mt-7">
+                    <CountdownTimer
+                      targetDate={countdownTarget}
+                      label="Countdown to Kick-Off"
+                      matchLabel="Mexico vs South Africa · 11 June 2026"
+                      badge="Road to 2026"
+                    />
+                  </div>
+
+
 
                 <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                   <Link href="/fixtures" className="glow-button-primary">
@@ -182,14 +191,7 @@ export default async function HomePage() {
                   <Link href="/teams" className="glow-button-secondary">
                     Explore teams
                   </Link>
-                </div>                  <div className="mt-8">
-                    <CountdownTimer
-                      targetDate={countdownTarget}
-                      label="Countdown to Kick-Off"
-                      matchLabel="Mexico vs South Africa · 11 June 2026"
-                      badge="Road to 2026"
-                    />
-                  </div>
+                </div>
 
 
                 <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-5">
@@ -213,8 +215,8 @@ export default async function HomePage() {
               <div className="grid gap-4">
                 <div className="neon-card rounded-[2rem] p-5">
                   <div className="flex items-center justify-between gap-3">
-                    <p className="neon-kicker">Next match panel</p>
-                    <span className="neon-badge neon-badge-cyan">Dashboard</span>
+                    <p className="neon-kicker">Opening match details</p>
+                    <span className="neon-badge neon-badge-cyan">Launch fixture</span>
                   </div>
                   <div className="mt-4">
                     {featuredMatch ? (
@@ -263,7 +265,7 @@ export default async function HomePage() {
           <div className="neon-panel rounded-[2rem] p-5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="neon-kicker">Matchday dashboard</p>
+                <p className="neon-kicker">Matchday Launch fixture</p>
                 <h2 className="mt-4 text-3xl font-black uppercase text-white">
                   Next fixtures
                 </h2>
@@ -465,6 +467,8 @@ export default async function HomePage() {
     </div>
   );
 }
+
+
 
 
 
