@@ -39,7 +39,7 @@ export default async function HostCityPage({
         </p>
       </div>
 
-      <div className="mt-10 grid gap-6 md:grid-cols-2">
+      <div className="mt-10 grid gap-6 lg:grid-cols-3">
         <div className="card-panel p-6">
           <h2 className="text-xl font-bold">Tournament role</h2>
 
@@ -57,6 +57,27 @@ export default async function HostCityPage({
           <p className="mt-4 text-slate-300">
             {city.fanNote}
           </p>
+        </div>
+
+        <div className="card-panel p-6">
+          <p className="neon-kicker">World Cup 2026</p>
+          <h2 className="mt-4 text-xl font-bold">Tournament facts</h2>
+
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            {[
+              ["48", "Teams"],
+              ["104", "Matches"],
+              ["16", "Host cities"],
+              ["3", "Nations"],
+            ].map(([value, label]) => (
+              <div key={label} className="rounded-2xl border border-lime-300/20 bg-lime-300/10 p-4">
+                <p className="text-2xl font-black text-white">{value}</p>
+                <p className="mt-1 text-[0.65rem] font-black uppercase tracking-[0.16em] text-lime-200">
+                  {label}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -78,5 +99,6 @@ export default async function HostCityPage({
     </main>
   );
 }
+
 
 

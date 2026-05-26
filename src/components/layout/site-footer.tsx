@@ -8,7 +8,7 @@ export function SiteFooter() {
     <footer className="relative overflow-hidden border-t border-cyan-300/15 bg-[#02030a]">
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_10%_0%,rgba(163,255,18,0.12),transparent_28rem),radial-gradient(circle_at_80%_20%,rgba(255,43,214,0.12),transparent_26rem)]" />
       <Container className="relative py-12">
-        <div className="grid gap-8 rounded-[2rem] border border-cyan-300/15 bg-white/[0.035] p-6 shadow-[0_0_42px_rgba(34,211,238,0.08)] md:grid-cols-[1.35fr_1fr_1fr]">
+        <div className="grid gap-8 rounded-[2rem] border border-cyan-300/15 bg-white/[0.035] p-6 shadow-[0_0_42px_rgba(34,211,238,0.08)] md:grid-cols-[1.35fr_1fr]">
           <div>
             <span className="neon-badge">Tournament pulse</span>
             <p className="mt-4 text-2xl font-black uppercase tracking-tight text-white">
@@ -40,29 +40,6 @@ export function SiteFooter() {
               ))}
             </div>
           </div>
-
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-fuchsia-200">
-              Community
-            </p>
-            <div className="mt-4 grid gap-2">
-              {siteConfig.socialLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="text-sm font-semibold text-slate-400 transition hover:text-fuchsia-200"
-                >
-                  {link.label}
-                </a>
-              ))}
-              <Link href="/privacy" className="text-sm font-semibold text-slate-400 transition hover:text-white">
-                Privacy
-              </Link>
-              <Link href="/terms" className="text-sm font-semibold text-slate-400 transition hover:text-white">
-                Terms
-              </Link>
-            </div>
-          </div>
         </div>
 
         <div className="mt-8 flex flex-col gap-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
@@ -73,4 +50,5 @@ export function SiteFooter() {
     </footer>
   );
 }
+
 

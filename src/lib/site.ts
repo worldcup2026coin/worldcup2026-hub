@@ -18,11 +18,7 @@ export const siteConfig = {
     { href: "/stadiums", label: "Stadiums" },
     { href: "/community", label: "Community" },
   ],
-  socialLinks: [
-    { href: "#", label: "Telegram" },
-    { href: "#", label: "X" },
-    { href: "#", label: "Email" },
-  ],
 } as const;
+
 
 
