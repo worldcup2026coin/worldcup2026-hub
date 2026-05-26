@@ -470,3 +470,97 @@ textarea {
     letter-spacing: -0.055em;
   }
 }
+
+/* Launch QA: prevent site-wide decorative/layout elements from creating horizontal scroll */
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+#__next {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+/* Launch QA: team detail pages must not create mobile horizontal scroll */
+body:has(a[href="/teams"]) main,
+body:has([data-team-page]) main {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+[data-team-page],
+[data-team-page] * {
+  min-width: 0;
+}
+
+[data-team-page] table {
+  width: 100%;
+}
+
+[data-team-page] img,
+[data-team-page] svg {
+  max-width: 100%;
+}
+
+/* Launch QA: keep team detail cards truly responsive on narrow screens */
+[data-team-page] {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+[data-team-page] section,
+[data-team-page] article,
+[data-team-page] div {
+  min-width: 0;
+  max-width: 100%;
+}
+
+[data-team-page] .neon-card {
+  max-width: 100%;
+}
+
+[data-team-page] table {
+  width: 100%;
+  max-width: 100%;
+}
+
+[data-team-page] th,
+[data-team-page] td {
+  min-width: 0;
+}
+
+[data-team-page] h1,
+[data-team-page] h2,
+[data-team-page] h3,
+[data-team-page] p,
+[data-team-page] a,
+[data-team-page] span {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  [data-team-page] {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  [data-team-page] section,
+  [data-team-page] article {
+    width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  [data-team-page] .neon-card {
+    width: 100%;
+  }
+
+  [data-team-page] table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}

@@ -195,10 +195,10 @@ export default async function TeamPage({ params }: TeamPageProps) {
 
         <section
           id="overview"
-          className="scroll-mt-24 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]"
+          className="scroll-mt-24 grid min-w-0 gap-6 lg:grid-cols-[0.9fr_1.1fr]"
         >
           <aside className="rounded-3xl border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/30">
-            <div className="flex items-center gap-4">
+            <div className="flex min-w-0 items-center gap-4">
               {team.logo_url ? (
                 <Image
                   src={team.logo_url}
@@ -214,7 +214,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
               )}
 
               <div>
-                <h2 className="flex items-center gap-2 text-2xl font-black text-white">
+                <h2 className="flex min-w-0 items-center gap-2 text-2xl font-black text-white">
                   <TeamFlag
                     code={team.code}
                     name={team.name}
@@ -241,7 +241,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
               </p>
             </div>
 
-            <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+            <div className="mt-4 grid min-w-0 gap-3 text-sm sm:grid-cols-2">
               <div className="rounded-2xl bg-white/[0.04] p-4">
                 <p className="text-slate-400">Group</p>
                 <p className="mt-1 font-black text-white">
@@ -290,14 +290,14 @@ export default async function TeamPage({ params }: TeamPageProps) {
             </Link>
           </aside>
 
-          <div className="grid gap-6">
+          <div className="grid min-w-0 gap-6">
             <section className="rounded-3xl border border-lime-300/20 bg-lime-300/[0.08] p-6 shadow-2xl shadow-slate-950/30">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-lime-200">
                 Next match
               </p>
 
               {nextFixture ? (
-                <div className="mt-5 grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
+                <div className="mt-5 grid min-w-0 gap-4 md:grid-cols-[1.2fr_0.8fr]">
                   <div>
                     <h2 className="text-3xl font-black uppercase text-white">
                       {nextFixture.home_team_name ?? "Team TBC"} vs{" "}
@@ -410,7 +410,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
               />
             </div>
           ) : (
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-6 grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {keyPlayers.map((player) => (
                 <Link
                   key={`${player.api_team_id}-${player.api_player_id}`}
@@ -471,18 +471,18 @@ export default async function TeamPage({ params }: TeamPageProps) {
                 />
               </div>
             ) : (
-              <div className="mt-6 grid gap-5">
+              <div className="mt-6 grid min-w-0 gap-5">
                 {Object.entries(squadGroups).map(([position, players]) => (
                   <div key={position} className="rounded-2xl bg-white/[0.04] p-4">
                     <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-300">
                       {position}
                     </h3>
 
-                    <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                    <div className="mt-4 grid min-w-0 gap-2 sm:grid-cols-2">
                       {players.map((player) => (
                         <div
                           key={`${player.api_team_id}-${player.api_player_id}`}
-                          className="flex items-center justify-between rounded-xl border border-white/10 bg-slate-950/30 px-3 py-2"
+                          className="flex min-w-0 items-center justify-between rounded-xl border border-white/10 bg-slate-950/30 px-3 py-2"
                         >
                           <div>
                             <Link
@@ -555,7 +555,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
               />
             </div>
           ) : (
-            <div className="mt-6 grid gap-4 lg:grid-cols-2">
+            <div className="mt-6 grid min-w-0 gap-4 lg:grid-cols-2">
               {fixtures.map((fixture) => (
                 <FixtureCard key={fixture.id} fixture={fixture} />
               ))}
@@ -577,7 +577,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
               />
             </div>
           ) : (
-            <div className="mt-6 grid gap-4 lg:grid-cols-2">
+            <div className="mt-6 grid min-w-0 gap-4 lg:grid-cols-2">
               {results.map((fixture) => (
                 <FixtureCard key={fixture.id} fixture={fixture} />
               ))}
@@ -588,3 +588,6 @@ export default async function TeamPage({ params }: TeamPageProps) {
     </>
   );
 }
+
+
+

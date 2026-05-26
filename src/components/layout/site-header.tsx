@@ -64,7 +64,7 @@ export function SiteHeader() {
             })}
           </nav>
 
-          <div className="hidden items-center gap-3 xl:flex">
+          <div className="hidden shrink-0 items-center gap-2 2xl:flex">
             <span className="neon-badge neon-badge-cyan">Fan signal</span>
             <span className="neon-badge">Live data</span>
           </div>
@@ -114,3 +114,4 @@ export function SiteHeader() {
     </header>
   );
 }
+

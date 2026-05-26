@@ -42,9 +42,9 @@ export function WorldClock({
         Kickoff around the world
       </h2>
       <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        {rows.slice(0, 5).map(([label, zone]) => (
+        {rows.slice(0, 5).map(([label, zone], index) => (
           <div
-            key={`${label}-${zone}`}
+            key={`${label}-${zone}-${index}`}
             className="rounded-2xl border border-white/10 bg-slate-950/45 p-4"
           >
             <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">
@@ -59,3 +59,6 @@ export function WorldClock({
     </section>
   );
 }
+
+
+
