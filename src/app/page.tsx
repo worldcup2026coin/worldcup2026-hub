@@ -182,7 +182,15 @@ export default async function HomePage() {
                   <Link href="/teams" className="glow-button-secondary">
                     Explore teams
                   </Link>
-                </div>
+                </div>                  <div className="mt-8">
+                    <CountdownTimer
+                      targetDate={countdownTarget}
+                      label="Countdown to Kick-Off"
+                      matchLabel="Mexico vs South Africa · 11 June 2026"
+                      badge="Road to 2026"
+                    />
+                  </div>
+
 
                 <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-5">
                   <StatTile label="Live data" value="ON" tone="lime" />
@@ -191,14 +199,6 @@ export default async function HomePage() {
                   <StatTile label="Matches" value="104" tone="gold" />
                   <StatTile label="Groups" value="12" tone="lime" />
                 </div>
-                  <div className="mt-8">
-                    <CountdownTimer
-                      targetDate={countdownTarget}
-                      label="Countdown to Kick-Off"
-                      matchLabel="Mexico vs South Africa · 11 June 2026"
-                      badge="Road to 2026"
-                    />
-                  </div>
 
                 {data.latestSyncLog ? (
                   <p className="mt-5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
@@ -465,6 +465,7 @@ export default async function HomePage() {
     </div>
   );
 }
+
 
 
 
