@@ -106,7 +106,7 @@ export default async function BestThirdPlacedTeamsPage() {
               </h1>
               <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300 sm:text-lg">
                 Twelve groups. Twelve third-placed teams. Eight survive. This page
-                tracks the cut line and explains the tiebreaker signal without fake certainty.
+                tracks the cut line and explains the tiebreaker signal without overclaiming.
               </p>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
@@ -283,3 +283,4 @@ export default async function BestThirdPlacedTeamsPage() {
     </div>
   );
 }
+

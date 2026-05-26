@@ -9,7 +9,7 @@ export function EmailSignupCard() {
       </h2>
 
       <p className="mt-3 text-sm leading-6 text-slate-300">
-        This placeholder signup block can connect to Supabase for email capture,
+        Get World Cup 2026 updates when signup is available.
         fan segmentation, and tournament updates when ready.
       </p>
 
@@ -17,7 +17,7 @@ export function EmailSignupCard() {
         <input
           disabled
           aria-label="Email address placeholder"
-          placeholder="Email signup coming soon"
+          placeholder="Email updates unavailable"
           className="min-h-12 rounded-2xl border px-4 text-sm text-slate-300 outline-none placeholder:text-slate-500 disabled:cursor-not-allowed"
         />
         <button
@@ -25,9 +25,12 @@ export function EmailSignupCard() {
           disabled
           className="glow-button-primary opacity-70 disabled:cursor-not-allowed"
         >
-          Coming soon
+          Updates unavailable
         </button>
       </div>
     </section>
   );
 }
+
+
+

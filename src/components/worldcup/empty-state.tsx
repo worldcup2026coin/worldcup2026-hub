@@ -19,7 +19,7 @@ function tuneDescription(description: string) {
   }
 
   if (value.includes("stat")) {
-    return "Stats will light up when the feed updates. No fake certainty, just clean signal.";
+    return "Stats will update when verified feed data is available.";
   }
 
   if (value.includes("assist")) {
@@ -50,3 +50,4 @@ export function EmptyState({ title, description, action }: EmptyStateProps) {
     </div>
   );
 }
+

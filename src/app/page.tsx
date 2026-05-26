@@ -226,7 +226,7 @@ export default async function HomePage() {
                     ) : (
                       <div className="rounded-3xl border border-dashed border-white/15 bg-white/[0.04] p-8 text-center">
                         <h2 className="text-2xl font-black text-white">
-                          Fixtures coming soon
+                          Fixture schedule updates when confirmed data is available
                         </h2>
                         <p className="mt-3 text-sm text-slate-300">
                           Once fixtures sync, the featured match lights up here.
@@ -305,7 +305,7 @@ export default async function HomePage() {
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <span className="neon-badge neon-badge-cyan">Updated live</span>
                   <span className="text-xs font-black uppercase tracking-[0.14em] text-lime-200">
-                    4,321 fan votes
+                    Fan debate hub
                   </span>
                 </div>
                 <PollCard poll={data.polls[0]} source="homepage_polish" />
@@ -582,6 +582,8 @@ export default async function HomePage() {
     </div>
   );
 }
+
+
 
 
 

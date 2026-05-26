@@ -44,7 +44,7 @@ export function LeaderboardTable({ title, valueLabel, rows }: Props) {
           {rows.length === 0 ? (
             <div className="rounded-3xl border border-dashed border-lime-300/20 bg-lime-300/10 p-8 text-center text-slate-300">
               <p className="text-3xl">⚡</p>
-              <h2 className="mt-4 text-2xl font-black uppercase text-white">No data yet</h2>
+              <h2 className="mt-4 text-2xl font-black uppercase text-white">No verified rankings available</h2>
               <p className="mx-auto mt-2 max-w-xl text-sm leading-6">
                 {emptyCopy(valueLabel)}
               </p>
@@ -117,3 +117,4 @@ export function LeaderboardTable({ title, valueLabel, rows }: Props) {
     </main>
   );
 }
+

@@ -39,7 +39,7 @@ export default async function PredictionsPage() {
             ],
             [
               "Risk notes",
-              "Prediction cards separate low-confidence reads from stronger signals and avoid fake certainty.",
+              "Prediction cards separate low-confidence reads from stronger signals and avoid overclaiming.",
             ],
             [
               "Likely script",
@@ -146,3 +146,4 @@ export default async function PredictionsPage() {
     </>
   );
 }
+

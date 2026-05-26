@@ -1,4 +1,4 @@
-﻿import type { Fixture } from "@/lib/data/worldcup";
+import type { Fixture } from "@/lib/data/worldcup";
 
 type MatchPredictionPlaceholderProps = {
   fixture: Fixture;
@@ -10,7 +10,7 @@ export function MatchPredictionPlaceholder({
   return (
     <section className="rounded-3xl border border-amber-400/20 bg-amber-400/10 p-6 shadow-2xl shadow-slate-950/30">
       <p className="text-sm font-semibold uppercase tracking-[0.24em] text-amber-200">
-        Predictions placeholder
+        Prediction context
       </p>
 
       <h2 className="mt-3 text-2xl font-black text-white">
@@ -42,7 +42,7 @@ export function MatchPredictionPlaceholder({
             Betting-style section
           </p>
           <p className="mt-2 text-sm text-slate-300">
-            Placeholder only. No tips engine is active yet.
+            Prediction data is unavailable for this match right now.
           </p>
         </div>
       </div>
@@ -55,3 +55,5 @@ export function MatchPredictionPlaceholder({
     </section>
   );
 }
+
+

@@ -73,6 +73,7 @@ export function getTravelHighlights(city: HostCity) {
   return travelHighlights[city.slug] ?? [
     "Airport and transport guide updating",
     "Matchday routes will be added",
-    "Local highlights coming soon",
+    "Host city highlights",
   ];
 }
+

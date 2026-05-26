@@ -15,14 +15,16 @@ export function CommunityCTA() {
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <a href="#" className="glow-button-primary">
-            Telegram coming soon
+            Community channel not active
           </a>
 
           <a href="#" className="glow-button-secondary">
-            X / Twitter coming soon
+            Social channel not active
           </a>
         </div>
       </div>
     </section>
   );
 }
+
+

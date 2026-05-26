@@ -44,3 +44,8 @@ next-env.d.ts
 # Phase 14 generated QA artefacts
 launch/*.csv
 *.phase14-backup
+
+# QA artifacts
+qa-screenshots.zip
+qa-screenshots/
+qa-logs/
