@@ -946,3 +946,20 @@ body {
     width: 100% !important;
   }
 }
+
+/* Hard launch fix: CountdownTimer units must be 2x2 on mobile */
+@media (max-width: 640px) {
+  [data-countdown-timer-grid] {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.75rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  [data-countdown-timer-grid] > * {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}

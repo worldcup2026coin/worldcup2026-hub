@@ -106,7 +106,7 @@ export function CountdownTimer({
           </div>
 
           {!timeLeft ? (
-            <div className="grid grid-cols-4 gap-3 min-w-0">
+            <div data-countdown-timer-grid className="grid grid-cols-2 sm:grid-cols-4 gap-3 min-w-0">
               {["DAYS", "HRS", "MIN", "SEC"].map((unit) => (
                 <div key={unit} className="rounded-2xl border border-white/10 bg-black/50 p-3 text-center">
                   <div className="h-9 animate-pulse rounded-xl bg-white/10" />
@@ -119,7 +119,7 @@ export function CountdownTimer({
               <p className="text-2xl font-black uppercase text-lime-100">World Cup 2026 is live.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-4 gap-3 min-w-0">
+            <div data-countdown-timer-grid className="grid grid-cols-2 sm:grid-cols-4 gap-3 min-w-0">
               {[
                 ["DAYS", timeLeft.days],
                 ["HRS", pad(timeLeft.hours)],
@@ -157,4 +157,5 @@ export function CountdownTimer({
     </section>
   );
 }
+
 
