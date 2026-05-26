@@ -1,6 +1,7 @@
 import "server-only";
 import { notFound } from "next/navigation";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import type { Fixture } from "@/lib/data/worldcup";
 
 export type PlayerProfile = {
   api_player_id: number;
@@ -8,8 +9,14 @@ export type PlayerProfile = {
   age: number | null;
   photo_url: string | null;
   team_name: string | null;
+  api_team_id: number | null;
   position: string | null;
   number: number | null;
+  appearances: number | null;
+  lineups: number | null;
+  minutes: number | null;
+  captain: boolean | null;
+  teamFixtures: Fixture[];
   injuries: Array<{
     type: string | null;
     reason: string | null;
@@ -56,7 +63,7 @@ export async function getPlayerProfileBySlug(slug: string) {
 
       supabase
         .from("team_squad_players")
-        .select("team_name,position,number")
+        .select("api_team_id,team_name,position,number,appearances,lineups,minutes,captain")
         .eq("api_player_id", apiPlayerId)
         .limit(1),
 
@@ -76,16 +83,36 @@ export async function getPlayerProfileBySlug(slug: string) {
   if (!player) notFound();
 
   const squad = squadRows?.[0] ?? null;
+  let teamFixtures: Fixture[] = [];
+
+  if (squad?.api_team_id) {
+    const { data: fixtures } = await supabase
+      .from("fixtures")
+      .select("*")
+      .or(
+        `home_team_api_id.eq.${squad.api_team_id},away_team_api_id.eq.${squad.api_team_id}`
+      )
+      .order("match_date", { ascending: true })
+      .limit(8);
+
+    teamFixtures = (fixtures ?? []) as Fixture[];
+  }
 
   return {
     api_player_id: player.api_player_id,
     name: player.name,
     age: player.age,
     photo_url: player.photo_url,
+    api_team_id: squad?.api_team_id ?? null,
     team_name: squad?.team_name ?? null,
     position: squad?.position ?? null,
     number: squad?.number ?? null,
+    appearances: squad?.appearances ?? null,
+    lineups: squad?.lineups ?? null,
+    minutes: squad?.minutes ?? null,
+    captain: squad?.captain ?? null,
     injuries: injuries ?? [],
     rankings: rankings ?? [],
+    teamFixtures,
   } as PlayerProfile;
 }

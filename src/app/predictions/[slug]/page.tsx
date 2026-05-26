@@ -13,6 +13,7 @@ import {
   getMatchTitle,
   getPublicSiteUrl,
 } from "@/lib/data/matches";
+import { formatVenueDateTime } from "@/lib/worldcup/format";
 
 export const dynamic = "force-dynamic";
 
@@ -120,6 +121,36 @@ export default async function PredictionDetailPage({
               ? `Published sections: ${typeLabels.join(", ")}.`
               : "No prediction content has been published for this match yet."}
           </p>
+        </section>
+
+        <section className="mt-6 grid gap-4 lg:grid-cols-3">
+          <article className="rounded-3xl border border-cyan-300/20 bg-cyan-300/10 p-5">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-100">
+              Match angle
+            </p>
+            <p className="mt-3 text-sm leading-6 text-slate-200">
+              Kick-off context: {formatVenueDateTime(data.fixture)}. Read the
+              fixture through venue, group pressure and lineup availability.
+            </p>
+          </article>
+          <article className="rounded-3xl border border-lime-300/20 bg-lime-300/10 p-5">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-lime-100">
+              Likely script
+            </p>
+            <p className="mt-3 text-sm leading-6 text-slate-200">
+              The best preview should explain where control may come from,
+              whether the match opens up late, and what changes after the first goal.
+            </p>
+          </article>
+          <article className="rounded-3xl border border-fuchsia-300/20 bg-fuchsia-400/10 p-5">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-fuchsia-100">
+              Risk notes
+            </p>
+            <p className="mt-3 text-sm leading-6 text-slate-200">
+              Treat every lean as provisional. Team news, injuries, rotation and
+              venue changes can shift the read before kick-off.
+            </p>
+          </article>
         </section>
 
         <div className="mt-8">

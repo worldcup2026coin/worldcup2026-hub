@@ -1,6 +1,7 @@
 
 import type { Fixture } from "@/lib/data/matches";
-import { formatDateTime } from "@/lib/worldcup/format";
+import Image from "next/image";
+import { formatDateTime, formatVenueDateTime } from "@/lib/worldcup/format";
 import { getMatchStatusInfo } from "@/lib/worldcup/match-status";
 import { MatchStatusBadge } from "@/components/matches/match-status-badge";
 
@@ -21,9 +22,11 @@ function TeamBadge({
     <div className="flex min-w-0 flex-col items-center text-center">
       <span className="flex h-24 w-24 items-center justify-center rounded-[1.75rem] border border-lime-300/25 bg-white/10 p-2 shadow-[0_0_30px_rgba(163,255,18,0.13)] sm:h-28 sm:w-28">
         {logo ? (
-          <img
+          <Image
             src={logo}
             alt={`${displayName} logo`}
+            width={112}
+            height={112}
             className="h-full w-full rounded-2xl object-contain"
           />
         ) : (
@@ -69,7 +72,7 @@ export function MatchHeader({ fixture }: MatchHeaderProps) {
             {fixture.round || fixture.group_name || "World Cup 2026"}
           </p>
           <p className="mt-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-300">
-            {formatDateTime(fixture.match_date)}
+            {formatVenueDateTime(fixture)}
           </p>
         </div>
 
@@ -120,10 +123,12 @@ export function MatchHeader({ fixture }: MatchHeaderProps) {
 
         <div className="rounded-2xl border border-fuchsia-300/20 bg-fuchsia-400/10 p-4">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-fuchsia-200">
-            Feed
+            Your time
           </p>
           <p className="mt-2 font-semibold text-white">
-            Synced match centre
+            {formatDateTime(fixture.match_date, "Europe/Dublin", {
+              includeTimeZoneName: true,
+            })}
           </p>
         </div>
       </div>

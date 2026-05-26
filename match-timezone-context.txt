@@ -1,0 +1,1523 @@
+=== MATCH PAGE CONTEXT ===
+
+
+================ src/app/matches/[slug]/page.tsx ================
+import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo/json-ld";
+import { notFound, permanentRedirect } from "next/navigation";
+import { Container } from "@/components/ui/container";
+import { MatchEventsTimeline } from "@/components/matches/match-events-timeline";
+import { MatchHeader } from "@/components/matches/match-header";
+import { MatchLineups } from "@/components/matches/match-lineups";
+import { MatchPollPlaceholder } from "@/components/matches/match-poll-placeholder";
+import { PollCard } from "@/components/community/poll-card";
+import { MatchPreviewBlock } from "@/components/matches/match-preview-block";
+import { ApiFootballPredictionCard } from "@/components/matches/api-football-prediction-card";
+import { MatchHeadToHeadCard } from "@/components/matches/match-head-to-head-card";
+import { MatchOddsSnapshot } from "@/components/matches/match-odds-snapshot";
+import { InjuryList } from "@/components/matches/injury-list";
+import { MatchShareButtons } from "@/components/matches/match-share-buttons";
+import { MatchStats } from "@/components/matches/match-stats";
+import { EmailSignupForm } from "@/components/community/email-signup-form";
+import { MatchPredictionSections } from "@/components/predictions/match-prediction-sections";
+import {
+  getMatchBySlug,
+  getMatchPageData,
+  getMatchTitle,
+  getPublicSiteUrl,
+} from "@/lib/data/matches";
+import { getPredictionContentForFixture } from "@/lib/data/predictions";
+import { getPublishedPolls } from "@/lib/data/community";
+import { formatDateOnly } from "@/lib/worldcup/format";
+import { breadcrumbJsonLd, sportsEventJsonLd } from "@/lib/seo";
+
+export const dynamic = "force-dynamic";
+
+type MatchPageProps = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
+
+export async function generateMetadata({
+  params,
+}: MatchPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const match = await getMatchBySlug(slug);
+  const siteUrl = getPublicSiteUrl();
+
+  if (!match) {
+    return {
+      title: "Match not found",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const { fixture, canonicalSlug } = match;
+  const matchName = getMatchTitle(
+    fixture.home_team_name,
+    fixture.away_team_name
+  );
+
+  const title = `${matchName} | World Cup 2026 Preview, Live Score & Stats`;
+
+  const description = `Follow ${matchName} at World Cup 2026 with live score, match stats, team news, predictions and fan insights.`;
+
+  return {
+    metadataBase: new URL(siteUrl),
+    title,
+    description,
+    alternates: {
+      canonical: `/matches/${canonicalSlug}`,
+    },
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      url: `/matches/${canonicalSlug}`,
+      siteName: "World Cup 2026 Hub",
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+  };
+}
+
+export default async function MatchPage({ params }: MatchPageProps) {
+  const { slug } = await params;
+  const data = await getMatchPageData(slug);
+
+  if (!data) {
+    notFound();
+  }
+
+  if (slug !== data.canonicalSlug) {
+    permanentRedirect(`/matches/${data.canonicalSlug}`);
+  }
+
+  const {
+    fixture,
+    canonicalSlug,
+    events,
+    stats,
+    lineups,
+    apiPrediction,
+    apiOdds,
+    headToHead,
+    injuries,
+  } = data;
+
+  const [predictionContent, fixturePolls] = await Promise.all([
+    getPredictionContentForFixture(fixture.id),
+    getPublishedPolls({
+      contextType: "fixture",
+      fixtureId: fixture.id,
+      limit: 1,
+    }),
+  ]);
+
+  const siteUrl = getPublicSiteUrl();
+  const shareUrl = `${siteUrl}/matches/${canonicalSlug}`;
+  const shareText = `${getMatchTitle(
+    fixture.home_team_name,
+    fixture.away_team_name
+  )} · ${formatDateOnly(fixture.match_date)} · World Cup 2026 Hub`;
+
+  return (
+    <div className="py-10 sm:py-14">
+      <Container>
+                <JsonLd
+          data={breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Fixtures", path: "/fixtures" },
+            {
+              name: `${fixture.home_team_name ?? "Home"} vs ${
+                fixture.away_team_name ?? "Away"
+              }`,
+              path: `/matches/${canonicalSlug}`,
+            },
+          ])}
+        />
+
+        <JsonLd
+          data={sportsEventJsonLd({
+            name: `${fixture.home_team_name ?? "Home"} vs ${
+              fixture.away_team_name ?? "Away"
+            }`,
+            startDate: fixture.match_date,
+            locationName: fixture.venue_name,
+            locationCity: fixture.venue_city,
+            homeTeam: fixture.home_team_name,
+            awayTeam: fixture.away_team_name,
+            path: `/matches/${canonicalSlug}`,
+          })}
+        />
+        <MatchHeader fixture={fixture} />
+
+        <div className="mt-8 grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
+          <div className="grid gap-6">
+            <MatchPreviewBlock fixture={fixture} />
+            <ApiFootballPredictionCard prediction={apiPrediction} />
+            <MatchOddsSnapshot odds={apiOdds} />
+            <MatchHeadToHeadCard headToHead={headToHead} />
+            <InjuryList title="Match injury news" injuries={injuries} />
+            <MatchEventsTimeline events={events} />
+            <MatchStats fixture={fixture} stats={stats} />
+            <MatchLineups lineups={lineups} />
+
+            <section className="rounded-[2rem] border border-emerald-400/15 bg-emerald-400/[0.04] p-5">
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-300">
+                Tips and predictions
+              </p>
+              <h2 className="mt-3 text-2xl font-black text-white">
+                Fan insights and match context
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-slate-300">
+                This section combines published fan insight with synced API context where available. It is informational only and does not guarantee any outcome.
+              </p>
+
+              <div className="mt-5">
+                <MatchPredictionSections
+                  fixture={fixture}
+                  tips={predictionContent.tips}
+                  oddsRecords={predictionContent.oddsRecords}
+                />
+              </div>
+            </section>
+          </div>
+
+          <aside className="grid content-start gap-6">
+            <MatchShareButtons shareText={shareText} shareUrl={shareUrl} />
+            <EmailSignupForm
+              source="match_page"
+              title="Get matchday updates"
+              description="Join the list for World Cup updates, matchday notes and community features."
+            />
+                        {fixturePolls[0] ? (
+              <PollCard poll={fixturePolls[0]} source="match_page" />
+            ) : (
+              <MatchPollPlaceholder fixture={fixture} />
+            )}
+          </aside>
+        </div>
+      </Container>
+    </div>
+  );
+}
+
+
+
+
+
+
+
+
+
+================ src/components/matches/match-header.tsx ================
+
+import type { Fixture } from "@/lib/data/matches";
+import { formatDateTime } from "@/lib/worldcup/format";
+import { getMatchStatusInfo } from "@/lib/worldcup/match-status";
+import { MatchStatusBadge } from "@/components/matches/match-status-badge";
+
+type MatchHeaderProps = {
+  fixture: Fixture;
+};
+
+function TeamBadge({
+  name,
+  logo,
+}: {
+  name: string | null;
+  logo: string | null;
+}) {
+  const displayName = name || "Team TBC";
+
+  return (
+    <div className="flex min-w-0 flex-col items-center text-center">
+      <span className="flex h-24 w-24 items-center justify-center rounded-[1.75rem] border border-lime-300/25 bg-white/10 p-2 shadow-[0_0_30px_rgba(163,255,18,0.13)] sm:h-28 sm:w-28">
+        {logo ? (
+          <img
+            src={logo}
+            alt={`${displayName} logo`}
+            className="h-full w-full rounded-2xl object-contain"
+          />
+        ) : (
+          <span className="text-2xl font-black text-white">
+            {displayName.slice(0, 2).toUpperCase()}
+          </span>
+        )}
+      </span>
+
+      <h1 className="mt-4 max-w-[9.5rem] overflow-hidden text-balance break-words text-2xl font-black uppercase leading-tight tracking-tight text-white sm:max-w-[18rem] sm:overflow-visible sm:text-4xl lg:max-w-[24rem]">
+        {displayName}
+      </h1>
+    </div>
+  );
+}
+
+function ScoreBox({ fixture }: { fixture: Fixture }) {
+  const status = getMatchStatusInfo(fixture.status_short, fixture.status_long);
+
+  if (!status.showScore) {
+    return (
+      <p className="mt-2 text-4xl font-black uppercase text-white sm:text-6xl">
+        <span className="glow-text text-cyan-200">VS</span>
+      </p>
+    );
+  }
+
+  return (
+    <p className="mt-2 text-5xl font-black text-white sm:text-7xl">
+      {fixture.home_goals ?? "-"}
+      <span className="mx-2 text-cyan-300">:</span>
+      {fixture.away_goals ?? "-"}
+    </p>
+  );
+}
+
+export function MatchHeader({ fixture }: MatchHeaderProps) {
+  return (
+    <section className="hero-panel rounded-[2.25rem] p-6 sm:p-10">
+      <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="neon-kicker">
+            {fixture.round || fixture.group_name || "World Cup 2026"}
+          </p>
+          <p className="mt-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-300">
+            {formatDateTime(fixture.match_date)}
+          </p>
+        </div>
+
+        <MatchStatusBadge
+          statusShort={fixture.status_short}
+          statusLong={fixture.status_long}
+        />
+      </div>
+
+      <div className="relative z-10 mt-10 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 sm:gap-5">
+        <TeamBadge
+          name={fixture.home_team_name}
+          logo={fixture.home_team_logo_url}
+        />
+
+        <div className="rounded-[2rem] border border-fuchsia-300/25 bg-slate-950/75 px-4 py-5 text-center shadow-[0_0_30px_rgba(255,43,214,0.14)] sm:px-6">
+          <p className="text-[0.65rem] font-black uppercase tracking-[0.2em] text-fuchsia-200">
+            Match signal
+          </p>
+          <ScoreBox fixture={fixture} />
+        </div>
+
+        <TeamBadge
+          name={fixture.away_team_name}
+          logo={fixture.away_team_logo_url}
+        />
+      </div>
+
+      <div className="relative z-10 mt-8 grid gap-3 text-sm text-slate-300 md:grid-cols-3">
+        <div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 p-4">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">
+            Venue
+          </p>
+          <p className="mt-2 font-semibold text-white">
+            {fixture.venue_name ?? "Venue TBC"}
+            {fixture.venue_city ? ` · ${fixture.venue_city}` : ""}
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-lime-300/20 bg-lime-300/10 p-4">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-lime-200">
+            Status
+          </p>
+          <p className="mt-2 font-semibold text-white">
+            {fixture.status_long ?? fixture.status_short ?? "Status TBC"}
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-fuchsia-300/20 bg-fuchsia-400/10 p-4">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-fuchsia-200">
+            Feed
+          </p>
+          <p className="mt-2 font-semibold text-white">
+            Synced match centre
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+
+================ src/components/worldcup/fixture-card.tsx ================
+
+import Link from "next/link";
+import type { Fixture } from "@/lib/data/worldcup";
+import {
+  fixtureSlug,
+  formatDateTime,
+  getFixtureDisplayStatus,
+  teamSlug,
+} from "@/lib/worldcup/format";
+import { FixtureStatusBadge } from "@/components/worldcup/fixture-status-badge";
+
+type FixtureCardProps = {
+  fixture: Fixture;
+};
+
+function TeamLogo({
+  src,
+  alt,
+}: {
+  src: string | null | undefined;
+  alt: string;
+}) {
+  if (!src) {
+    return (
+      <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-cyan-300/25 bg-cyan-300/10 text-xs font-black text-white shadow-[0_0_18px_rgba(34,211,238,0.12)]">
+        {alt.slice(0, 2).toUpperCase()}
+      </span>
+    );
+  }
+
+  return (
+    <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/10 p-1 shadow-[0_0_18px_rgba(163,255,18,0.10)]">
+      <img
+        src={src}
+        alt={alt}
+        className="h-full w-full rounded-xl object-contain"
+        loading="lazy"
+      />
+    </span>
+  );
+}
+
+function TeamLine({
+  apiTeamId,
+  name,
+  logo,
+  score,
+  isWinner,
+}: {
+  apiTeamId: number | null;
+  name: string | null;
+  logo: string | null;
+  score: number | null;
+  isWinner: boolean;
+}) {
+  const displayName = name ?? "Team TBC";
+  const content = (
+    <div className="flex min-w-0 items-center gap-3">
+      <TeamLogo src={logo} alt={displayName} />
+      <span
+        className={`truncate text-sm font-black ${
+          isWinner ? "text-lime-200 glow-text" : "text-white"
+        }`}
+      >
+        {displayName}
+      </span>
+    </div>
+  );
+
+  return (
+    <div className={`flex items-center justify-between gap-4 rounded-2xl border p-3 ${
+      isWinner
+        ? "border-lime-300/25 bg-lime-300/10"
+        : "border-white/10 bg-slate-950/45"
+    }`}>
+      {apiTeamId && name ? (
+        <Link href={`/teams/${teamSlug(name, apiTeamId)}`} className="min-w-0 hover:text-lime-200">
+          {content}
+        </Link>
+      ) : (
+        <div className="min-w-0">{content}</div>
+      )}
+
+      <span className="min-w-9 text-right text-2xl font-black text-white">
+        {score ?? "-"}
+      </span>
+    </div>
+  );
+}
+
+export function FixtureCard({ fixture }: FixtureCardProps) {
+  const displayStatus = getFixtureDisplayStatus(fixture.status_short);
+  const showScore = displayStatus === "live" || displayStatus === "finished";
+
+  const homeScore = showScore ? fixture.home_goals : null;
+  const awayScore = showScore ? fixture.away_goals : null;
+
+  const matchSlug = fixtureSlug({
+    api_fixture_id: fixture.api_fixture_id,
+    match_date: fixture.match_date,
+    home_team_name: fixture.home_team_name,
+    away_team_name: fixture.away_team_name,
+  });
+
+  return (
+    <article className="neon-card group rounded-[2rem] p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <FixtureStatusBadge
+          statusShort={fixture.status_short}
+          statusLong={fixture.status_long}
+        />
+        <span className="rounded-full border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-fuchsia-100">
+          {formatDateTime(fixture.match_date)}
+        </span>
+      </div>
+
+      <div className="mt-5 grid gap-3">
+        <TeamLine
+          apiTeamId={fixture.home_team_api_id}
+          name={fixture.home_team_name}
+          logo={fixture.home_team_logo_url}
+          score={homeScore}
+          isWinner={fixture.winner_api_team_id === fixture.home_team_api_id}
+        />
+        <TeamLine
+          apiTeamId={fixture.away_team_api_id}
+          name={fixture.away_team_name}
+          logo={fixture.away_team_logo_url}
+          score={awayScore}
+          isWinner={fixture.winner_api_team_id === fixture.away_team_api_id}
+        />
+      </div>
+
+      <div className="mt-5 grid gap-2 text-xs font-semibold text-slate-400 sm:grid-cols-2">
+        <p>
+          <span className="text-cyan-200">Venue:</span>{" "}
+          {fixture.venue_name ?? "Venue TBC"}
+          {fixture.venue_city ? `, ${fixture.venue_city}` : ""}
+        </p>
+        <p>
+          <span className="text-lime-200">Round:</span>{" "}
+          {fixture.round ?? "World Cup 2026"}
+        </p>
+      </div>
+
+      <Link href={`/matches/${matchSlug}`} className="glow-button-secondary mt-5 w-full">
+        Match centre
+      </Link>
+    </article>
+  );
+}
+
+
+
+================ src/lib/data/matches.ts ================
+import "server-only";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import type { Fixture } from "@/lib/data/worldcup";
+import { fixtureSlug, getFixtureIdFromSlug } from "@/lib/worldcup/format";
+import { getInjuriesForFixture } from "@/lib/data/injuries";
+
+export type { Fixture } from "@/lib/data/worldcup";
+
+export type MatchEvent = {
+  id: string;
+  fixture_id: string | null;
+  api_fixture_id: number;
+  api_event_key: string;
+  elapsed: number | null;
+  extra: number | null;
+  team_api_id: number | null;
+  team_name: string | null;
+  team_logo_url: string | null;
+  player_api_id: number | null;
+  player_name: string | null;
+  assist_api_id: number | null;
+  assist_name: string | null;
+  event_type: string | null;
+  event_detail: string | null;
+  comments: string | null;
+  raw: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+export type MatchStatistic = {
+  id: string;
+  fixture_id: string | null;
+  api_fixture_id: number;
+  team_api_id: number;
+  team_name: string;
+  team_logo_url: string | null;
+  stat_type: string;
+  stat_value: string | null;
+  raw: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+export type MatchLineup = {
+  id: string;
+  fixture_id: string | null;
+  api_fixture_id: number;
+  team_api_id: number;
+  team_name: string;
+  team_logo_url: string | null;
+  coach_name: string | null;
+  formation: string | null;
+  starting_xi: unknown;
+  substitutes: unknown;
+  raw: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+export type MatchPrediction = {
+  id: string;
+  api_fixture_id: number;
+  winner_name: string | null;
+  winner_comment: string | null;
+  advice: string | null;
+  percent_home: string | null;
+  percent_draw: string | null;
+  percent_away: string | null;
+  raw: unknown;
+  api_raw_json: unknown;
+  last_synced_at: string | null;
+  updated_at: string;
+};
+
+export type MatchOddsRecord = {
+  id: string;
+  api_fixture_id: number;
+  bookmaker_id: number | null;
+  bookmaker_name: string | null;
+  bet_id: number | null;
+  bet_name: string | null;
+  values: unknown;
+  raw: unknown;
+  api_raw_json: unknown;
+  last_synced_at: string | null;
+  updated_at: string;
+};
+
+export type MatchHeadToHead = {
+  id: string;
+  api_fixture_id: number;
+  home_team_api_id: number;
+  away_team_api_id: number;
+  h2h_key: string;
+  matches: unknown;
+  raw: unknown;
+  api_raw_json: unknown;
+  last_synced_at: string | null;
+  updated_at: string;
+};
+
+function asFixture(data: unknown): Fixture | null {
+  return (data ?? null) as Fixture | null;
+}
+
+function asMatchEvents(data: unknown): MatchEvent[] {
+  const rows = (data ?? []) as Array<Record<string, unknown>>;
+
+  return rows.map((row) => ({
+    ...row,
+    team_api_id: row.team_api_id ?? row.api_team_id ?? null,
+    player_api_id: row.player_api_id ?? row.api_player_id ?? null,
+    assist_api_id: row.assist_api_id ?? row.api_assist_player_id ?? null,
+    assist_name: row.assist_name ?? row.assist_player_name ?? null,
+  })) as MatchEvent[];
+}
+
+function asMatchStatistics(data: unknown): MatchStatistic[] {
+  const rows = (data ?? []) as Array<Record<string, unknown>>;
+  const flatRows: Array<Record<string, unknown>> = [];
+
+  for (const row of rows) {
+    const stats = Array.isArray(row.statistics) ? row.statistics : [];
+
+    if (stats.length === 0) {
+      flatRows.push({
+        ...row,
+        team_api_id: row.team_api_id ?? row.api_team_id,
+        stat_type: "Statistics",
+        stat_value: null,
+      });
+      continue;
+    }
+
+    for (const stat of stats) {
+      const statRecord =
+        stat && typeof stat === "object" && !Array.isArray(stat)
+          ? (stat as Record<string, unknown>)
+          : {};
+
+      flatRows.push({
+        ...row,
+        team_api_id: row.team_api_id ?? row.api_team_id,
+        stat_type:
+          typeof statRecord.type === "string" ? statRecord.type : "Statistic",
+        stat_value:
+          typeof statRecord.value === "string" ||
+          typeof statRecord.value === "number"
+            ? String(statRecord.value)
+            : null,
+      });
+    }
+  }
+
+  return flatRows as MatchStatistic[];
+}
+
+function asMatchLineups(data: unknown): MatchLineup[] {
+  const rows = (data ?? []) as Array<Record<string, unknown>>;
+
+  return rows.map((row) => ({
+    ...row,
+    team_api_id: row.team_api_id ?? row.api_team_id,
+    starting_xi: row.starting_xi ?? row.start_xi ?? [],
+  })) as MatchLineup[];
+}
+
+function asMatchPrediction(data: unknown): MatchPrediction | null {
+  return (data ?? null) as MatchPrediction | null;
+}
+
+function asMatchOddsRecords(data: unknown): MatchOddsRecord[] {
+  return (data ?? []) as MatchOddsRecord[];
+}
+
+function asMatchHeadToHead(data: unknown): MatchHeadToHead | null {
+  return (data ?? null) as MatchHeadToHead | null;
+}
+
+function isMissingOptionalTableError(error: { code?: string; message?: string }) {
+  const message = error.message ?? "";
+
+  return (
+    error.code === "42P01" ||
+    error.code === "PGRST205" ||
+    message.includes("does not exist") ||
+    message.includes("Could not find the table")
+  );
+}
+
+export function getPublicSiteUrl() {
+  return (
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.VERCEL_PROJECT_PRODUCTION_URL?.replace(/^/, "https://") ||
+    "https://worldcup2026-hub.vercel.app"
+  ).replace(/\/+$/, "");
+}
+
+export function getMatchTitle(home?: string | null, away?: string | null) {
+  return `${home || "Home"} vs ${away || "Away"}`;
+}
+
+export function getCanonicalMatchSlug(fixture: Fixture) {
+  return fixtureSlug({
+    api_fixture_id: fixture.api_fixture_id,
+    match_date: fixture.match_date,
+    home_team_name: fixture.home_team_name,
+    away_team_name: fixture.away_team_name,
+  });
+}
+
+export async function getMatchBySlug(slug: string) {
+  const apiFixtureId = getFixtureIdFromSlug(slug);
+
+  if (!apiFixtureId) {
+    return null;
+  }
+
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("fixtures")
+    .select("*")
+    .eq("api_fixture_id", apiFixtureId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Failed to load match fixture: ${error.message}`);
+  }
+
+  const fixture = asFixture(data);
+
+  if (!fixture) {
+    return null;
+  }
+
+  return {
+    fixture,
+    canonicalSlug: getCanonicalMatchSlug(fixture),
+  };
+}
+
+export async function getMatchEvents(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("fixture_events")
+    .select("*")
+    .eq("api_fixture_id", apiFixtureId)
+    .order("elapsed", { ascending: true, nullsFirst: true })
+    .order("extra", { ascending: true, nullsFirst: true });
+
+  if (error) {
+    if (isMissingOptionalTableError(error)) {
+      return [];
+    }
+
+    throw new Error(`Failed to load match events: ${error.message}`);
+  }
+
+  return asMatchEvents(data);
+}
+
+export async function getMatchStats(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("fixture_statistics")
+    .select("*")
+    .eq("api_fixture_id", apiFixtureId)
+    .order("stat_type", { ascending: true });
+
+  if (error) {
+    if (isMissingOptionalTableError(error)) {
+      return [];
+    }
+
+    throw new Error(`Failed to load match stats: ${error.message}`);
+  }
+
+  return asMatchStatistics(data);
+}
+
+export async function getMatchLineups(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("fixture_lineups")
+    .select("*")
+    .eq("api_fixture_id", apiFixtureId)
+    .order("team_name", { ascending: true });
+
+  if (error) {
+    if (isMissingOptionalTableError(error)) {
+      return [];
+    }
+
+    throw new Error(`Failed to load match lineups: ${error.message}`);
+  }
+
+  return asMatchLineups(data);
+}
+
+export async function getFixturePrediction(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("fixture_predictions")
+    .select("*")
+    .eq("api_fixture_id", apiFixtureId)
+    .maybeSingle();
+
+  if (error) {
+    if (isMissingOptionalTableError(error)) return null;
+    throw new Error(`Failed to load fixture prediction: ${error.message}`);
+  }
+
+  return asMatchPrediction(data);
+}
+
+export async function getFixtureOdds(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("odds_records")
+    .select("*")
+    .eq("api_fixture_id", apiFixtureId)
+    .order("bookmaker_name", { ascending: true })
+    .order("bet_name", { ascending: true })
+    .limit(24);
+
+  if (error) {
+    if (isMissingOptionalTableError(error)) return [];
+    throw new Error(`Failed to load fixture odds: ${error.message}`);
+  }
+
+  return asMatchOddsRecords(data);
+}
+
+export async function getFixtureHeadToHead(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("fixture_head_to_head")
+    .select("*")
+    .eq("api_fixture_id", apiFixtureId)
+    .maybeSingle();
+
+  if (error) {
+    if (isMissingOptionalTableError(error)) return null;
+    throw new Error(`Failed to load fixture head-to-head: ${error.message}`);
+  }
+
+  return asMatchHeadToHead(data);
+}
+
+export async function getMatchPageData(slug: string) {
+  const match = await getMatchBySlug(slug);
+
+  if (!match) {
+    return null;
+  }
+
+  const [events, stats, lineups, apiPrediction, apiOdds, headToHead, injuries] =
+    await Promise.all([
+      getMatchEvents(match.fixture.api_fixture_id),
+      getMatchStats(match.fixture.api_fixture_id),
+      getMatchLineups(match.fixture.api_fixture_id),
+      getFixturePrediction(match.fixture.api_fixture_id),
+      getFixtureOdds(match.fixture.api_fixture_id),
+      getFixtureHeadToHead(match.fixture.api_fixture_id),
+      getInjuriesForFixture(match.fixture.api_fixture_id),
+    ]);
+
+  return {
+    ...match,
+    events,
+    stats,
+    lineups,
+    apiPrediction,
+    apiOdds,
+    headToHead,
+    injuries,
+  };
+}
+
+
+
+
+
+
+
+================ src/lib/data/venues.ts ================
+export type HostCity = {
+  slug: string;
+  city: string;
+  country: "USA" | "Mexico" | "Canada";
+  stadiumSlug: string;
+  stadium: string;
+  timezone: string;
+  matchesHosted: string;
+  role: string;
+  summary: string;
+  fanNote: string;
+};
+
+export type Stadium = {
+  slug: string;
+  name: string;
+  tournamentName?: string;
+  citySlug: string;
+  city: string;
+  country: "USA" | "Mexico" | "Canada";
+  capacity: string;
+  timezone: string;
+  matchesHosted: string;
+  role: string;
+  badges: string[];
+  summary: string;
+};
+
+export const hostCities: HostCity[] = [
+  {
+    slug: "mexico-city",
+    city: "Mexico City",
+    country: "Mexico",
+    stadiumSlug: "estadio-azteca",
+    stadium: "Estadio Azteca",
+    timezone: "America/Mexico_City",
+    matchesHosted: "Opening match plus group-stage and knockout fixtures",
+    role: "Opening match host",
+    summary: "Mexico City launches the tournament with one of world football's most iconic venues.",
+    fanNote: "Expect altitude, huge noise and a proper host-nation atmosphere from day one.",
+  },
+  {
+    slug: "guadalajara",
+    city: "Guadalajara",
+    country: "Mexico",
+    stadiumSlug: "estadio-akron",
+    stadium: "Estadio Akron",
+    timezone: "America/Mexico_City",
+    matchesHosted: "Group-stage fixtures",
+    role: "Group-stage host",
+    summary: "Guadalajara brings Mexican football culture into the group-stage story.",
+    fanNote: "A strong stop for fans following Mexico-based fixtures outside the capital.",
+  },
+  {
+    slug: "monterrey",
+    city: "Monterrey",
+    country: "Mexico",
+    stadiumSlug: "estadio-bbva",
+    stadium: "Estadio BBVA",
+    timezone: "America/Monterrey",
+    matchesHosted: "Group-stage fixtures",
+    role: "Group-stage host",
+    summary: "Monterrey adds a northern Mexico venue with a dramatic mountain backdrop.",
+    fanNote: "Useful for fans tracking Mexico fixtures and cross-border travel routes.",
+  },
+  {
+    slug: "toronto",
+    city: "Toronto",
+    country: "Canada",
+    stadiumSlug: "bmo-field",
+    stadium: "BMO Field",
+    timezone: "America/Toronto",
+    matchesHosted: "Group-stage fixtures",
+    role: "Canada host city",
+    summary: "Toronto gives Canada an eastern host-city base for the expanded tournament.",
+    fanNote: "A major international gateway with strong transport links for travelling fans.",
+  },
+  {
+    slug: "vancouver",
+    city: "Vancouver",
+    country: "Canada",
+    stadiumSlug: "bc-place",
+    stadium: "BC Place",
+    timezone: "America/Vancouver",
+    matchesHosted: "Group-stage fixtures",
+    role: "Canada host city",
+    summary: "Vancouver brings the Pacific coast into the World Cup map.",
+    fanNote: "Watch timezone differences carefully if following matches from Europe or Africa.",
+  },
+  {
+    slug: "atlanta",
+    city: "Atlanta",
+    country: "USA",
+    stadiumSlug: "mercedes-benz-stadium",
+    stadium: "Mercedes-Benz Stadium",
+    timezone: "America/New_York",
+    matchesHosted: "Group-stage and knockout fixtures",
+    role: "Knockout host",
+    summary: "Atlanta is one of the USA's major tournament hubs with a high-capacity indoor venue.",
+    fanNote: "A strong base for fans following knockout-stage movement in the southeast.",
+  },
+  {
+    slug: "boston",
+    city: "Boston",
+    country: "USA",
+    stadiumSlug: "gillette-stadium",
+    stadium: "Gillette Stadium",
+    timezone: "America/New_York",
+    matchesHosted: "Group-stage and knockout fixtures",
+    role: "Knockout host",
+    summary: "Boston adds a New England stop to the World Cup route.",
+    fanNote: "Plan travel time between the city centre and the stadium area.",
+  },
+  {
+    slug: "dallas",
+    city: "Dallas",
+    country: "USA",
+    stadiumSlug: "att-stadium",
+    stadium: "AT&T Stadium",
+    timezone: "America/Chicago",
+    matchesHosted: "Group-stage and knockout fixtures",
+    role: "Major match hub",
+    summary: "Dallas is set to be one of the biggest venue centres of the tournament.",
+    fanNote: "A likely heavyweight stop for fans chasing multiple fixtures.",
+  },
+  {
+    slug: "houston",
+    city: "Houston",
+    country: "USA",
+    stadiumSlug: "nrg-stadium",
+    stadium: "NRG Stadium",
+    timezone: "America/Chicago",
+    matchesHosted: "Group-stage fixtures",
+    role: "Group-stage host",
+    summary: "Houston adds another Texas venue to the 2026 tournament map.",
+    fanNote: "Expect hot weather planning to matter for international visitors.",
+  },
+  {
+    slug: "kansas-city",
+    city: "Kansas City",
+    country: "USA",
+    stadiumSlug: "arrowhead-stadium",
+    stadium: "Arrowhead Stadium",
+    timezone: "America/Chicago",
+    matchesHosted: "Group-stage fixtures",
+    role: "Group-stage host",
+    summary: "Kansas City brings one of the loudest stadium environments in North America.",
+    fanNote: "A strong football-culture stop with major matchday energy.",
+  },
+  {
+    slug: "los-angeles",
+    city: "Los Angeles",
+    country: "USA",
+    stadiumSlug: "sofi-stadium",
+    stadium: "SoFi Stadium",
+    timezone: "America/Los_Angeles",
+    matchesHosted: "Group-stage and knockout fixtures",
+    role: "Knockout host",
+    summary: "Los Angeles gives the tournament a major west-coast spotlight.",
+    fanNote: "Allow serious travel time across the city on matchday.",
+  },
+  {
+    slug: "miami",
+    city: "Miami",
+    country: "USA",
+    stadiumSlug: "hard-rock-stadium",
+    stadium: "Hard Rock Stadium",
+    timezone: "America/New_York",
+    matchesHosted: "Group-stage and knockout fixtures",
+    role: "Knockout host",
+    summary: "Miami adds a high-profile South Florida stop to the World Cup schedule.",
+    fanNote: "A strong hub for fans travelling from Latin America and the Caribbean.",
+  },
+  {
+    slug: "new-york-new-jersey",
+    city: "New York/New Jersey",
+    country: "USA",
+    stadiumSlug: "metlife-stadium",
+    stadium: "MetLife Stadium",
+    timezone: "America/New_York",
+    matchesHosted: "Group-stage, knockout fixtures and the final",
+    role: "Final host",
+    summary: "New York/New Jersey is the final destination of World Cup 2026.",
+    fanNote: "One of the biggest global arrival points for travelling supporters.",
+  },
+  {
+    slug: "philadelphia",
+    city: "Philadelphia",
+    country: "USA",
+    stadiumSlug: "lincoln-financial-field",
+    stadium: "Lincoln Financial Field",
+    timezone: "America/New_York",
+    matchesHosted: "Group-stage and knockout fixtures",
+    role: "Knockout host",
+    summary: "Philadelphia adds a historic east-coast city to the tournament route.",
+    fanNote: "Good for fans moving between northeast host cities.",
+  },
+  {
+    slug: "san-francisco-bay-area",
+    city: "San Francisco Bay Area",
+    country: "USA",
+    stadiumSlug: "levis-stadium",
+    stadium: "Levi's Stadium",
+    timezone: "America/Los_Angeles",
+    matchesHosted: "Group-stage fixtures",
+    role: "Group-stage host",
+    summary: "The Bay Area brings another major west-coast stop into the tournament.",
+    fanNote: "Plan travel around the wider Bay Area rather than just central San Francisco.",
+  },
+  {
+    slug: "seattle",
+    city: "Seattle",
+    country: "USA",
+    stadiumSlug: "lumen-field",
+    stadium: "Lumen Field",
+    timezone: "America/Los_Angeles",
+    matchesHosted: "Group-stage fixtures",
+    role: "Group-stage host",
+    summary: "Seattle adds a loud Pacific Northwest stadium atmosphere.",
+    fanNote: "A useful west-coast stop for fans following Pacific timezone fixtures.",
+  },
+];
+
+export const stadiums: Stadium[] = [
+  {
+    slug: "estadio-azteca",
+    name: "Estadio Azteca",
+    citySlug: "mexico-city",
+    city: "Mexico City",
+    country: "Mexico",
+    capacity: "87,000+",
+    timezone: "America/Mexico_City",
+    matchesHosted: "Opening match plus group-stage and knockout fixtures",
+    role: "Opening match host",
+    badges: ["Opening Match", "Historic Venue", "Mexico"],
+    summary: "The tournament starts at one of world football's most famous stadiums.",
+  },
+  {
+    slug: "estadio-akron",
+    name: "Estadio Akron",
+    citySlug: "guadalajara",
+    city: "Guadalajara",
+    country: "Mexico",
+    capacity: "46,000+",
+    timezone: "America/Mexico_City",
+    matchesHosted: "Group-stage fixtures",
+    role: "Group-stage host",
+    badges: ["Group Stage", "Mexico"],
+    summary: "A modern Mexican venue supporting the early tournament schedule.",
+  },
+  {
+    slug: "estadio-bbva",
+    name: "Estadio BBVA",
+    citySlug: "monterrey",
+    city: "Monterrey",
+    country: "Mexico",
+    capacity: "53,000+",
+    timezone: "America/Monterrey",
+    matchesHosted: "Group-stage fixtures",
+    role: "Group-stage host",
+    badges: ["Group Stage", "Mexico"],
+    summary: "A striking northern Mexico stadium with major matchday visuals.",
+  },
+  {
+    slug: "bmo-field",
+    name: "BMO Field",
+    citySlug: "toronto",
+    city: "Toronto",
+    country: "Canada",
+    capacity: "45,000+",
+    timezone: "America/Toronto",
+    matchesHosted: "Group-stage fixtures",
+    role: "Canada host city",
+    badges: ["Group Stage", "Canada"],
+    summary: "Toronto's World Cup venue and an eastern Canadian tournament stop.",
+  },
+  {
+    slug: "bc-place",
+    name: "BC Place",
+    citySlug: "vancouver",
+    city: "Vancouver",
+    country: "Canada",
+    capacity: "54,000+",
+    timezone: "America/Vancouver",
+    matchesHosted: "Group-stage fixtures",
+    role: "Canada host city",
+    badges: ["Group Stage", "Canada"],
+    summary: "A Pacific coast venue with a major timezone shift for global fans.",
+  },
+  {
+    slug: "mercedes-benz-stadium",
+    name: "Mercedes-Benz Stadium",
+    citySlug: "atlanta",
+    city: "Atlanta",
+    country: "USA",
+    capacity: "71,000+",
+    timezone: "America/New_York",
+    matchesHosted: "Group-stage and knockout fixtures",
+    role: "Knockout host",
+    badges: ["Knockout", "USA"],
+    summary: "A high-capacity indoor stadium for major tournament moments.",
+  },
+  {
+    slug: "gillette-stadium",
+    name: "Gillette Stadium",
+    citySlug: "boston",
+    city: "Boston",
+    country: "USA",
+    capacity: "65,000+",
+    timezone: "America/New_York",
+    matchesHosted: "Group-stage and knockout fixtures",
+    role: "Knockout host",
+    badges: ["Knockout", "USA"],
+    summary: "New England's World Cup venue with east-coast matchday access.",
+  },
+  {
+    slug: "att-stadium",
+    name: "AT&T Stadium",
+    citySlug: "dallas",
+    city: "Dallas",
+    country: "USA",
+    capacity: "80,000+",
+    timezone: "America/Chicago",
+    matchesHosted: "Group-stage and knockout fixtures",
+    role: "Major match hub",
+    badges: ["Major Hub", "Knockout", "USA"],
+    summary: "One of the tournament's biggest venue anchors in Texas.",
+  },
+  {
+    slug: "nrg-stadium",
+    name: "NRG Stadium",
+    citySlug: "houston",
+    city: "Houston",
+    country: "USA",
+    capacity: "72,000+",
+    timezone: "America/Chicago",
+    matchesHosted: "Group-stage fixtures",
+    role: "Group-stage host",
+    badges: ["Group Stage", "USA"],
+    summary: "A Texas group-stage venue with strong international fan links.",
+  },
+  {
+    slug: "arrowhead-stadium",
+    name: "Arrowhead Stadium",
+    citySlug: "kansas-city",
+    city: "Kansas City",
+    country: "USA",
+    capacity: "76,000+",
+    timezone: "America/Chicago",
+    matchesHosted: "Group-stage fixtures",
+    role: "Group-stage host",
+    badges: ["Group Stage", "USA"],
+    summary: "A loud stadium stop with serious matchday atmosphere.",
+  },
+  {
+    slug: "sofi-stadium",
+    name: "SoFi Stadium",
+    citySlug: "los-angeles",
+    city: "Los Angeles",
+    country: "USA",
+    capacity: "70,000+",
+    timezone: "America/Los_Angeles",
+    matchesHosted: "Group-stage and knockout fixtures",
+    role: "Knockout host",
+    badges: ["Knockout", "West Coast", "USA"],
+    summary: "A marquee west-coast stadium for major World Cup nights.",
+  },
+  {
+    slug: "hard-rock-stadium",
+    name: "Hard Rock Stadium",
+    citySlug: "miami",
+    city: "Miami",
+    country: "USA",
+    capacity: "65,000+",
+    timezone: "America/New_York",
+    matchesHosted: "Group-stage and knockout fixtures",
+    role: "Knockout host",
+    badges: ["Knockout", "USA"],
+    summary: "A South Florida host venue with strong international fan links.",
+  },
+  {
+    slug: "metlife-stadium",
+    name: "MetLife Stadium",
+    citySlug: "new-york-new-jersey",
+    city: "New York/New Jersey",
+    country: "USA",
+    capacity: "82,000+",
+    timezone: "America/New_York",
+    matchesHosted: "Group-stage, knockout fixtures and the final",
+    role: "Final host",
+    badges: ["Final", "Knockout", "USA"],
+    summary: "The final destination of World Cup 2026.",
+  },
+  {
+    slug: "lincoln-financial-field",
+    name: "Lincoln Financial Field",
+    citySlug: "philadelphia",
+    city: "Philadelphia",
+    country: "USA",
+    capacity: "69,000+",
+    timezone: "America/New_York",
+    matchesHosted: "Group-stage and knockout fixtures",
+    role: "Knockout host",
+    badges: ["Knockout", "USA"],
+    summary: "A historic east-coast city venue for tournament fixtures.",
+  },
+  {
+    slug: "levis-stadium",
+    name: "Levi's Stadium",
+    citySlug: "san-francisco-bay-area",
+    city: "San Francisco Bay Area",
+    country: "USA",
+    capacity: "68,000+",
+    timezone: "America/Los_Angeles",
+    matchesHosted: "Group-stage fixtures",
+    role: "Group-stage host",
+    badges: ["Group Stage", "West Coast", "USA"],
+    summary: "The Bay Area's World Cup venue and a key west-coast stop.",
+  },
+  {
+    slug: "lumen-field",
+    name: "Lumen Field",
+    citySlug: "seattle",
+    city: "Seattle",
+    country: "USA",
+    capacity: "69,000+",
+    timezone: "America/Los_Angeles",
+    matchesHosted: "Group-stage fixtures",
+    role: "Group-stage host",
+    badges: ["Group Stage", "West Coast", "USA"],
+    summary: "A Pacific Northwest venue known for loud matchday energy.",
+  },
+];
+
+export function getHostCityBySlug(slug: string) {
+  return hostCities.find((city) => city.slug === slug);
+}
+
+export function getStadiumBySlug(slug: string) {
+  return stadiums.find((stadium) => stadium.slug === slug);
+}
+
+export function getStadiumForCity(citySlug: string) {
+  return stadiums.find((stadium) => stadium.citySlug === citySlug);
+}
+
+export function getHostCityForStadium(citySlug: string) {
+  return hostCities.find((city) => city.slug === citySlug);
+}
+
+
+
+================ src/lib/worldcup/format.ts ================
+export type FixtureDisplayStatus =
+  | "upcoming"
+  | "live"
+  | "finished"
+  | "postponed"
+  | "cancelled"
+  | "unknown";
+
+const liveStatuses = new Set(["1H", "HT", "2H", "ET", "BT", "P", "LIVE"]);
+const finishedStatuses = new Set(["FT", "AET", "PEN"]);
+const postponedStatuses = new Set(["PST", "SUSP", "INT"]);
+const cancelledStatuses = new Set(["CANC", "ABD", "AWD", "WO"]);
+
+export function getFixtureDisplayStatus(
+  statusShort: string | null | undefined
+): FixtureDisplayStatus {
+  const status = statusShort?.toUpperCase();
+
+  if (!status) {
+    return "unknown";
+  }
+
+  if (liveStatuses.has(status)) {
+    return "live";
+  }
+
+  if (finishedStatuses.has(status)) {
+    return "finished";
+  }
+
+  if (postponedStatuses.has(status)) {
+    return "postponed";
+  }
+
+  if (cancelledStatuses.has(status)) {
+    return "cancelled";
+  }
+
+  if (status === "NS" || status === "TBD") {
+    return "upcoming";
+  }
+
+  return "unknown";
+}
+
+export function isLiveFixture(statusShort: string | null | undefined) {
+  return getFixtureDisplayStatus(statusShort) === "live";
+}
+
+export function isFinishedFixture(statusShort: string | null | undefined) {
+  return getFixtureDisplayStatus(statusShort) === "finished";
+}
+
+export function isUpcomingFixture(statusShort: string | null | undefined) {
+  return getFixtureDisplayStatus(statusShort) === "upcoming";
+}
+
+export function formatDateTime(value: string | null | undefined) {
+  if (!value) {
+    return "Date TBC";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Date TBC";
+  }
+
+  return new Intl.DateTimeFormat("en-IE", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Dublin",
+  }).format(date);
+}
+
+export function formatDateOnly(value: string | null | undefined) {
+  if (!value) {
+    return "Date TBC";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Date TBC";
+  }
+
+  return new Intl.DateTimeFormat("en-IE", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "Europe/Dublin",
+  }).format(date);
+}
+
+export function getDateInputValue(value: string | null | undefined) {
+  if (!value) {
+    return "";
+  }
+
+  return value.slice(0, 10);
+}
+
+export function formatLastUpdated(value: string | null | undefined) {
+  if (!value) {
+    return "Last updated not available";
+  }
+
+  return formatDateTime(value);
+}
+
+export function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/['"]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export function teamSlug(name: string, apiTeamId: number) {
+  return `${slugify(name)}-${apiTeamId}`;
+}
+
+export function getTeamIdFromSlug(slug: string) {
+  const match = slug.match(/-(\d+)$/);
+
+  if (!match) {
+    return null;
+  }
+
+  const parsed = Number(match[1]);
+
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+export function fixtureSlug(input: {
+  api_fixture_id: number;
+  match_date?: string | null;
+  home_team_name?: string | null;
+  away_team_name?: string | null;
+}) {
+  const datePart = input.match_date?.slice(0, 10) || "date-tbc";
+  const homePart = slugify(input.home_team_name || "home-tbc");
+  const awayPart = slugify(input.away_team_name || "away-tbc");
+
+  return `${datePart}-${homePart}-vs-${awayPart}-${input.api_fixture_id}`;
+}
+
+export function getFixtureIdFromSlug(slug: string) {
+  const match = slug.match(/-(\d+)$/);
+
+  if (!match) {
+    return null;
+  }
+
+  const parsed = Number(match[1]);
+
+  return Number.isFinite(parsed) ? parsed : null;
+}

@@ -1,4 +1,5 @@
 import type { MatchLineup } from "@/lib/data/worldcup";
+import Image from "next/image";
 import { MatchEmptyState } from "@/components/matches/match-empty-state";
 
 type MatchLineupsProps = {
@@ -68,9 +69,11 @@ export function MatchLineups({ lineups }: MatchLineupsProps) {
             <article key={lineup.id} className="rounded-2xl bg-white/[0.04] p-4">
               <div className="flex items-center gap-3">
                 {lineup.team_logo_url ? (
-                  <img
+                  <Image
                     src={lineup.team_logo_url}
                     alt={`${lineup.team_name} logo`}
+                    width={40}
+                    height={40}
                     className="h-10 w-10 rounded-full object-contain"
                   />
                 ) : (

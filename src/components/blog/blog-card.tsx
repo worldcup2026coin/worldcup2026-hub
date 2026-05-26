@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { BlogPost } from "@/lib/data/blog";
 import { tagsToArray } from "@/lib/data/blog";
 import { formatDateOnly } from "@/lib/worldcup/format";
@@ -20,11 +21,12 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
     >
       {post.featured_image_url ? (
         <Link href={`/news/${post.slug}`} className="block min-h-56 bg-slate-900">
-          <img
+          <Image
             src={post.featured_image_url}
             alt=""
+            width={800}
+            height={450}
             className="h-full min-h-56 w-full object-cover"
-            loading="lazy"
           />
         </Link>
       ) : (

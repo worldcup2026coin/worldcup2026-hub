@@ -5,6 +5,7 @@ import { PredictionCard } from "@/components/predictions/prediction-card";
 import { PredictionEmptyState } from "@/components/predictions/prediction-empty-state";
 import { ResponsibleUseDisclaimer } from "@/components/predictions/responsible-use-disclaimer";
 import { getPredictionsIndexData } from "@/lib/data/predictions";
+import { formatVenueDateTime } from "@/lib/worldcup/format";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +29,31 @@ export default async function PredictionsPage() {
 
       <Container className="pb-14">
         <ResponsibleUseDisclaimer />
+
+        <section className="mt-8 grid gap-4 lg:grid-cols-3">
+          {[
+            [
+              "Match angle",
+              "Every preview starts with the game state: stakes, venue, group pressure and team context.",
+            ],
+            [
+              "Risk notes",
+              "Prediction cards separate low-confidence reads from stronger signals and avoid fake certainty.",
+            ],
+            [
+              "Likely script",
+              "Fan previews describe how the match may unfold instead of dumping raw odds or data tables.",
+            ],
+          ].map(([title, copy]) => (
+            <article key={title} className="neon-card rounded-[2rem] p-5">
+              <span className="neon-badge neon-badge-cyan">Fan preview</span>
+              <h2 className="mt-4 text-2xl font-black uppercase text-white">
+                {title}
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-slate-300">{copy}</p>
+            </article>
+          ))}
+        </section>
 
         {predictionItems.length === 0 ? (
           <div className="mt-8">
@@ -59,6 +85,38 @@ export default async function PredictionsPage() {
                   >
                     View prediction page
                   </a>
+                </div>
+
+                <div className="mt-5 grid gap-4 lg:grid-cols-3">
+                  <article className="rounded-3xl border border-cyan-300/20 bg-cyan-300/10 p-5">
+                    <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-100">
+                      Match angle
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-slate-200">
+                      {item.matchTitle} is scheduled for{" "}
+                      {formatVenueDateTime(item.fixture)}. The preview should
+                      read the venue, group pressure and available team data
+                      before any lean.
+                    </p>
+                  </article>
+                  <article className="rounded-3xl border border-lime-300/20 bg-lime-300/10 p-5">
+                    <p className="text-xs font-black uppercase tracking-[0.18em] text-lime-100">
+                      Likely script
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-slate-200">
+                      Expect this page to frame tempo, first-goal pressure and
+                      late-game risk once published analysis is available.
+                    </p>
+                  </article>
+                  <article className="rounded-3xl border border-fuchsia-300/20 bg-fuchsia-400/10 p-5">
+                    <p className="text-xs font-black uppercase tracking-[0.18em] text-fuchsia-100">
+                      Risk note
+                    </p>
+                    <p className="mt-3 text-sm leading-6 text-slate-200">
+                      Risk labels are fan context only. Lineups, venue changes
+                      and injuries can move the read quickly.
+                    </p>
+                  </article>
                 </div>
 
                 <div className="mt-5 grid gap-4 lg:grid-cols-3">

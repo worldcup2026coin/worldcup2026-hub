@@ -13,6 +13,10 @@ const tournamentLinks = [
 const exploreLinks = [
   { href: "/host-cities", label: "Host Cities" },
   { href: "/stadiums", label: "Stadiums" },
+  { href: "/host-nations", label: "Host Nations" },
+  { href: "/world-cup-format", label: "Format Guide" },
+  { href: "/tournament-timeline", label: "Timeline" },
+  { href: "/world-cup-history", label: "History" },
   { href: "/best-third-placed-teams", label: "Third Place" },
   { href: "/top-scorers", label: "Top Scorers" },
   { href: "/top-assists", label: "Top Assists" },
@@ -80,7 +84,7 @@ export function SiteFooter() {
 
         <div className="mt-6 flex flex-col gap-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 World Cup 2026 Hub · built for tournament mode.</p>
-          <p>Supabase + API-Football sync · no wallet, no buy flow, just football signal.</p>
+          <p>Social links will appear only when official channels are ready.</p>
         </div>
       </Container>
     </footer>

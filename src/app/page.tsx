@@ -1,5 +1,6 @@
 
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { CountdownTimer } from "@/components/worldcup/countdown-timer";
 import { EmailSignupForm } from "@/components/community/email-signup-form";
@@ -80,11 +81,12 @@ function MiniFixtureCard({ fixture }: { fixture: HomeFixture }) {
       <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
         <div className="min-w-0 text-center">
           {fixture.home_team_logo ? (
-            <img
+            <Image
               src={fixture.home_team_logo}
               alt=""
+              width={56}
+              height={56}
               className="mx-auto h-14 w-14 rounded-2xl border border-white/10 bg-white/10 object-contain p-1"
-              loading="lazy"
             />
           ) : null}
           <p className="mt-2 truncate text-sm font-black uppercase text-white">
@@ -98,11 +100,12 @@ function MiniFixtureCard({ fixture }: { fixture: HomeFixture }) {
 
         <div className="min-w-0 text-center">
           {fixture.away_team_logo ? (
-            <img
+            <Image
               src={fixture.away_team_logo}
               alt=""
+              width={56}
+              height={56}
               className="mx-auto h-14 w-14 rounded-2xl border border-white/10 bg-white/10 object-contain p-1"
-              loading="lazy"
             />
           ) : null}
           <p className="mt-2 truncate text-sm font-black uppercase text-white">
@@ -429,11 +432,12 @@ export default async function HomePage() {
                       className="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/45 p-3 transition hover:border-lime-300/30 hover:bg-lime-300/10"
                     >
                       {team.logo_url ? (
-                        <img
+                        <Image
                           src={team.logo_url}
                           alt=""
+                          width={40}
+                          height={40}
                           className="h-10 w-10 rounded-xl border border-white/10 bg-white/10 object-contain p-1"
-                          loading="lazy"
                         />
                       ) : (
                         <div className="h-10 w-10 rounded-xl bg-white/10" />

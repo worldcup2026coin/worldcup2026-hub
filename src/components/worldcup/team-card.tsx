@@ -1,5 +1,6 @@
 
 import Link from "next/link";
+import Image from "next/image";
 import type { Standing, Team } from "@/lib/data/worldcup";
 import { teamSlug } from "@/lib/worldcup/format";
 
@@ -17,11 +18,12 @@ export function TeamCard({ team, standing }: TeamCardProps) {
       <div className="flex items-center gap-4">
         <span className="flex h-16 w-16 items-center justify-center rounded-[1.35rem] border border-lime-300/25 bg-white/10 p-2 shadow-[0_0_24px_rgba(163,255,18,0.10)]">
           {team.logo_url ? (
-            <img
+            <Image
               src={team.logo_url}
               alt={`${team.name} logo`}
+              width={64}
+              height={64}
               className="h-full w-full rounded-xl object-contain"
-              loading="lazy"
             />
           ) : (
             <span className="text-lg font-black text-white">

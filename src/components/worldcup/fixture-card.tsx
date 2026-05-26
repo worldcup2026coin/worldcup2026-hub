@@ -1,9 +1,11 @@
 
 import Link from "next/link";
+import Image from "next/image";
 import type { Fixture } from "@/lib/data/worldcup";
 import {
   fixtureSlug,
   formatDateTime,
+  formatVenueDateTime,
   getFixtureDisplayStatus,
   teamSlug,
 } from "@/lib/worldcup/format";
@@ -30,11 +32,12 @@ function TeamLogo({
 
   return (
     <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/10 p-1 shadow-[0_0_18px_rgba(163,255,18,0.10)]">
-      <img
+      <Image
         src={src}
         alt={alt}
+        width={40}
+        height={40}
         className="h-full w-full rounded-xl object-contain"
-        loading="lazy"
       />
     </span>
   );
@@ -110,7 +113,7 @@ export function FixtureCard({ fixture }: FixtureCardProps) {
           statusLong={fixture.status_long}
         />
         <span className="rounded-full border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-fuchsia-100">
-          {formatDateTime(fixture.match_date)}
+          {formatVenueDateTime(fixture)}
         </span>
       </div>
 
@@ -138,8 +141,14 @@ export function FixtureCard({ fixture }: FixtureCardProps) {
           {fixture.venue_city ? `, ${fixture.venue_city}` : ""}
         </p>
         <p>
-          <span className="text-lime-200">Round:</span>{" "}
-          {fixture.round ?? "World Cup 2026"}
+          <span className="text-lime-200">Your time:</span>{" "}
+          {formatDateTime(fixture.match_date, "Europe/Dublin", {
+            includeTimeZoneName: true,
+          })}
+        </p>
+        <p className="sm:col-span-2">
+          <span className="text-fuchsia-200">Round:</span>{" "}
+          {fixture.round ?? fixture.group_name ?? "World Cup 2026"}
         </p>
       </div>
 

@@ -10,6 +10,8 @@ import {
   type BlogCategory,
 } from "@/lib/data/blog";
 import type { Fixture } from "@/lib/data/matches";
+import { hostCities, stadiums } from "@/lib/data/venues";
+import { hostNations } from "@/lib/data/authority";
 
 type SitemapTeam = {
   id: string;
@@ -85,6 +87,11 @@ export async function getDynamicSitemap(): Promise<MetadataRoute.Sitemap> {
     page("/predictions", "daily", 0.8),
     page("/news", "daily", 0.85),
     page("/stadiums", "weekly", 0.75),
+    page("/host-cities", "weekly", 0.75),
+    page("/host-nations", "weekly", 0.75),
+    page("/world-cup-format", "monthly", 0.74),
+    page("/tournament-timeline", "monthly", 0.72),
+    page("/world-cup-history", "monthly", 0.7),
     page("/community", "daily", 0.8),
     page("/top-scorers", "hourly", 0.82),
     page("/top-assists", "hourly", 0.82),
@@ -170,6 +177,18 @@ export async function getDynamicSitemap(): Promise<MetadataRoute.Sitemap> {
     page(`/news/category/${getBlogCategorySlug(category)}`, "weekly", 0.5)
   );
 
+  const hostCityPages = hostCities.map((city) =>
+    page(`/host-cities/${city.slug}`, "monthly", 0.6)
+  );
+
+  const stadiumPages = stadiums.map((stadium) =>
+    page(`/stadiums/${stadium.slug}`, "monthly", 0.6)
+  );
+
+  const hostNationPages = hostNations.map((nation) =>
+    page(`/host-nations/${nation.slug}`, "monthly", 0.62)
+  );
+
   return [
     ...staticPages,
     ...teamPages,
@@ -178,5 +197,8 @@ export async function getDynamicSitemap(): Promise<MetadataRoute.Sitemap> {
     ...predictionPages,
     ...newsPages,
     ...categoryPages,
+    ...hostCityPages,
+    ...stadiumPages,
+    ...hostNationPages,
   ];
 }

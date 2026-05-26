@@ -1,5 +1,6 @@
 
 import Link from "next/link";
+import Image from "next/image";
 import type { Standing } from "@/lib/data/worldcup";
 import { teamSlug } from "@/lib/worldcup/format";
 
@@ -69,11 +70,12 @@ export function StandingsTable({ groupName, rows }: StandingsTableProps) {
                   >
                     {row.team_logo_url ? (
                       <span className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/10 p-1">
-                        <img
+                        <Image
                           src={row.team_logo_url}
                           alt={`${row.team_name} logo`}
+                          width={32}
+                          height={32}
                           className="h-full w-full rounded-lg object-contain"
-                          loading="lazy"
                         />
                       </span>
                     ) : (

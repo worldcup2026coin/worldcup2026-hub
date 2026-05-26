@@ -35,6 +35,14 @@ export default async function NewsPage() {
   const heroPost = featuredPosts[0] ?? latestPosts[0] ?? null;
   const heroId = heroPost?.id;
   const remainingPosts = latestPosts.filter((post) => post.id !== heroId);
+  const guidePosts = latestPosts.filter((post) =>
+    ["team_guides", "group_previews", "stadium_host_city_guides"].includes(
+      post.category
+    )
+  );
+  const previewPosts = latestPosts.filter(
+    (post) => post.category === "match_previews"
+  );
 
   return (
     <>
@@ -47,6 +55,19 @@ export default async function NewsPage() {
 
       <Container className="pb-14">
         <BlogHero post={heroPost} />
+
+        <section className="mt-10 grid gap-4 lg:grid-cols-3">
+          {[
+            ["Featured article", heroPost?.title ?? "Feature updating"],
+            ["Latest updates", `${latestPosts.length} published stories`],
+            ["Guides & previews", "Teams, groups, stadiums and match reads"],
+          ].map(([label, value]) => (
+            <article key={label} className="neon-card rounded-[2rem] p-5">
+              <span className="neon-badge neon-badge-cyan">{label}</span>
+              <h2 className="mt-4 text-2xl font-black text-white">{value}</h2>
+            </article>
+          ))}
+        </section>
 
         <section className="mt-10 rounded-[2rem] border border-white/10 bg-white/[0.04] p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -64,6 +85,50 @@ export default async function NewsPage() {
             {blogCategories.map((category) => (
               <CategoryBadge key={category} category={category} />
             ))}
+          </div>
+        </section>
+
+        <section className="mt-10 grid gap-6 lg:grid-cols-2">
+          <div className="rounded-[2rem] border border-cyan-300/15 bg-cyan-300/[0.06] p-5">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-cyan-200">
+              Guides
+            </p>
+            <h2 className="mt-2 text-2xl font-black text-white">
+              Context before kick-off
+            </h2>
+            <div className="mt-5 grid gap-3">
+              {(guidePosts.length > 0 ? guidePosts : latestPosts).slice(0, 4).map((post) => (
+                <Link
+                  key={post.id}
+                  href={`/news/${post.slug}`}
+                  className="rounded-2xl border border-white/10 bg-slate-950/45 p-4 transition hover:border-cyan-300/30"
+                >
+                  <CategoryBadge category={post.category} />
+                  <p className="mt-2 font-black text-white">{post.title}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-fuchsia-300/15 bg-fuchsia-400/[0.06] p-5">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-fuchsia-200">
+              Match previews
+            </p>
+            <h2 className="mt-2 text-2xl font-black text-white">
+              What to watch
+            </h2>
+            <div className="mt-5 grid gap-3">
+              {(previewPosts.length > 0 ? previewPosts : latestPosts).slice(0, 4).map((post) => (
+                <Link
+                  key={post.id}
+                  href={`/news/${post.slug}`}
+                  className="rounded-2xl border border-white/10 bg-slate-950/45 p-4 transition hover:border-fuchsia-300/30"
+                >
+                  <CategoryBadge category={post.category} />
+                  <p className="mt-2 font-black text-white">{post.title}</p>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
 

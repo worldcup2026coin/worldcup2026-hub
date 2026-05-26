@@ -155,19 +155,48 @@ export default async function MatchPage({ params }: MatchPageProps) {
           })}
         />
         <MatchHeader fixture={fixture} />
+        <nav className="sticky top-3 z-20 mt-6 overflow-x-auto rounded-2xl border border-white/10 bg-slate-950/85 p-2 shadow-2xl shadow-slate-950/40 backdrop-blur">
+          <div className="flex min-w-max gap-2">
+            {[
+              ["Overview", "overview"],
+              ["Venue", "venue"],
+              ["Preview", "preview"],
+              ["Predictions", "predictions"],
+              ["Stats", "stats"],
+              ["Lineups", "lineups"],
+            ].map(([label, id]) => (
+              <a
+                key={id}
+                href={`#${id}`}
+                className="rounded-xl px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-slate-300 transition hover:bg-white/10 hover:text-white"
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        </nav>
+        <div id="venue" className="scroll-mt-24">
+        <MatchVenueContext fixture={fixture} />
+        </div>
 
-        <div className="mt-8 grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
+        <div id="overview" className="mt-8 grid scroll-mt-24 gap-6 xl:grid-cols-[1.25fr_0.75fr]">
           <div className="grid gap-6">
+            <div id="preview" className="scroll-mt-24">
             <MatchPreviewBlock fixture={fixture} />
+            </div>
             <ApiFootballPredictionCard prediction={apiPrediction} />
             <MatchOddsSnapshot odds={apiOdds} />
             <MatchHeadToHeadCard headToHead={headToHead} />
             <InjuryList title="Match injury news" injuries={injuries} />
             <MatchEventsTimeline events={events} />
+            <div id="stats" className="scroll-mt-24">
             <MatchStats fixture={fixture} stats={stats} />
+            </div>
+            <div id="lineups" className="scroll-mt-24">
             <MatchLineups lineups={lineups} />
+            </div>
 
-            <section className="rounded-[2rem] border border-emerald-400/15 bg-emerald-400/[0.04] p-5">
+            <section id="predictions" className="scroll-mt-24 rounded-[2rem] border border-emerald-400/15 bg-emerald-400/[0.04] p-5">
               <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-300">
                 Tips and predictions
               </p>

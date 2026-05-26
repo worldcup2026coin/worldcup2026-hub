@@ -1,0 +1,1499 @@
+=== TEAM PAGES CONTEXT ===
+
+
+================ src/app/teams/page.tsx ================
+import { EmptyState } from "@/components/worldcup/empty-state";
+import { PageHeader } from "@/components/worldcup/page-header";
+import { TeamCard } from "@/components/worldcup/team-card";
+import { Container } from "@/components/ui/container";
+import { getTeamGroupMap, getTeamsPageData } from "@/lib/data/worldcup";
+import { formatLastUpdated } from "@/lib/worldcup/format";
+
+export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: "Teams",
+  description: "World Cup 2026 teams from Supabase.",
+};
+
+export default async function TeamsPage() {
+  const { teams, standings, latestSync } = await getTeamsPageData();
+  const teamGroupMap = getTeamGroupMap(standings);
+
+  return (
+    <>
+      <PageHeader
+        eyebrow="Teams"
+        title="Team hub"
+        description="All synced World Cup teams from Supabase, with group/rank context where standings data is available."
+        meta={`Last teams sync: ${formatLastUpdated(latestSync?.ended_at)}`}
+      />
+
+      <Container className="pb-14">
+        {teams.length === 0 ? (
+          <EmptyState
+            title="No teams synced yet"
+            description="The teams table is empty. Run the protected teams sync when API-Football has data available."
+          />
+        ) : (
+          <>
+            <p className="mb-6 text-sm text-slate-300">
+              Showing{" "}
+              <span className="font-black text-white">{teams.length}</span>{" "}
+              teams.
+            </p>
+
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {teams.map((team) => (
+                <TeamCard
+                  key={team.id}
+                  team={team}
+                  standing={teamGroupMap.get(team.api_team_id)}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </Container>
+    </>
+  );
+}
+
+
+
+================ src/app/teams/[slug]/page.tsx ================
+import Link from "next/link";
+import { breadcrumbJsonLd, sportsTeamJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { notFound } from "next/navigation";
+import { EmptyState } from "@/components/worldcup/empty-state";
+import { FixtureCard } from "@/components/worldcup/fixture-card";
+import { PageHeader } from "@/components/worldcup/page-header";
+import { StandingsTable } from "@/components/worldcup/standings-table";
+import { Container } from "@/components/ui/container";
+import { getTeamPageData, groupSquadByPosition } from "@/lib/data/worldcup";
+import { playerSlug } from "@/lib/data/players";
+
+export const dynamic = "force-dynamic";
+
+type TeamPageProps = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
+
+export async function generateMetadata({ params }: TeamPageProps) {
+  const { slug } = await params;
+  const data = await getTeamPageData(slug);
+
+  if (!data) {
+    return {
+      title: "Team not found",
+    };
+  }
+
+  return {
+    title: data.team.name,
+    description: `${data.team.name} World Cup 2026 team page.`,
+  };
+}
+
+export default async function TeamPage({ params }: TeamPageProps) {
+  const { slug } = await params;
+  const data = await getTeamPageData(slug);
+
+  if (!data) {
+    notFound();
+  }
+
+  const { team, fixtures, results, standing, groupStandings, squad, coaches } = data;
+  const squadGroups = groupSquadByPosition(squad);
+  const coach = coaches[0] ?? null;
+
+  const teamSchemaSlug = `${String(team.name ?? "team").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}-${team.api_team_id}`;
+
+  return (
+    <>
+              <JsonLd
+          data={breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Teams", path: "/teams" },
+            {
+              name: team.name,
+              path: `/teams/${teamSchemaSlug}`,
+            },
+          ])}
+        />
+
+        <JsonLd
+          data={sportsTeamJsonLd({
+            name: team.name,
+            path: `/teams/${teamSchemaSlug}`,
+            logo: team.logo_url,
+          })}
+        />
+        <PageHeader
+        eyebrow={standing?.group_name ?? "Team"}
+        title={team.name}
+        description={`Team overview for ${team.name}, including fixtures, results, group position, coach information and squad data from Supabase.`}
+        meta={`${team.code ?? "Code TBC"} · ${team.country ?? "Country TBC"}`}
+      />
+
+      <Container className="pb-14">
+        <section className="grid gap-6 lg:grid-cols-[0.75fr_1.25fr]">
+          <aside className="rounded-3xl border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/30">
+            <div className="flex items-center gap-4">
+              {team.logo_url ? (
+                <img
+                  src={team.logo_url}
+                  alt={`${team.name} logo`}
+                  className="h-20 w-20 rounded-full object-contain"
+                />
+              ) : (
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/10 text-2xl font-black text-white">
+                  {team.name.slice(0, 2).toUpperCase()}
+                </div>
+              )}
+
+              <div>
+                <h2 className="text-2xl font-black text-white">{team.name}</h2>
+                <p className="mt-1 text-sm text-slate-400">
+                  {team.country ?? "Country TBC"}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-3 text-sm">
+              <div className="rounded-2xl bg-white/[0.04] p-4">
+                <p className="text-slate-400">Group</p>
+                <p className="mt-1 font-black text-white">
+                  {standing?.group_name ?? "TBC"}
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-white/[0.04] p-4">
+                <p className="text-slate-400">Current position</p>
+                <p className="mt-1 font-black text-white">
+                  {standing?.rank ? `#${standing.rank}` : "TBC"}
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-white/[0.04] p-4">
+                <p className="text-slate-400">Points</p>
+                <p className="mt-1 font-black text-white">
+                  {standing?.points ?? 0}
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href="/teams"
+              className="mt-6 inline-flex min-h-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 text-sm font-bold text-white transition hover:bg-white/10"
+            >
+              Back to all teams
+            </Link>
+          </aside>
+
+          <div className="grid gap-6">
+            {standing && groupStandings.length > 0 ? (
+              <StandingsTable
+                groupName={standing.group_name}
+                rows={groupStandings}
+              />
+            ) : (
+              <EmptyState
+                title="No group standing available"
+                description="This team exists in Supabase, but no standing row is currently linked to it."
+              />
+            )}
+
+            <section className="rounded-3xl border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/30">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-emerald-300">
+                Coach
+              </p>
+
+              {coach ? (
+                <div className="mt-4 rounded-2xl bg-white/[0.04] p-4">
+                  <h2 className="text-2xl font-black text-white">
+                    {coach.name ?? "Coach TBC"}
+                  </h2>
+                  <p className="mt-2 text-sm text-slate-300">
+                    {coach.nationality ?? "Nationality TBC"}
+                    {coach.age ? ` · Age ${coach.age}` : ""}
+                  </p>
+                </div>
+              ) : (
+                <EmptyState
+                  title="Coach data not available yet"
+                  description="Coach information will appear here automatically when it is available in Supabase."
+                />
+              )}
+            </section>
+
+            <section className="rounded-3xl border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/30">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.24em] text-emerald-300">
+                    Squad
+                  </p>
+                  <h2 className="mt-3 text-2xl font-black text-white">
+                    {squad.length > 0
+                      ? `${squad.length} players synced`
+                      : "Squad data updating"}
+                  </h2>
+                </div>
+
+                {squad[0]?.last_synced_at ? (
+                  <p className="text-xs text-slate-400">
+                    Last synced{" "}
+                    {new Date(squad[0].last_synced_at).toLocaleDateString(
+                      "en-GB",
+                      {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      }
+                    )}
+                  </p>
+                ) : null}
+              </div>
+
+              {squad.length === 0 ? (
+                <div className="mt-6">
+                  <EmptyState
+                    title="No squad data yet"
+                    description="Squad details will appear here automatically after the next squad sync."
+                  />
+                </div>
+              ) : (
+                <div className="mt-6 grid gap-5">
+                  {Object.entries(squadGroups).map(([position, players]) => (
+                    <div key={position} className="rounded-2xl bg-white/[0.04] p-4">
+                      <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-300">
+                        {position}
+                      </h3>
+
+                      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                        {players.map((player) => (
+                          <div
+                            key={`${player.api_team_id}-${player.api_player_id}`}
+                            className="flex items-center justify-between rounded-xl border border-white/10 bg-slate-950/30 px-3 py-2"
+                          >
+                            <div>
+                              <Link
+                                href={`/players/${playerSlug(
+                                  player.player_name,
+                                  player.api_player_id
+                                )}`}
+                                className="text-sm font-bold text-white hover:text-emerald-300"
+                              >
+                                {player.player_name ?? "Player TBC"}
+                              </Link>
+                              <p className="text-xs text-slate-400">
+                                {player.position ?? "Position TBC"}
+                              </p>
+                            </div>
+
+                            {player.number ? (
+                              <span className="rounded-full bg-white/10 px-2 py-1 text-xs font-black text-emerald-200">
+                                #{player.number}
+                              </span>
+                            ) : null}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          </div>
+        </section>
+
+        <section className="mt-10">
+          <h2 className="text-2xl font-black text-white">Fixtures</h2>
+          <p className="mt-2 text-sm text-slate-300">
+            Upcoming and scheduled matches involving {team.name}.
+          </p>
+
+          {fixtures.length === 0 ? (
+            <div className="mt-6">
+              <EmptyState
+                title="No fixtures found for this team"
+                description="The team exists, but there are no synced fixtures linked to its API-Football team ID yet."
+              />
+            </div>
+          ) : (
+            <div className="mt-6 grid gap-4 lg:grid-cols-2">
+              {fixtures.map((fixture) => (
+                <FixtureCard key={fixture.id} fixture={fixture} />
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className="mt-10">
+          <h2 className="text-2xl font-black text-white">Results</h2>
+          <p className="mt-2 text-sm text-slate-300">
+            Finished matches will appear here after results are synced.
+          </p>
+
+          {results.length === 0 ? (
+            <div className="mt-6">
+              <EmptyState
+                title="No results yet"
+                description="There are no finished fixtures for this team in Supabase yet."
+              />
+            </div>
+          ) : (
+            <div className="mt-6 grid gap-4 lg:grid-cols-2">
+              {results.map((fixture) => (
+                <FixtureCard key={fixture.id} fixture={fixture} />
+              ))}
+            </div>
+          )}
+        </section>
+      </Container>
+    </>
+  );
+}
+
+
+
+
+
+
+
+================ src/components/worldcup/team-card.tsx ================
+
+import Link from "next/link";
+import type { Standing, Team } from "@/lib/data/worldcup";
+import { teamSlug } from "@/lib/worldcup/format";
+
+type TeamCardProps = {
+  team: Team;
+  standing?: Standing | null;
+};
+
+export function TeamCard({ team, standing }: TeamCardProps) {
+  return (
+    <Link
+      href={`/teams/${teamSlug(team.name, team.api_team_id)}`}
+      className="neon-card group rounded-[2rem] p-5"
+    >
+      <div className="flex items-center gap-4">
+        <span className="flex h-16 w-16 items-center justify-center rounded-[1.35rem] border border-lime-300/25 bg-white/10 p-2 shadow-[0_0_24px_rgba(163,255,18,0.10)]">
+          {team.logo_url ? (
+            <img
+              src={team.logo_url}
+              alt={`${team.name} logo`}
+              className="h-full w-full rounded-xl object-contain"
+              loading="lazy"
+            />
+          ) : (
+            <span className="text-lg font-black text-white">
+              {team.name.slice(0, 2).toUpperCase()}
+            </span>
+          )}
+        </span>
+
+        <div className="min-w-0">
+          <p className="neon-badge neon-badge-cyan">
+            {standing?.group_name ?? "Group TBC"}
+          </p>
+          <h2 className="mt-2 truncate text-xl font-black uppercase tracking-tight text-white group-hover:text-lime-200">
+            {team.name}
+          </h2>
+          <p className="mt-1 text-sm font-semibold text-slate-400">
+            {team.code ?? team.country ?? "Code TBC"}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        <span className="rounded-2xl border border-white/10 bg-slate-950/45 px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-slate-300">
+          {team.country ?? "Country TBC"}
+        </span>
+        {standing ? (
+          <span className="rounded-2xl border border-lime-300/25 bg-lime-300/10 px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-lime-100">
+            Rank {standing.rank ?? "-"}
+          </span>
+        ) : (
+          <span className="rounded-2xl border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-fuchsia-100">
+            Signal TBC
+          </span>
+        )}
+      </div>
+    </Link>
+  );
+}
+
+
+
+================ MISSING: src/lib/data/teams.ts ================
+
+
+================ src/lib/data/worldcup.ts ================
+import "server-only";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import {
+  fixtureSlug,
+  getFixtureDisplayStatus,
+  getFixtureIdFromSlug,
+  getTeamIdFromSlug,
+} from "@/lib/worldcup/format";
+
+export type Team = {
+  id: string;
+  api_team_id: number;
+  name: string;
+  code: string | null;
+  country: string | null;
+  founded: number | null;
+  national: boolean;
+  logo_url: string | null;
+  raw: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Fixture = {
+  id: string;
+  api_fixture_id: number;
+  api_league_id: number;
+  season: number;
+  round: string | null;
+  group_name: string | null;
+  match_date: string | null;
+  api_timestamp: number | null;
+  timezone: string | null;
+  referee: string | null;
+
+  venue_api_id: number | null;
+  venue_name: string | null;
+  venue_city: string | null;
+
+  home_team_api_id: number | null;
+  away_team_api_id: number | null;
+  home_team_name: string | null;
+  away_team_name: string | null;
+  home_team_logo_url: string | null;
+  away_team_logo_url: string | null;
+
+  status_long: string | null;
+  status_short: string | null;
+  elapsed: number | null;
+  extra: number | null;
+
+  home_goals: number | null;
+  away_goals: number | null;
+  ht_home_goals: number | null;
+  ht_away_goals: number | null;
+  ft_home_goals: number | null;
+  ft_away_goals: number | null;
+  et_home_goals: number | null;
+  et_away_goals: number | null;
+  pen_home_goals: number | null;
+  pen_away_goals: number | null;
+
+  winner_api_team_id: number | null;
+  raw: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Standing = {
+  id: string;
+  api_league_id: number;
+  season: number;
+  group_name: string;
+  api_team_id: number;
+  team_name: string;
+  team_logo_url: string | null;
+  rank: number | null;
+  points: number | null;
+  goals_diff: number | null;
+  form: string | null;
+  status: string | null;
+  description: string | null;
+  played: number | null;
+  wins: number | null;
+  draws: number | null;
+  losses: number | null;
+  goals_for: number | null;
+  goals_against: number | null;
+  api_updated_at: string | null;
+  raw: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TeamSquadPlayer = {
+  id: string;
+  api_team_id: number;
+  api_player_id: number;
+  season: number;
+  player_name: string | null;
+  team_name: string | null;
+  position: string | null;
+  number: number | null;
+  appearances: number | null;
+  lineups: number | null;
+  minutes: number | null;
+  rating: string | null;
+  captain: boolean | null;
+  last_synced_at: string | null;
+};
+
+export type Coach = {
+  id: string;
+  api_coach_id: number;
+  api_team_id: number | null;
+  name: string | null;
+  firstname: string | null;
+  lastname: string | null;
+  age: number | null;
+  nationality: string | null;
+  photo_url: string | null;
+  team_name: string | null;
+  last_synced_at: string | null;
+};
+
+export type SyncLog = {
+  id: string;
+  scope: string;
+  status: string;
+  started_at: string;
+  ended_at: string | null;
+  duration_ms: number | null;
+  request_count: number;
+  records_received: number;
+  records_upserted: number;
+  error_message: string | null;
+};
+
+export type FixtureFilters = {
+  date?: string;
+  team?: string;
+  group?: string;
+  status?: string;
+  venue?: string;
+};
+
+function asTeams(data: unknown): Team[] {
+  return (data ?? []) as Team[];
+}
+
+function asFixtures(data: unknown): Fixture[] {
+  return (data ?? []) as Fixture[];
+}
+
+function asStandings(data: unknown): Standing[] {
+  return (data ?? []) as Standing[];
+}
+
+function asSyncLogs(data: unknown): SyncLog[] {
+  return (data ?? []) as SyncLog[];
+}
+
+function asTeamSquadPlayers(data: unknown): TeamSquadPlayer[] {
+  return (data ?? []) as TeamSquadPlayer[];
+}
+
+function asCoaches(data: unknown): Coach[] {
+  return (data ?? []) as Coach[];
+}
+
+export async function getTeams() {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("teams")
+    .select(
+      "id, api_team_id, name, code, country, founded, national, logo_url, raw, created_at, updated_at"
+    )
+    .order("name", { ascending: true });
+
+  if (error) {
+    throw new Error(`Failed to load teams: ${error.message}`);
+  }
+
+  return asTeams(data);
+}
+
+export async function getFixtures() {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("fixtures")
+    .select(
+      [
+        "id",
+        "api_fixture_id",
+        "api_league_id",
+        "season",
+        "round",
+        "group_name",
+        "match_date",
+        "api_timestamp",
+        "timezone",
+        "referee",
+        "venue_api_id",
+        "venue_name",
+        "venue_city",
+        "home_team_api_id",
+        "away_team_api_id",
+        "home_team_name",
+        "away_team_name",
+        "home_team_logo_url",
+        "away_team_logo_url",
+        "status_long",
+        "status_short",
+        "elapsed",
+        "extra",
+        "home_goals",
+        "away_goals",
+        "ht_home_goals",
+        "ht_away_goals",
+        "ft_home_goals",
+        "ft_away_goals",
+        "et_home_goals",
+        "et_away_goals",
+        "pen_home_goals",
+        "pen_away_goals",
+        "winner_api_team_id",
+        "raw",
+        "created_at",
+        "updated_at",
+      ].join(", ")
+    )
+    .order("match_date", { ascending: true });
+
+  if (error) {
+    throw new Error(`Failed to load fixtures: ${error.message}`);
+  }
+
+  return asFixtures(data);
+}
+
+export async function getStandings() {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("standings")
+    .select(
+      [
+        "id",
+        "api_league_id",
+        "season",
+        "group_name",
+        "api_team_id",
+        "team_name",
+        "team_logo_url",
+        "rank",
+        "points",
+        "goals_diff",
+        "form",
+        "status",
+        "description",
+        "played",
+        "wins",
+        "draws",
+        "losses",
+        "goals_for",
+        "goals_against",
+        "api_updated_at",
+        "raw",
+        "created_at",
+        "updated_at",
+      ].join(", ")
+    )
+    .order("group_name", { ascending: true })
+    .order("rank", { ascending: true });
+
+  if (error) {
+    throw new Error(`Failed to load standings: ${error.message}`);
+  }
+
+  return asStandings(data);
+}
+
+export async function getLatestSyncLogs(limit = 10) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("api_sync_logs")
+    .select(
+      "id, scope, status, started_at, ended_at, duration_ms, request_count, records_received, records_upserted, error_message"
+    )
+    .order("started_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    throw new Error(`Failed to load sync logs: ${error.message}`);
+  }
+
+  return asSyncLogs(data);
+}
+
+export async function getLastSuccessfulSync(scope?: string) {
+  const supabase = createSupabaseAdminClient();
+
+  let query = supabase
+    .from("api_sync_logs")
+    .select(
+      "id, scope, status, started_at, ended_at, duration_ms, request_count, records_received, records_upserted, error_message"
+    )
+    .eq("status", "success")
+    .order("ended_at", { ascending: false })
+    .limit(1);
+
+  if (scope) {
+    query = query.eq("scope", scope);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw new Error(`Failed to load latest successful sync: ${error.message}`);
+  }
+
+  return asSyncLogs(data)[0] ?? null;
+}
+
+export async function getFixturesPageData() {
+  const [fixtures, teams, standings, latestSync] = await Promise.all([
+    getFixtures(),
+    getTeams(),
+    getStandings(),
+    getLastSuccessfulSync("fixtures"),
+  ]);
+
+  return {
+    fixtures,
+    teams,
+    standings,
+    latestSync,
+  };
+}
+
+export async function getLivePageData() {
+  const [fixtures, latestSync] = await Promise.all([
+    getFixtures(),
+    getLastSuccessfulSync("fixtures"),
+  ]);
+
+  const liveFixtures = fixtures.filter((fixture) =>
+    ["live"].includes(getFixtureDisplayStatus(fixture.status_short))
+  );
+
+  const now = Date.now();
+
+  const upcomingFixtures = fixtures
+    .filter((fixture) => {
+      if (!fixture.match_date) {
+        return false;
+      }
+
+      const matchTime = new Date(fixture.match_date).getTime();
+
+      return (
+        Number.isFinite(matchTime) &&
+        matchTime >= now &&
+        getFixtureDisplayStatus(fixture.status_short) === "upcoming"
+      );
+    })
+    .slice(0, 8);
+
+  return {
+    liveFixtures,
+    upcomingFixtures,
+    latestSync,
+  };
+}
+
+export async function getGroupsPageData() {
+  const [standings, latestSync] = await Promise.all([
+    getStandings(),
+    getLastSuccessfulSync("standings"),
+  ]);
+
+  return {
+    standings,
+    latestSync,
+  };
+}
+
+export async function getTeamsPageData() {
+  const [teams, standings, fixtures, latestSync] = await Promise.all([
+    getTeams(),
+    getStandings(),
+    getFixtures(),
+    getLastSuccessfulSync("teams"),
+  ]);
+
+  return {
+    teams,
+    standings,
+    fixtures,
+    latestSync,
+  };
+}
+
+export async function getTeamSquad(apiTeamId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("team_squad_players")
+    .select(
+      [
+        "id",
+        "api_team_id",
+        "api_player_id",
+        "season",
+        "player_name",
+        "team_name",
+        "position",
+        "number",
+        "appearances",
+        "lineups",
+        "minutes",
+        "rating",
+        "captain",
+        "last_synced_at",
+      ].join(", ")
+    )
+    .eq("api_team_id", apiTeamId)
+    .order("position", { ascending: true })
+    .order("player_name", { ascending: true });
+
+  if (error) {
+    throw new Error(`Failed to load team squad: ${error.message}`);
+  }
+
+  return asTeamSquadPlayers(data);
+}
+
+export async function getTeamCoaches(apiTeamId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("coaches")
+    .select(
+      [
+        "id",
+        "api_coach_id",
+        "api_team_id",
+        "name",
+        "firstname",
+        "lastname",
+        "age",
+        "nationality",
+        "photo_url",
+        "team_name",
+        "last_synced_at",
+      ].join(", ")
+    )
+    .eq("api_team_id", apiTeamId)
+    .order("last_synced_at", { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to load team coaches: ${error.message}`);
+  }
+
+  return asCoaches(data);
+}
+
+export function groupSquadByPosition(squad: TeamSquadPlayer[]) {
+  const groups: Record<string, TeamSquadPlayer[]> = {
+    Goalkeepers: [],
+    Defenders: [],
+    Midfielders: [],
+    Forwards: [],
+    Other: [],
+  };
+
+  for (const player of squad) {
+    const position = player.position?.toLowerCase() ?? "";
+
+    if (position.includes("goalkeeper")) {
+      groups.Goalkeepers.push(player);
+    } else if (position.includes("defender")) {
+      groups.Defenders.push(player);
+    } else if (position.includes("midfielder")) {
+      groups.Midfielders.push(player);
+    } else if (
+      position.includes("attacker") ||
+      position.includes("forward")
+    ) {
+      groups.Forwards.push(player);
+    } else {
+      groups.Other.push(player);
+    }
+  }
+
+  return Object.fromEntries(
+    Object.entries(groups).filter(([, players]) => players.length > 0)
+  ) as Record<string, TeamSquadPlayer[]>;
+}
+
+export async function getTeamPageData(slug: string) {
+  const apiTeamId = getTeamIdFromSlug(slug);
+
+  if (!apiTeamId) {
+    return null;
+  }
+
+  const supabase = createSupabaseAdminClient();
+
+  const [{ data: teamData, error: teamError }, fixtures, standings, squad, coaches] =
+    await Promise.all([
+      supabase
+        .from("teams")
+        .select(
+          "id, api_team_id, name, code, country, founded, national, logo_url, raw, created_at, updated_at"
+        )
+        .eq("api_team_id", apiTeamId)
+        .maybeSingle(),
+      getFixtures(),
+      getStandings(),
+      getTeamSquad(apiTeamId),
+      getTeamCoaches(apiTeamId),
+    ]);
+
+  if (teamError) {
+    throw new Error(`Failed to load team: ${teamError.message}`);
+  }
+
+  if (!teamData) {
+    return null;
+  }
+
+  const team = teamData as Team;
+
+  const teamFixtures = fixtures.filter(
+    (fixture) =>
+      fixture.home_team_api_id === apiTeamId ||
+      fixture.away_team_api_id === apiTeamId
+  );
+
+  const standing = standings.find((row) => row.api_team_id === apiTeamId) ?? null;
+
+  const groupStandings = standing
+    ? standings.filter((row) => row.group_name === standing.group_name)
+    : [];
+
+  return {
+    team,
+    fixtures: teamFixtures,
+    results: teamFixtures.filter(
+      (fixture) => getFixtureDisplayStatus(fixture.status_short) === "finished"
+    ),
+    upcomingFixtures: teamFixtures.filter(
+      (fixture) => getFixtureDisplayStatus(fixture.status_short) === "upcoming"
+    ),
+    standing,
+    groupStandings,
+    squad,
+    coaches,
+  };
+}
+
+export function getFixtureFilterOptions(fixtures: Fixture[], teams: Team[]) {
+  const dates = Array.from(
+    new Set(
+      fixtures
+        .map((fixture) => fixture.match_date?.slice(0, 10))
+        .filter((value): value is string => Boolean(value))
+    )
+  ).sort();
+
+  const groups = Array.from(
+    new Set(
+      fixtures
+        .map((fixture) => fixture.group_name)
+        .filter((value): value is string => Boolean(value))
+    )
+  ).sort();
+
+  const venues = Array.from(
+    new Set(
+      fixtures
+        .map((fixture) => fixture.venue_name)
+        .filter((value): value is string => Boolean(value))
+    )
+  ).sort();
+
+  return {
+    dates,
+    teams,
+    groups,
+    venues,
+  };
+}
+
+export function filterFixtures(fixtures: Fixture[], filters: FixtureFilters) {
+  return fixtures.filter((fixture) => {
+    if (filters.date && fixture.match_date?.slice(0, 10) !== filters.date) {
+      return false;
+    }
+
+    if (filters.team) {
+      const teamId = Number(filters.team);
+
+      if (
+        fixture.home_team_api_id !== teamId &&
+        fixture.away_team_api_id !== teamId
+      ) {
+        return false;
+      }
+    }
+
+    if (filters.group && fixture.group_name !== filters.group) {
+      return false;
+    }
+
+    if (
+      filters.status &&
+      getFixtureDisplayStatus(fixture.status_short) !== filters.status
+    ) {
+      return false;
+    }
+
+    if (filters.venue && fixture.venue_name !== filters.venue) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+export function groupStandingsByGroup(standings: Standing[]) {
+  return standings.reduce<Record<string, Standing[]>>((groups, row) => {
+    const key = row.group_name || "Ungrouped";
+
+    if (!groups[key]) {
+      groups[key] = [];
+    }
+
+    groups[key].push(row);
+
+    return groups;
+  }, {});
+}
+
+export function getTeamGroupMap(standings: Standing[]) {
+  const map = new Map<number, Standing>();
+
+  for (const row of standings) {
+    map.set(row.api_team_id, row);
+  }
+
+  return map;
+}
+
+export type MatchEvent = {
+  id: string;
+  fixture_id: string | null;
+  api_fixture_id: number;
+  api_event_key: string;
+  elapsed: number | null;
+  extra: number | null;
+  team_api_id: number | null;
+  team_name: string | null;
+  team_logo_url: string | null;
+  player_api_id: number | null;
+  player_name: string | null;
+  assist_api_id: number | null;
+  assist_name: string | null;
+  event_type: string | null;
+  event_detail: string | null;
+  comments: string | null;
+  raw: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+export type MatchStatistic = {
+  id: string;
+  fixture_id: string | null;
+  api_fixture_id: number;
+  team_api_id: number;
+  team_name: string;
+  team_logo_url: string | null;
+  stat_type: string;
+  stat_value: string | null;
+  raw: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+export type MatchLineup = {
+  id: string;
+  fixture_id: string | null;
+  api_fixture_id: number;
+  team_api_id: number;
+  team_name: string;
+  team_logo_url: string | null;
+  coach_name: string | null;
+  formation: string | null;
+  starting_xi: unknown;
+  substitutes: unknown;
+  raw: unknown;
+  created_at: string;
+  updated_at: string;
+};
+
+function asMatchEvents(data: unknown): MatchEvent[] {
+  return (data ?? []) as MatchEvent[];
+}
+
+function asMatchStatistics(data: unknown): MatchStatistic[] {
+  return (data ?? []) as MatchStatistic[];
+}
+
+function asMatchLineups(data: unknown): MatchLineup[] {
+  return (data ?? []) as MatchLineup[];
+}
+
+function isMissingOptionalMatchTableError(error: { code?: string; message?: string }) {
+  const message = error.message ?? "";
+
+  return (
+    error.code === "42P01" ||
+    error.code === "PGRST205" ||
+    message.includes("does not exist") ||
+    message.includes("Could not find the table")
+  );
+}
+
+export async function getMatchBySlug(slug: string) {
+  const apiFixtureId = getFixtureIdFromSlug(slug);
+
+  if (!apiFixtureId) {
+    return null;
+  }
+
+  const fixtures = await getFixtures();
+  const fixture = fixtures.find(
+    (row) => row.api_fixture_id === apiFixtureId
+  );
+
+  if (!fixture) {
+    return null;
+  }
+
+  const canonicalSlug = fixtureSlug({
+    api_fixture_id: fixture.api_fixture_id,
+    match_date: fixture.match_date,
+    home_team_name: fixture.home_team_name,
+    away_team_name: fixture.away_team_name,
+  });
+
+  return {
+    fixture,
+    canonicalSlug,
+  };
+}
+
+export async function getMatchEvents(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("match_events")
+    .select(
+      [
+        "id",
+        "fixture_id",
+        "api_fixture_id",
+        "api_event_key",
+        "elapsed",
+        "extra",
+        "team_api_id",
+        "team_name",
+        "team_logo_url",
+        "player_api_id",
+        "player_name",
+        "assist_api_id",
+        "assist_name",
+        "event_type",
+        "event_detail",
+        "comments",
+        "raw",
+        "created_at",
+        "updated_at",
+      ].join(", ")
+    )
+    .eq("api_fixture_id", apiFixtureId)
+    .order("elapsed", { ascending: true })
+    .order("extra", { ascending: true });
+
+  if (error) {
+    if (isMissingOptionalMatchTableError(error)) {
+      return [];
+    }
+
+    throw new Error(`Failed to load match events: ${error.message}`);
+  }
+
+  return asMatchEvents(data);
+}
+
+export async function getMatchStats(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("match_statistics")
+    .select(
+      [
+        "id",
+        "fixture_id",
+        "api_fixture_id",
+        "team_api_id",
+        "team_name",
+        "team_logo_url",
+        "stat_type",
+        "stat_value",
+        "raw",
+        "created_at",
+        "updated_at",
+      ].join(", ")
+    )
+    .eq("api_fixture_id", apiFixtureId)
+    .order("stat_type", { ascending: true });
+
+  if (error) {
+    if (isMissingOptionalMatchTableError(error)) {
+      return [];
+    }
+
+    throw new Error(`Failed to load match stats: ${error.message}`);
+  }
+
+  return asMatchStatistics(data);
+}
+
+export async function getMatchLineups(apiFixtureId: number) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("match_lineups")
+    .select(
+      [
+        "id",
+        "fixture_id",
+        "api_fixture_id",
+        "team_api_id",
+        "team_name",
+        "team_logo_url",
+        "coach_name",
+        "formation",
+        "starting_xi",
+        "substitutes",
+        "raw",
+        "created_at",
+        "updated_at",
+      ].join(", ")
+    )
+    .eq("api_fixture_id", apiFixtureId)
+    .order("team_name", { ascending: true });
+
+  if (error) {
+    if (isMissingOptionalMatchTableError(error)) {
+      return [];
+    }
+
+    throw new Error(`Failed to load match lineups: ${error.message}`);
+  }
+
+  return asMatchLineups(data);
+}
+
+export async function getMatchPageData(slug: string) {
+  const match = await getMatchBySlug(slug);
+
+  if (!match) {
+    return null;
+  }
+
+  const [events, stats, lineups] = await Promise.all([
+    getMatchEvents(match.fixture.api_fixture_id),
+    getMatchStats(match.fixture.api_fixture_id),
+    getMatchLineups(match.fixture.api_fixture_id),
+  ]);
+
+  return {
+    ...match,
+    events,
+    stats,
+    lineups,
+  };
+}
+
+
+
+================ src/lib/worldcup/format.ts ================
+export type FixtureDisplayStatus =
+  | "upcoming"
+  | "live"
+  | "finished"
+  | "postponed"
+  | "cancelled"
+  | "unknown";
+
+const liveStatuses = new Set(["1H", "HT", "2H", "ET", "BT", "P", "LIVE"]);
+const finishedStatuses = new Set(["FT", "AET", "PEN"]);
+const postponedStatuses = new Set(["PST", "SUSP", "INT"]);
+const cancelledStatuses = new Set(["CANC", "ABD", "AWD", "WO"]);
+
+export function getFixtureDisplayStatus(
+  statusShort: string | null | undefined
+): FixtureDisplayStatus {
+  const status = statusShort?.toUpperCase();
+
+  if (!status) {
+    return "unknown";
+  }
+
+  if (liveStatuses.has(status)) {
+    return "live";
+  }
+
+  if (finishedStatuses.has(status)) {
+    return "finished";
+  }
+
+  if (postponedStatuses.has(status)) {
+    return "postponed";
+  }
+
+  if (cancelledStatuses.has(status)) {
+    return "cancelled";
+  }
+
+  if (status === "NS" || status === "TBD") {
+    return "upcoming";
+  }
+
+  return "unknown";
+}
+
+export function isLiveFixture(statusShort: string | null | undefined) {
+  return getFixtureDisplayStatus(statusShort) === "live";
+}
+
+export function isFinishedFixture(statusShort: string | null | undefined) {
+  return getFixtureDisplayStatus(statusShort) === "finished";
+}
+
+export function isUpcomingFixture(statusShort: string | null | undefined) {
+  return getFixtureDisplayStatus(statusShort) === "upcoming";
+}
+
+export function formatDateTime(value: string | null | undefined) {
+  if (!value) {
+    return "Date TBC";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Date TBC";
+  }
+
+  return new Intl.DateTimeFormat("en-IE", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Dublin",
+  }).format(date);
+}
+
+export function formatDateOnly(value: string | null | undefined) {
+  if (!value) {
+    return "Date TBC";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Date TBC";
+  }
+
+  return new Intl.DateTimeFormat("en-IE", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "Europe/Dublin",
+  }).format(date);
+}
+
+export function getDateInputValue(value: string | null | undefined) {
+  if (!value) {
+    return "";
+  }
+
+  return value.slice(0, 10);
+}
+
+export function formatLastUpdated(value: string | null | undefined) {
+  if (!value) {
+    return "Last updated not available";
+  }
+
+  return formatDateTime(value);
+}
+
+export function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/['"]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export function teamSlug(name: string, apiTeamId: number) {
+  return `${slugify(name)}-${apiTeamId}`;
+}
+
+export function getTeamIdFromSlug(slug: string) {
+  const match = slug.match(/-(\d+)$/);
+
+  if (!match) {
+    return null;
+  }
+
+  const parsed = Number(match[1]);
+
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+export function fixtureSlug(input: {
+  api_fixture_id: number;
+  match_date?: string | null;
+  home_team_name?: string | null;
+  away_team_name?: string | null;
+}) {
+  const datePart = input.match_date?.slice(0, 10) || "date-tbc";
+  const homePart = slugify(input.home_team_name || "home-tbc");
+  const awayPart = slugify(input.away_team_name || "away-tbc");
+
+  return `${datePart}-${homePart}-vs-${awayPart}-${input.api_fixture_id}`;
+}
+
+export function getFixtureIdFromSlug(slug: string) {
+  const match = slug.match(/-(\d+)$/);
+
+  if (!match) {
+    return null;
+  }
+
+  const parsed = Number(match[1]);
+
+  return Number.isFinite(parsed) ? parsed : null;
+}

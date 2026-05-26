@@ -1,11 +1,29 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { hostCities } from "@/lib/data/venues";
+import { hostNations } from "@/lib/data/authority";
 
 export async function generateStaticParams() {
   return hostCities.map((city) => ({
     slug: city.slug,
   }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const city = hostCities.find((c) => c.slug === slug);
+
+  if (!city) return { title: "Host city not found" };
+
+  return {
+    title: `${city.city} World Cup 2026 Host City Guide`,
+    description: `${city.city} host city guide for World Cup 2026 with ${city.stadium}, fixtures, timezone and fan context.`,
+  };
 }
 
 export default async function HostCityPage({
@@ -21,23 +39,37 @@ export default async function HostCityPage({
     notFound();
   }
 
+  const heroImage = hostNations.find(
+    (nation) => nation.name === city.country
+  )?.image;
+
   return (
     <main className="container mx-auto px-6 pt-12 pb-16">
-      <div className="max-w-5xl">
-        <p className="neon-kicker">{city.country}</p>
+      <section className="hero-panel overflow-hidden rounded-[2.5rem] p-0">
+        <div className="relative min-h-80 p-6 sm:p-10">
+          {heroImage ? (
+            <Image
+              src={heroImage}
+              alt=""
+              fill
+              sizes="100vw"
+              className="object-cover opacity-40"
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-slate-950/20" />
+          <div className="relative z-10 max-w-5xl">
+            <p className="neon-kicker">{city.country}</p>
 
-        <h1 className="mt-4 text-5xl font-black uppercase text-white">
-          {city.city}
-        </h1>
+            <h1 className="mt-4 text-5xl font-black uppercase text-white">
+              {city.city}
+            </h1>
 
-        <p className="mt-4 text-xl text-lime-300">
-          {city.role}
-        </p>
+            <p className="mt-4 text-xl text-lime-300">{city.role}</p>
 
-        <p className="mt-6 text-slate-300 max-w-3xl">
-          {city.summary}
-        </p>
-      </div>
+            <p className="mt-6 max-w-3xl text-slate-300">{city.summary}</p>
+          </div>
+        </div>
+      </section>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-3">
         <div className="card-panel p-6">

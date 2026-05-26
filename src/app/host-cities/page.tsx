@@ -19,6 +19,9 @@ export default function HostCitiesPage() {
             Explore the 16 cities hosting World Cup 2026 matches across USA, Mexico and Canada.
             Each guide focuses on tournament role, stadium, timezone and practical fan context.
           </p>
+          <Link href="/host-nations" className="glow-button-secondary mt-6">
+            View host nations
+          </Link>
         </section>
 
         <section className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">

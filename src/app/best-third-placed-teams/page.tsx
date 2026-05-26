@@ -196,6 +196,41 @@ export default async function BestThirdPlacedTeamsPage() {
           </ol>
         </section>
 
+        <section className="neon-panel mt-8 rounded-[2rem] p-6">
+          <p className="neon-kicker">Qualification examples</p>
+          <h2 className="mt-4 text-3xl font-black uppercase text-white">
+            How the cut line feels in practice
+          </h2>
+          <div className="mt-5 grid gap-4 lg:grid-cols-3">
+            {[
+              {
+                status: "Safe",
+                tone: "border-lime-300/25 bg-lime-300/10",
+                copy: "A third-placed team with six points is usually in a strong position because at least four other third-place teams must beat that total or tiebreaker profile.",
+              },
+              {
+                status: "Bubble",
+                tone: "border-cyan-300/25 bg-cyan-300/10",
+                copy: "Four points can be enough, but goal difference and goals scored become tense because teams from every group are compared together.",
+              },
+              {
+                status: "Danger",
+                tone: "border-fuchsia-300/25 bg-fuchsia-400/10",
+                copy: "Three points or a negative goal difference can still survive in unusual scenarios, but the team needs help across other groups.",
+              },
+            ].map((item) => (
+              <article key={item.status} className={`rounded-3xl border p-5 ${item.tone}`}>
+                <h3 className="text-2xl font-black uppercase text-white">
+                  {item.status}
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-slate-300">
+                  {item.copy}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <div className="mt-8">
           <ThirdPlaceTable
             standings={standings}

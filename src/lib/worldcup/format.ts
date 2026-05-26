@@ -1,3 +1,5 @@
+import { hostCities } from "@/lib/data/venues";
+
 export type FixtureDisplayStatus =
   | "upcoming"
   | "live"
@@ -55,7 +57,11 @@ export function isUpcomingFixture(statusShort: string | null | undefined) {
   return getFixtureDisplayStatus(statusShort) === "upcoming";
 }
 
-export function formatDateTime(value: string | null | undefined) {
+export function formatDateTime(
+  value: string | null | undefined,
+  timeZone = "Europe/Dublin",
+  options: { includeTimeZoneName?: boolean; locale?: string } = {}
+) {
   if (!value) {
     return "Date TBC";
   }
@@ -66,15 +72,63 @@ export function formatDateTime(value: string | null | undefined) {
     return "Date TBC";
   }
 
-  return new Intl.DateTimeFormat("en-IE", {
+  return new Intl.DateTimeFormat(options.locale ?? "en-IE", {
     weekday: "short",
     day: "2-digit",
     month: "short",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: "Europe/Dublin",
+    timeZone,
+    timeZoneName: options.includeTimeZoneName ? "short" : undefined,
   }).format(date);
+}
+
+function normalise(value: string | null | undefined) {
+  return String(value ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+export function getFixtureHostCity(input: {
+  venue_name?: string | null;
+  venue_city?: string | null;
+}) {
+  const venueCity = normalise(input.venue_city);
+  const venueName = normalise(input.venue_name);
+
+  return (
+    hostCities.find((city) => normalise(city.city) === venueCity) ??
+    hostCities.find((city) => venueCity.includes(normalise(city.city))) ??
+    hostCities.find((city) => venueName.includes(normalise(city.stadium))) ??
+    null
+  );
+}
+
+export function getFixtureVenueTimeZone(input: {
+  venue_name?: string | null;
+  venue_city?: string | null;
+  timezone?: string | null;
+}) {
+  return getFixtureHostCity(input)?.timezone ?? input.timezone ?? null;
+}
+
+export function formatVenueDateTime(input: {
+  match_date?: string | null;
+  venue_name?: string | null;
+  venue_city?: string | null;
+  timezone?: string | null;
+}) {
+  const timeZone = getFixtureVenueTimeZone(input);
+
+  if (!timeZone) {
+    return "Venue time TBC";
+  }
+
+  return formatDateTime(input.match_date, timeZone, {
+    includeTimeZoneName: true,
+  });
 }
 
 export function formatDateOnly(value: string | null | undefined) {

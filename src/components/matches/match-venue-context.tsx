@@ -1,50 +1,15 @@
 import Link from "next/link";
 import type { Fixture } from "@/lib/data/matches";
-import { hostCities } from "@/lib/data/venues";
+import {
+  formatDateTime,
+  formatVenueDateTime,
+  getFixtureHostCity,
+  getFixtureVenueTimeZone,
+} from "@/lib/worldcup/format";
 
 type MatchVenueContextProps = {
   fixture: Fixture;
 };
-
-function normalise(value: string | null | undefined) {
-  return String(value ?? "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, " ")
-    .trim();
-}
-
-function formatInTimezone(value: string | null | undefined, timeZone: string) {
-  if (!value) return "Kick-off TBC";
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return "Kick-off TBC";
-  }
-
-  return new Intl.DateTimeFormat("en-GB", {
-    weekday: "short",
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone,
-    timeZoneName: "short",
-  }).format(date);
-}
-
-function findHostCity(fixture: Fixture) {
-  const venueCity = normalise(fixture.venue_city);
-  const venueName = normalise(fixture.venue_name);
-
-  return (
-    hostCities.find((city) => normalise(city.city) === venueCity) ??
-    hostCities.find((city) => venueCity.includes(normalise(city.city))) ??
-    hostCities.find((city) => venueName.includes(normalise(city.stadium))) ??
-    null
-  );
-}
 
 function InfoTile({
   label,
@@ -74,11 +39,13 @@ function InfoTile({
 }
 
 export function MatchVenueContext({ fixture }: MatchVenueContextProps) {
-  const hostCity = findHostCity(fixture);
-  const venueTimeZone = hostCity?.timezone ?? "UTC";
+  const hostCity = getFixtureHostCity(fixture);
+  const venueTimeZone = getFixtureVenueTimeZone(fixture);
 
-  const venueLocalTime = formatInTimezone(fixture.match_date, venueTimeZone);
-  const utcKickoff = formatInTimezone(fixture.match_date, "UTC");
+  const venueLocalTime = formatVenueDateTime(fixture);
+  const siteKickoff = formatDateTime(fixture.match_date, "Europe/Dublin", {
+    includeTimeZoneName: true,
+  });
 
   if (!fixture.match_date && !fixture.venue_name && !fixture.venue_city) {
     return null;
@@ -93,7 +60,7 @@ export function MatchVenueContext({ fixture }: MatchVenueContextProps) {
             Timezone and venue context
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
-            Kick-off times are calculated from the real fixture timestamp. Venue time uses the host city timezone where available.
+            Kick-off times are calculated from the real fixture timestamp. Venue time uses the host city timezone where available, and stays explicit when the venue is still TBC.
           </p>
         </div>
 
@@ -108,10 +75,16 @@ export function MatchVenueContext({ fixture }: MatchVenueContextProps) {
 
       <div className="mt-5 grid gap-3 md:grid-cols-3">
         <InfoTile label="Venue local time" value={venueLocalTime} tone="lime" />
-        <InfoTile label="UTC kick-off" value={utcKickoff} tone="cyan" />
+        <InfoTile label="Site local time" value={siteKickoff} tone="cyan" />
         <InfoTile
           label="Timezone source"
-          value={hostCity ? hostCity.timezone : "UTC fallback"}
+          value={
+            hostCity
+              ? hostCity.timezone
+              : venueTimeZone
+                ? `${venueTimeZone} fixture feed`
+                : "Venue TBC"
+          }
           tone="pink"
         />
       </div>
