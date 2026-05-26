@@ -498,6 +498,47 @@ export default async function HomePage() {
             ))}
           </div>
         </section>
+        <section className="mt-10 grid gap-6 lg:grid-cols-2">
+          <Link href="/host-cities" className="neon-panel block rounded-[2rem] p-6">
+            <span className="neon-badge neon-badge-cyan">International fan guide</span>
+            <h2 className="mt-5 text-3xl font-black uppercase text-white">
+              Host Cities
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-slate-300">
+              Explore all 16 World Cup 2026 host cities across USA, Mexico and Canada.
+            </p>
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              {["Mexico City", "Guadalajara", "Toronto", "Vancouver", "New York/New Jersey", "Los Angeles"].map((city) => (
+                <span key={city} className="rounded-2xl border border-cyan-300/15 bg-black/30 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-cyan-100">
+                  {city}
+                </span>
+              ))}
+            </div>
+            <span className="mt-5 inline-flex text-sm font-black uppercase tracking-[0.14em] text-lime-200">
+              Explore all host cities →
+            </span>
+          </Link>
+
+          <Link href="/stadiums" className="neon-panel block rounded-[2rem] p-6">
+            <span className="neon-badge neon-badge-pink">Tournament venues</span>
+            <h2 className="mt-5 text-3xl font-black uppercase text-white">
+              World Cup Venues
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-slate-300">
+              From Estadio Azteca to MetLife Stadium, follow every venue on the 2026 map.
+            </p>
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              {["Estadio Azteca", "MetLife Stadium", "SoFi Stadium", "AT&T Stadium", "BC Place", "Lumen Field"].map((venue) => (
+                <span key={venue} className="rounded-2xl border border-fuchsia-300/15 bg-black/30 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-fuchsia-100">
+                  {venue}
+                </span>
+              ))}
+            </div>
+            <span className="mt-5 inline-flex text-sm font-black uppercase tracking-[0.14em] text-lime-200">
+              Explore all stadiums →
+            </span>
+          </Link>
+        </section>
         <section className="neon-panel mt-10 rounded-[2rem] p-5">
           <div className="flex items-end justify-between gap-3">
             <div>
@@ -537,6 +578,7 @@ export default async function HomePage() {
     </div>
   );
 }
+
 
 
 
