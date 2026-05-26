@@ -934,3 +934,15 @@ body {
     font-size: clamp(2.1rem, 12vw, 3rem) !important;
   }
 }
+
+/* Launch blocker fix: homepage countdown must not squeeze into one row on mobile */
+@media (max-width: 640px) {
+  [data-home-page] [class*="grid-cols-4"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  [data-home-page] [class*="grid-cols-4"] > * {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+}

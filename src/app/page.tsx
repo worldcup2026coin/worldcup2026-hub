@@ -167,7 +167,7 @@ export default async function HomePage() {
                   </span>
                 </div>
 
-                <h1 className="neon-title glow-text mt-6 max-w-5xl text-5xl font-black leading-[0.82] text-white sm:text-7xl lg:text-8xl">
+                <h1 className="neon-title glow-text mt-6 max-w-5xl text-5xl font-black leading-[0.82] text-white sm:text-5xl sm:text-7xl lg:text-5xl sm:text-8xl">
                   FOOTBALL. CULTURE. CHAOS.
                 </h1>
                 <p className="mt-6 max-w-2xl text-lg font-semibold leading-8 text-slate-200">
@@ -582,6 +582,7 @@ export default async function HomePage() {
     </div>
   );
 }
+
 
 
 
