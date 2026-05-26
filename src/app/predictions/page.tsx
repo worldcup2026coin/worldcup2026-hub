@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/worldcup/page-header";
 import { PredictionCard } from "@/components/predictions/prediction-card";
 import { PredictionEmptyState } from "@/components/predictions/prediction-empty-state";
 import { ResponsibleUseDisclaimer } from "@/components/predictions/responsible-use-disclaimer";
+import { TeamFlag } from "@/components/worldcup/team-flag";
 import { getPredictionsIndexData } from "@/lib/data/predictions";
 import { formatVenueDateTime } from "@/lib/worldcup/format";
 
@@ -75,7 +76,15 @@ export default async function PredictionsPage() {
                       Match predictions
                     </p>
                     <h2 className="mt-2 text-2xl font-black text-white">
+                      <TeamFlag
+                        name={item.fixture.home_team_name}
+                        className="mr-2 inline-flex h-8 w-8 align-middle"
+                      />
                       {item.matchTitle}
+                      <TeamFlag
+                        name={item.fixture.away_team_name}
+                        className="ml-2 inline-flex h-8 w-8 align-middle"
+                      />
                     </h2>
                   </div>
 

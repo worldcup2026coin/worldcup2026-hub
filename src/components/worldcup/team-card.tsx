@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Standing, Team } from "@/lib/data/worldcup";
 import { teamSlug } from "@/lib/worldcup/format";
+import { TeamFlag } from "@/components/worldcup/team-flag";
 
 type TeamCardProps = {
   team: Team;
@@ -26,16 +27,22 @@ export function TeamCard({ team, standing }: TeamCardProps) {
               className="h-full w-full rounded-xl object-contain"
             />
           ) : (
-            <span className="text-lg font-black text-white">
-              {team.name.slice(0, 2).toUpperCase()}
-            </span>
+            <TeamFlag code={team.code} name={team.name} country={team.country} />
           )}
         </span>
 
         <div className="min-w-0">
-          <p className="neon-badge neon-badge-cyan">
-            {standing?.group_name ?? "Group TBC"}
-          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <TeamFlag
+              code={team.code}
+              name={team.name}
+              country={team.country}
+              className="h-7 w-7 text-base"
+            />
+            <p className="neon-badge neon-badge-cyan">
+              {standing?.group_name ?? "Group TBC"}
+            </p>
+          </div>
           <h2 className="mt-2 truncate text-xl font-black uppercase tracking-tight text-white group-hover:text-lime-200">
             {team.name}
           </h2>

@@ -36,7 +36,7 @@ function TeamBadge({
         )}
       </span>
 
-      <h1 className="mt-4 max-w-[9.5rem] overflow-hidden text-balance break-words text-2xl font-black uppercase leading-tight tracking-tight text-white sm:max-w-[18rem] sm:overflow-visible sm:text-4xl lg:max-w-[24rem]">
+      <h1 className="mt-4 w-full max-w-full truncate text-xs font-black uppercase leading-tight tracking-tight text-white sm:max-w-[18rem] sm:overflow-visible sm:text-balance sm:text-4xl lg:max-w-[24rem]">
         {displayName}
       </h1>
     </div>

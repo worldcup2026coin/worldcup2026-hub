@@ -17,6 +17,8 @@ import { MatchShareButtons } from "@/components/matches/match-share-buttons";
 import { MatchStats } from "@/components/matches/match-stats";
 import { EmailSignupForm } from "@/components/community/email-signup-form";
 import { MatchPredictionSections } from "@/components/predictions/match-prediction-sections";
+import { MatchCountdown } from "@/components/worldcup/match-countdown";
+import { WorldClock } from "@/components/worldcup/world-clock";
 import {
   getMatchBySlug,
   getMatchPageData,
@@ -26,6 +28,7 @@ import {
 import { getPredictionContentForFixture } from "@/lib/data/predictions";
 import { getPublishedPolls } from "@/lib/data/community";
 import { formatDateOnly } from "@/lib/worldcup/format";
+import { getFixtureVenueTimeZone } from "@/lib/worldcup/format";
 import { breadcrumbJsonLd, sportsEventJsonLd } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -177,6 +180,14 @@ export default async function MatchPage({ params }: MatchPageProps) {
         </nav>
         <div id="venue" className="scroll-mt-24">
         <MatchVenueContext fixture={fixture} />
+        </div>
+        <div className="mt-6 grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
+          <MatchCountdown matchDate={fixture.match_date} label="Match countdown" />
+          <WorldClock
+            matchDate={fixture.match_date}
+            venueLabel={fixture.venue_city ?? fixture.venue_name ?? "Venue"}
+            venueTimeZone={getFixtureVenueTimeZone(fixture)}
+          />
         </div>
 
         <div id="overview" className="mt-8 grid scroll-mt-24 gap-6 xl:grid-cols-[1.25fr_0.75fr]">

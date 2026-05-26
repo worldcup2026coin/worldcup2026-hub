@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { hostCities } from "@/lib/data/venues";
-import { hostNations } from "@/lib/data/authority";
+import { getCityImage, getTravelHighlights } from "@/lib/data/visuals";
 
 export async function generateStaticParams() {
   return hostCities.map((city) => ({
@@ -39,9 +39,8 @@ export default async function HostCityPage({
     notFound();
   }
 
-  const heroImage = hostNations.find(
-    (nation) => nation.name === city.country
-  )?.image;
+  const heroImage = getCityImage(city);
+  const travelHighlights = getTravelHighlights(city);
 
   return (
     <main className="container mx-auto px-6 pt-12 pb-16">
@@ -89,6 +88,17 @@ export default async function HostCityPage({
           <p className="mt-4 text-slate-300">
             {city.fanNote}
           </p>
+
+          <div className="mt-5 grid gap-2">
+            {travelHighlights.map((highlight) => (
+              <p
+                key={highlight}
+                className="rounded-2xl border border-cyan-300/15 bg-cyan-300/10 px-3 py-2 text-sm text-slate-200"
+              >
+                {highlight}
+              </p>
+            ))}
+          </div>
         </div>
 
         <div className="card-panel p-6">

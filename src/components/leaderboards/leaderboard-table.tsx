@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import type { LeaderboardRow } from "@/lib/data/leaderboards";
 import { playerSlug } from "@/lib/data/players";
+import { TeamFlag } from "@/components/worldcup/team-flag";
 
 type Props = {
   title: string;
@@ -92,7 +93,13 @@ export function LeaderboardTable({ title, valueLabel, rows }: Props) {
                         </td>
 
                         <td className="font-semibold text-slate-300">
-                          {row.team_name ?? "-"}
+                          <span className="inline-flex items-center gap-2">
+                            <TeamFlag
+                              name={row.team_name}
+                              className="h-7 w-7 text-base"
+                            />
+                            {row.team_name ?? "-"}
+                          </span>
                         </td>
 
                         <td className="text-right text-2xl font-black text-lime-200">

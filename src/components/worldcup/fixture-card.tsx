@@ -10,6 +10,7 @@ import {
   teamSlug,
 } from "@/lib/worldcup/format";
 import { FixtureStatusBadge } from "@/components/worldcup/fixture-status-badge";
+import { TeamFlag } from "@/components/worldcup/team-flag";
 
 type FixtureCardProps = {
   fixture: Fixture;
@@ -23,11 +24,7 @@ function TeamLogo({
   alt: string;
 }) {
   if (!src) {
-    return (
-      <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-cyan-300/25 bg-cyan-300/10 text-xs font-black text-white shadow-[0_0_18px_rgba(34,211,238,0.12)]">
-        {alt.slice(0, 2).toUpperCase()}
-      </span>
-    );
+    return <TeamFlag name={alt} className="h-10 w-10" />;
   }
 
   return (
@@ -60,6 +57,7 @@ function TeamLine({
   const content = (
     <div className="flex min-w-0 items-center gap-3">
       <TeamLogo src={logo} alt={displayName} />
+      <TeamFlag name={displayName} className="h-7 w-7 text-base" />
       <span
         className={`truncate text-sm font-black ${
           isWinner ? "text-lime-200 glow-text" : "text-white"

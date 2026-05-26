@@ -7,6 +7,9 @@ const tournamentLinks = [
   { href: "/groups", label: "Groups" },
   { href: "/teams", label: "Teams" },
   { href: "/predictions", label: "Predictions" },
+  { href: "/tournament-simulation", label: "Simulation" },
+  { href: "/fan-polls", label: "Fan Polls" },
+  { href: "/prediction-leaderboard", label: "Prediction Table" },
   { href: "/news", label: "News" },
 ];
 
@@ -17,6 +20,9 @@ const exploreLinks = [
   { href: "/world-cup-format", label: "Format Guide" },
   { href: "/tournament-timeline", label: "Timeline" },
   { href: "/world-cup-history", label: "History" },
+  { href: "/guides", label: "Guides" },
+  { href: "/injuries", label: "Injuries" },
+  { href: "/suspensions", label: "Suspensions" },
   { href: "/best-third-placed-teams", label: "Third Place" },
   { href: "/top-scorers", label: "Top Scorers" },
   { href: "/top-assists", label: "Top Assists" },

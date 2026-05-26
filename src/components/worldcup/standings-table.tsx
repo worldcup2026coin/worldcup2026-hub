@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Standing } from "@/lib/data/worldcup";
 import { teamSlug } from "@/lib/worldcup/format";
+import { TeamFlag } from "@/components/worldcup/team-flag";
 
 type StandingsTableProps = {
   groupName: string;
@@ -79,8 +80,9 @@ export function StandingsTable({ groupName, rows }: StandingsTableProps) {
                         />
                       </span>
                     ) : (
-                      <span className="h-8 w-8 rounded-xl bg-white/10" />
+                      <TeamFlag name={row.team_name} className="h-8 w-8 text-base" />
                     )}
+                    <TeamFlag name={row.team_name} className="h-7 w-7 text-base" />
                     <span className="truncate">{row.team_name}</span>
                   </Link>
                 </td>

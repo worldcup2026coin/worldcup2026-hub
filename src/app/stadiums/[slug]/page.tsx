@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { stadiums } from "@/lib/data/venues";
-import { hostNations } from "@/lib/data/authority";
+import { getStadiumImage } from "@/lib/data/visuals";
 
 export async function generateStaticParams() {
   return stadiums.map((stadium) => ({
@@ -39,9 +39,7 @@ export default async function StadiumPage({
     notFound();
   }
 
-  const heroImage = hostNations.find(
-    (nation) => nation.name === stadium.country
-  )?.image;
+  const heroImage = getStadiumImage(stadium);
 
   return (
     <main className="container mx-auto px-6 pt-12 pb-16">
@@ -80,6 +78,7 @@ export default async function StadiumPage({
             <li><strong>Matches:</strong> {stadium.matchesHosted}</li>
             <li><strong>Timezone:</strong> {stadium.timezone}</li>
             <li><strong>Role:</strong> {stadium.role}</li>
+            <li><strong>City:</strong> {stadium.city}</li>
           </ul>
         </div>
 

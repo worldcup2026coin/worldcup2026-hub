@@ -7,6 +7,7 @@ import {
 } from "@/lib/data/predictions";
 import { formatDateTime } from "@/lib/worldcup/format";
 import { RiskBadge } from "@/components/predictions/risk-badge";
+import { TeamFlag } from "@/components/worldcup/team-flag";
 
 type PredictionCardProps = {
   tip: PredictionTip;
@@ -57,7 +58,15 @@ function CardInner({ tip, fixture }: Pick<PredictionCardProps, "tip" | "fixture"
           <h2 className="mt-3 text-2xl font-black uppercase tracking-tight text-white">{tip.title}</h2>
           {fixture ? (
             <p className="mt-2 text-sm font-semibold text-slate-400">
+              <TeamFlag
+                name={fixture.home_team_name}
+                className="mr-1 inline-flex h-6 w-6 align-middle text-sm"
+              />
               {fixture.home_team_name ?? "Home"} vs{" "}
+              <TeamFlag
+                name={fixture.away_team_name}
+                className="mx-1 inline-flex h-6 w-6 align-middle text-sm"
+              />
               {fixture.away_team_name ?? "Away"} ·{" "}
               {formatDateTime(fixture.match_date)}
             </p>

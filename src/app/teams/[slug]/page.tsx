@@ -4,8 +4,10 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { notFound } from "next/navigation";
 import { EmptyState } from "@/components/worldcup/empty-state";
 import { FixtureCard } from "@/components/worldcup/fixture-card";
+import { MatchCountdown } from "@/components/worldcup/match-countdown";
 import { PageHeader } from "@/components/worldcup/page-header";
 import { StandingsTable } from "@/components/worldcup/standings-table";
+import { TeamFlag } from "@/components/worldcup/team-flag";
 import { Container } from "@/components/ui/container";
 import { breadcrumbJsonLd, sportsTeamJsonLd } from "@/lib/seo";
 import {
@@ -207,12 +209,20 @@ export default async function TeamPage({ params }: TeamPageProps) {
                 />
               ) : (
                 <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/10 text-2xl font-black text-white">
-                  {team.name.slice(0, 2).toUpperCase()}
+                  <TeamFlag code={team.code} name={team.name} country={team.country} />
                 </div>
               )}
 
               <div>
-                <h2 className="text-2xl font-black text-white">{team.name}</h2>
+                <h2 className="flex items-center gap-2 text-2xl font-black text-white">
+                  <TeamFlag
+                    code={team.code}
+                    name={team.name}
+                    country={team.country}
+                    className="h-8 w-8"
+                  />
+                  {team.name}
+                </h2>
                 <p className="mt-1 text-sm text-slate-400">
                   {team.country ?? "Country TBC"}
                 </p>
@@ -320,6 +330,9 @@ export default async function TeamPage({ params }: TeamPageProps) {
                     >
                       View Match Centre
                     </Link>
+                  </div>
+                  <div className="md:col-span-2">
+                    <MatchCountdown matchDate={nextFixture.match_date} />
                   </div>
                 </div>
               ) : (
@@ -506,6 +519,33 @@ export default async function TeamPage({ params }: TeamPageProps) {
           <p className="mt-2 text-sm text-slate-300">
             Upcoming and scheduled matches involving {team.name}.
           </p>
+
+          {standing?.form ? (
+            <div className="mt-5 rounded-[2rem] border border-lime-300/20 bg-lime-300/10 p-5">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-lime-100">
+                Last 5 matches
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {standing.form.slice(-5).split("").map((result, index) => {
+                  const tone =
+                    result === "W"
+                      ? "border-lime-300/30 bg-lime-300/15 text-lime-100"
+                      : result === "D"
+                        ? "border-cyan-300/30 bg-cyan-300/15 text-cyan-100"
+                        : "border-fuchsia-300/30 bg-fuchsia-400/15 text-fuchsia-100";
+
+                  return (
+                    <span
+                      key={`${result}-${index}`}
+                      className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-black ${tone}`}
+                    >
+                      {result}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
 
           {fixtures.length === 0 ? (
             <div className="mt-6">

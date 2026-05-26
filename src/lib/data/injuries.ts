@@ -51,3 +51,21 @@ export async function getInjuriesForTeam(apiTeamId: number) {
 
   return asInjuries(data);
 }
+
+export async function getAllInjuries(limit = 100) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("injuries")
+    .select("*")
+    .order("fixture_date", { ascending: true })
+    .order("team_name", { ascending: true })
+    .order("player_name", { ascending: true })
+    .limit(limit);
+
+  if (error) {
+    throw new Error(`Failed to load injuries: ${error.message}`);
+  }
+
+  return asInjuries(data);
+}
