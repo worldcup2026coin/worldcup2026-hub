@@ -1,0 +1,73 @@
+name: External World Cup Sync
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Sync mode"
+        required: true
+        default: "core"
+        type: choice
+        options:
+          - core
+          - news
+          - predictions
+  schedule:
+    # Every 6 hours. GitHub schedules use UTC.
+    - cron: "17 */6 * * *"
+
+concurrency:
+  group: external-world-cup-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      SITE_URL: https://www.worldcup2026coin.com
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+
+    steps:
+      - name: Check secret exists
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "CRON_SECRET is missing. Add it in GitHub repo Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
+      - name: Decide endpoints
+        id: endpoints
+        run: |
+          MODE="${{ github.event.inputs.mode || 'core' }}"
+
+          if [ "$MODE" = "news" ]; then
+            echo "list=/api/cron/news-sync" >> "$GITHUB_OUTPUT"
+          elif [ "$MODE" = "predictions" ]; then
+            echo "list=/api/cron/generate-prediction-windows /api/cron/settle-predictions" >> "$GITHUB_OUTPUT"
+          else
+            echo "list=/api/cron/fixtures-sync /api/cron/standings-sync /api/cron/top-stats-sync /api/cron/settle-predictions /api/cron/news-sync" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Call protected cron endpoints
+        run: |
+          set -euo pipefail
+
+          for endpoint in ${{ steps.endpoints.outputs.list }}; do
+            url="$SITE_URL$endpoint"
+            echo "Calling $url"
+
+            http_code=$(curl -sS -o response.json -w "%{http_code}" \
+              -H "Authorization: Bearer $CRON_SECRET" \
+              "$url")
+
+            echo "HTTP $http_code"
+            cat response.json
+            echo ""
+
+            if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+              echo "Endpoint failed: $endpoint"
+              exit 1
+            fi
+          done
