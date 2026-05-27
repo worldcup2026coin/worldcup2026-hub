@@ -6,6 +6,11 @@ import {
   parsePollOptions,
   type Poll,
 } from "@/lib/data/community";
+import {
+  checkRateLimit,
+  getRequestIp,
+  rateLimitedResponse,
+} from "@/lib/security/rate-limit";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -32,6 +37,29 @@ export async function POST(request: NextRequest, { params }: VoteRouteProps) {
       );
     }
 
+    const ip = getRequestIp(request.headers);
+    const ipLimit = await checkRateLimit({
+      route: "poll-vote:ip",
+      identifier: ip,
+      limit: 30,
+      windowSeconds: 10 * 60,
+    });
+
+    if (!ipLimit.allowed) {
+      return rateLimitedResponse(ipLimit);
+    }
+
+    const pollIpLimit = await checkRateLimit({
+      route: "poll-vote:poll-ip",
+      identifier: `${pollId}:${ip}`,
+      limit: 10,
+      windowSeconds: 10 * 60,
+    });
+
+    if (!pollIpLimit.allowed) {
+      return rateLimitedResponse(pollIpLimit);
+    }
+
     const supabase = createSupabaseAdminClient();
 
     const { data: pollData, error: pollError } = await supabase
@@ -43,7 +71,7 @@ export async function POST(request: NextRequest, { params }: VoteRouteProps) {
 
     if (pollError) {
       return NextResponse.json(
-        { status: "error", error: pollError.message },
+        { status: "error", error: "Unable to load poll right now." },
         { status: 500 }
       );
     }
@@ -88,7 +116,7 @@ export async function POST(request: NextRequest, { params }: VoteRouteProps) {
       }
 
       return NextResponse.json(
-        { status: "error", error: voteError.message },
+        { status: "error", error: "Unable to record vote right now." },
         { status: 500 }
       );
     }

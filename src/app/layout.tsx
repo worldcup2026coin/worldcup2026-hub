@@ -60,7 +60,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
+    <html lang="en" data-scroll-behavior="smooth">
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
       >
@@ -69,7 +69,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <SiteFooter />
         </div>
-              <JsonLd data={websiteJsonLd()} />
+        <JsonLd data={websiteJsonLd()} />
         <JsonLd data={organizationJsonLd()} />
         <Analytics />
       </body>

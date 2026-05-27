@@ -1,32 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getFixtures } from "@/lib/data/worldcup";
+import {
+  isAuthorizedCronRequest,
+  unauthorizedCronResponse,
+} from "@/lib/sync/cron-auth";
 import { fixtureSlug, getFixtureIdFromSlug } from "@/lib/worldcup/format";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-function isAuthorized(request: NextRequest): boolean {
-  const expectedSecret = process.env.SYNC_SECRET;
-  const providedSecret = request.headers.get("x-sync-secret");
-
-  return Boolean(
-    expectedSecret &&
-      providedSecret &&
-      providedSecret.trim() === expectedSecret.trim()
-  );
-}
-
 export async function GET(request: NextRequest) {
-  if (!isAuthorized(request)) {
-    return NextResponse.json(
-      {
-        status: "error",
-        error: "Unauthorized",
-      },
-      {
-        status: 401,
-      }
-    );
+  if (!isAuthorizedCronRequest(request)) {
+    return unauthorizedCronResponse();
   }
 
   const fixtures = await getFixtures();

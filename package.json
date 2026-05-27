@@ -7,7 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "qa:copy-time": "node scripts/qa/qa-copy-time-scan.mjs",
+    "qa:full-site-screenshots": "node scripts/qa/qa-full-site-screenshots.mjs",
+    "qa:internal-links": "node scripts/qa/qa-internal-links.mjs",
+    "qa:mobile-overflow": "node scripts/qa/qa-mobile-overflow.mjs",
+    "qa:no-overpromise": "node scripts/qa/qa-no-overpromise.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",

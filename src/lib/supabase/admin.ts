@@ -13,6 +13,8 @@ function getSupabaseUrl() {
 }
 
 function getSupabaseServiceRoleKey() {
+  // SUPABASE_SERVICE_ROLE_KEY is canonical; SUPABASE_SECRET_KEY remains a
+  // temporary legacy fallback for existing deployments.
   const value =
     process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SECRET_KEY;
 

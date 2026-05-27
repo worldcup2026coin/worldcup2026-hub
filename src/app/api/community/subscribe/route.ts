@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import {
+  checkRateLimit,
+  getRequestIp,
+  rateLimitedResponse,
+} from "@/lib/security/rate-limit";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -31,6 +36,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const ip = getRequestIp(request.headers);
+    const ipLimit = await checkRateLimit({
+      route: "community-subscribe:ip",
+      identifier: ip,
+      limit: 5,
+      windowSeconds: 10 * 60,
+    });
+
+    if (!ipLimit.allowed) {
+      return rateLimitedResponse(ipLimit);
+    }
+
+    const emailLimit = await checkRateLimit({
+      route: "community-subscribe:email",
+      identifier: email,
+      limit: 3,
+      windowSeconds: 60 * 60,
+    });
+
+    if (!emailLimit.allowed) {
+      return rateLimitedResponse(emailLimit);
+    }
+
     const supabase = createSupabaseAdminClient();
 
     const { error } = await supabase
@@ -54,7 +82,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       return NextResponse.json(
-        { status: "error", error: error.message },
+        { status: "error", error: "Unable to subscribe right now." },
         { status: 500 }
       );
     }

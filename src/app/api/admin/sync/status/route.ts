@@ -1,19 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  isAuthorizedCronRequest,
+  unauthorizedCronResponse,
+} from "@/lib/sync/cron-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-
-function isAuthorized(request: NextRequest): boolean {
-  const expectedSecret = process.env.SYNC_SECRET;
-  const providedSecret = request.headers.get("x-sync-secret");
-
-  return Boolean(
-    expectedSecret &&
-      providedSecret &&
-      providedSecret.trim() === expectedSecret.trim()
-  );
-}
 
 async function countRows(tableName: string) {
   const supabase = createSupabaseAdminClient();
@@ -30,16 +23,8 @@ async function countRows(tableName: string) {
 }
 
 export async function GET(request: NextRequest) {
-  if (!isAuthorized(request)) {
-    return NextResponse.json(
-      {
-        status: "error",
-        error: "Unauthorized",
-      },
-      {
-        status: 401,
-      }
-    );
+  if (!isAuthorizedCronRequest(request)) {
+    return unauthorizedCronResponse();
   }
 
   const supabase = createSupabaseAdminClient();

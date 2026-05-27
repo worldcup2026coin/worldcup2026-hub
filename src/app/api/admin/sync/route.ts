@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runSync } from "@/lib/sync";
+import {
+  isAuthorizedCronRequest,
+  unauthorizedCronResponse,
+} from "@/lib/sync/cron-auth";
 import { getErrorMessage } from "@/lib/sync/logs";
 import type { SyncScope } from "@/lib/sync/types";
 
@@ -7,17 +11,6 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 const allowedScopes: SyncScope[] = ["teams", "fixtures", "standings", "all"];
-
-function isAuthorized(request: NextRequest): boolean {
-  const expectedSecret = process.env.SYNC_SECRET;
-  const providedSecret = request.headers.get("x-sync-secret");
-
-  return Boolean(
-    expectedSecret &&
-      providedSecret &&
-      providedSecret.trim() === expectedSecret.trim()
-  );
-}
 
 function getScope(request: NextRequest): SyncScope {
   const rawScope = request.nextUrl.searchParams.get("scope") ?? "all";
@@ -30,16 +23,8 @@ function getScope(request: NextRequest): SyncScope {
 }
 
 export async function POST(request: NextRequest) {
-  if (!isAuthorized(request)) {
-    return NextResponse.json(
-      {
-        status: "error",
-        error: "Unauthorized",
-      },
-      {
-        status: 401,
-      }
-    );
+  if (!isAuthorizedCronRequest(request)) {
+    return unauthorizedCronResponse();
   }
 
   const scope = getScope(request);

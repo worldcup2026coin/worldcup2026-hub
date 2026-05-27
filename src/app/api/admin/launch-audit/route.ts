@@ -1,16 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  isAuthorizedCronRequest,
+  unauthorizedCronResponse,
+} from "@/lib/sync/cron-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-
-function isAuthorized(request: NextRequest) {
-  const expected = process.env.SYNC_SECRET;
-
-  if (!expected) return false;
-
-  return request.headers.get("x-sync-secret") === expected;
-}
 
 async function countRows(tableName: string) {
   const supabase = createSupabaseAdminClient();
@@ -35,14 +31,8 @@ async function countRows(tableName: string) {
 }
 
 export async function GET(request: NextRequest) {
-  if (!isAuthorized(request)) {
-    return NextResponse.json(
-      {
-        status: "error",
-        error: "Unauthorized",
-      },
-      { status: 401 }
-    );
+  if (!isAuthorizedCronRequest(request)) {
+    return unauthorizedCronResponse();
   }
 
   const supabase = createSupabaseAdminClient();
@@ -79,10 +69,12 @@ export async function GET(request: NextRequest) {
     env: {
       supabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
       supabasePublishableKey: Boolean(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY),
-      supabaseSecretKey: Boolean(process.env.SUPABASE_SECRET_KEY),
+      supabaseServiceRoleKey: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
+      legacySupabaseSecretKey: Boolean(process.env.SUPABASE_SECRET_KEY),
       apiFootballBaseUrl: Boolean(process.env.API_FOOTBALL_BASE_URL),
       apiFootballKey: Boolean(process.env.API_FOOTBALL_KEY),
-      syncSecret: Boolean(process.env.SYNC_SECRET),
+      cronSecret: Boolean(process.env.CRON_SECRET),
+      legacySyncSecret: Boolean(process.env.SYNC_SECRET),
       publicSiteUrl: Boolean(process.env.NEXT_PUBLIC_SITE_URL),
     },
     counts: {
@@ -101,8 +93,8 @@ export async function GET(request: NextRequest) {
 
   const hardFailures = [
     !checks.env.supabaseUrl,
-    !checks.env.supabaseSecretKey,
-    !checks.env.syncSecret,
+    !checks.env.supabaseServiceRoleKey && !checks.env.legacySupabaseSecretKey,
+    !checks.env.cronSecret && !checks.env.legacySyncSecret,
     !teams.ok,
     !fixtures.ok,
     !syncLogs.ok,
