@@ -266,6 +266,42 @@ return (
           </div>
         </Container>
       </section>
+      <Container className="pt-4">
+        <section className="neon-panel rounded-[2rem] border-lime-300/20 bg-lime-300/10 p-6">
+          <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            <div>
+              <p className="neon-kicker">$WC26 community</p>
+              <h2 className="mt-4 text-4xl font-black uppercase leading-none text-white sm:text-5xl">
+                The fan-made football meme layer
+              </h2>
+              <p className="mt-4 max-w-3xl text-sm font-semibold leading-6 text-slate-200">
+                Join the $WC26 community for World Cup chaos, memes, fan battles,
+                launch updates, predictions and matchday missions.
+              </p>
+              <p className="mt-3 max-w-3xl text-xs font-semibold leading-5 text-slate-400">
+                Unofficial fan community. Not affiliated with FIFA, World Cup,
+                teams, players, sponsors or governing bodies. Crypto tokens are
+                high risk.
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Link href="/wc26" className="glow-button-primary text-center">
+                View $WC26
+              </Link>
+              <Link href="/launch" className="glow-button-secondary text-center">
+                Launch status
+              </Link>
+              <Link href="/how-to-buy" className="glow-button-secondary text-center">
+                How to buy
+              </Link>
+              <Link href="/community" className="glow-button-secondary text-center">
+                Join community
+              </Link>
+            </div>
+          </div>
+        </section>
+      </Container>
 
       <Container className="pt-4">
         <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
@@ -587,6 +623,8 @@ return (
     </div>
   );
 }
+
+
 
 
 

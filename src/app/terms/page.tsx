@@ -39,6 +39,13 @@ export default function TermsPage() {
           <p className="mt-4">
             Polls, email updates and social sharing are provided as football-first community features. Open comments are not enabled.
           </p>
+          <h2 className="mt-8 text-2xl font-black text-white">$WC26 meme token and crypto risk</h2>
+          <p className="mt-4">
+            Any $WC26 token or crypto-related content is provided for community and entertainment purposes only. It is not financial advice, investment advice, a promise of profit, or a recommendation to buy, sell or hold any crypto asset. Meme tokens are highly volatile and can lose all value.
+          </p>
+          <p className="mt-4">
+            $WC26 is fan-made and unofficial. It is not affiliated with FIFA, the FIFA World Cup, national teams, players, sponsors, venues or governing bodies. Users should only trust links published directly on this website and should beware fake contracts, impersonators and private messages.
+          </p>
 
           <h2 className="mt-8 text-2xl font-black text-white">Affiliate links</h2>
           <p className="mt-4">
@@ -49,3 +56,5 @@ export default function TermsPage() {
     </>
   );
 }
+
+

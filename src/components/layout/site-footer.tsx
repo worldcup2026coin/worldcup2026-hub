@@ -29,12 +29,19 @@ const exploreLinks = [
   { href: "/top-cards", label: "Top Cards" },
 ];
 
+const wc26Links = [
+  { href: "/wc26", label: "$WC26" },
+  { href: "/launch", label: "Launch" },
+  { href: "/how-to-buy", label: "How to Buy" },
+  { href: "/community", label: "Community" },
+];
+
 export function SiteFooter() {
   return (
     <footer className="relative overflow-hidden border-t border-cyan-300/15 bg-[#02030a]">
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_10%_0%,rgba(163,255,18,0.12),transparent_28rem),radial-gradient(circle_at_80%_20%,rgba(255,43,214,0.12),transparent_26rem)]" />
       <Container className="relative py-8">
-        <div className="grid gap-8 rounded-[2rem] border border-cyan-300/15 bg-white/[0.035] p-6 shadow-[0_0_42px_rgba(34,211,238,0.08)] md:grid-cols-[1.35fr_1fr_1fr]">
+        <div className="grid gap-8 rounded-[2rem] border border-cyan-300/15 bg-white/[0.035] p-6 shadow-[0_0_42px_rgba(34,211,238,0.08)] md:grid-cols-[1.2fr_0.85fr_0.85fr_0.85fr]">
           <div>
             <span className="neon-badge">Tournament pulse</span>
             <p className="mt-4 text-2xl font-black uppercase tracking-tight text-white">
@@ -45,10 +52,31 @@ export function SiteFooter() {
               Follow every fixture, group table, goal, prediction and knockout race
               from opening match to the final.
             </p>
+            <p className="mt-4 text-xs font-semibold leading-5 text-slate-500">
+              $WC26 is a fan-made community layer and is not affiliated with FIFA,
+              World Cup, teams, players, sponsors or governing bodies.
+            </p>
           </div>
 
           <div>
             <p className="text-xs font-black uppercase tracking-[0.22em] text-lime-200">
+              $WC26
+            </p>
+            <div className="mt-4 grid gap-2">
+              {wc26Links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-semibold text-slate-400 transition hover:text-lime-200"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-200">
               Tournament
             </p>
             <div className="mt-4 grid gap-2">
@@ -56,7 +84,7 @@ export function SiteFooter() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-semibold text-slate-400 transition hover:text-lime-200"
+                  className="text-sm font-semibold text-slate-400 transition hover:text-cyan-200"
                 >
                   {link.label}
                 </Link>
@@ -90,9 +118,10 @@ export function SiteFooter() {
 
         <div className="mt-6 flex flex-col gap-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 World Cup 2026 Hub · built for tournament mode.</p>
-          <p>Social links will appear only when official channels are ready.</p>
+          <p>Only trust $WC26 links published on this website.</p>
         </div>
       </Container>
     </footer>
   );
 }
+

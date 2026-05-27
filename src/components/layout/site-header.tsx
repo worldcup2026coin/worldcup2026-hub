@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -30,7 +29,7 @@ export function SiteHeader() {
             </span>
             <span className="min-w-0">
               <span className="block truncate text-base font-black uppercase leading-none tracking-[0.18em] text-white group-hover:text-lime-200">
-                WC26 HUB
+                $WC26 HUB
               </span>
               <span className="mt-1 block truncate text-[0.68rem] font-bold uppercase tracking-[0.12em] text-cyan-200/80">
                 Football signal - fan chaos
@@ -64,9 +63,13 @@ export function SiteHeader() {
             })}
           </nav>
 
-          <div className="hidden shrink-0 items-center gap-2 2xl:flex">
-            <span className="neon-badge neon-badge-cyan">Fan signal</span>
-            <span className="neon-badge">Live data</span>
+          <div className="hidden shrink-0 items-center gap-2 xl:flex">
+            <Link href="/wc26" className="glow-button-primary px-4 py-2 text-xs">
+              $WC26
+            </Link>
+            <Link href="/launch" className="glow-button-secondary px-4 py-2 text-xs">
+              Launch
+            </Link>
           </div>
 
           <button
@@ -89,6 +92,32 @@ export function SiteHeader() {
             className="grid gap-2 border-t border-cyan-300/15 py-4 lg:hidden"
             aria-label="Mobile"
           >
+            <div className="mb-3 rounded-[1.5rem] border border-lime-300/20 bg-lime-300/10 p-3">
+              <p className="mb-3 text-xs font-black uppercase tracking-[0.2em] text-lime-200">
+                $WC26 launch path
+              </p>
+              <div className="grid gap-2">
+                {siteConfig.wc26Links.map((link) => {
+                  const active = isActive(link.href);
+
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className={`rounded-2xl border px-4 py-3 text-sm font-black uppercase tracking-[0.12em] transition ${
+                        active
+                          ? "border-lime-300/50 bg-lime-300 text-slate-950 shadow-[0_0_20px_rgba(163,255,18,0.28)]"
+                          : "border-lime-300/20 bg-black/30 text-lime-100 hover:border-lime-300/50 hover:bg-lime-300/10"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="mb-2 flex flex-wrap gap-2">
               <span className="neon-badge neon-badge-cyan">Fan signal</span>
               <span className="neon-badge">Live data</span>
