@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { Container } from "@/components/ui/container";
 
 const tournamentLinks = [
@@ -117,11 +117,12 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-6 flex flex-col gap-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 World Cup 2026 Hub · built for tournament mode.</p>
+          <p>Â© 2026 World Cup 2026 Hub Â· built for tournament mode.</p>
           <p>Only trust $WC26 links published on this website.</p>
         </div>
       </Container>
     </footer>
   );
 }
+
 

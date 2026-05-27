@@ -53,3 +53,6 @@ qa-logs/
 # Local backup folders
 header-cleanup-backup-*/
 wc26-mascot-backup-*/
+
+# Local automated code backups
+*.logo-backup-*
