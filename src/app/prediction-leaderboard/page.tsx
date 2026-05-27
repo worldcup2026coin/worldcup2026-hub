@@ -208,6 +208,35 @@ function groupByLockDate(windows: PredictionWindow[]) {
   }, {});
 }
 
+function OptionPreview({
+  options,
+  compact,
+}: {
+  options: string[];
+  compact: boolean;
+}) {
+  if (options.length < 2 || options.length > 8) {
+    return null;
+  }
+
+  return (
+    <div
+      className={`mt-3 flex flex-wrap gap-2 ${
+        compact ? "text-[0.7rem]" : "text-xs"
+      }`}
+    >
+      {options.map((option) => (
+        <span
+          key={option}
+          className="rounded-full border border-white/10 bg-white/[0.045] px-3 py-1 font-bold text-slate-300"
+        >
+          {option}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function groupWinnerOrder(window: PredictionWindow) {
   const match =
     window.slug.match(/^group-([a-l])-winner$/i) ??
@@ -268,6 +297,10 @@ function WindowCard({
         <p className="mt-4 rounded-2xl border border-lime-300/20 bg-lime-300/10 px-4 py-3 text-sm font-bold text-lime-100">
           Current pick: {existing.pick}
         </p>
+      ) : null}
+
+      {!canSubmit ? (
+        <OptionPreview options={window.options} compact={compact} />
       ) : null}
 
       {!isOpen ? null : canSubmit ? (
@@ -533,20 +566,6 @@ export default async function PredictionLeaderboardPage({
             ) : null}
 
             <div className="mt-6 grid gap-5">
-              {!canSubmit && longTermWindows.length ? (
-                <div className="rounded-[1.5rem] border border-cyan-300/20 bg-cyan-300/10 p-5">
-                  <p className="text-sm leading-6 text-cyan-100">
-                    Sign in and create a display name once to submit tournament
-                    picks.
-                  </p>
-                  {!user ? (
-                    <Link href="/auth/login" className="glow-button-primary mt-4">
-                      Sign in
-                    </Link>
-                  ) : null}
-                </div>
-              ) : null}
-
               {longTermWindows.length ? (
                 longTermWindows.map((window) => (
                   <WindowCard
