@@ -7,11 +7,14 @@ import { runApiFootballStandingsSync } from "./api-football-standings";
 import { runApiFootballTeamsSync } from "./api-football-teams";
 import { runApiFootballBootstrapSync } from "./api-football-bootstrap";
 import { runApiFootballFixturesSync } from "./api-football-fixtures";
+import { runAutomatedPredictionSettlement } from "@/lib/predictions/settlement";
 import "server-only";
 
 import type { SyncJobName, SyncJobSummary } from "./types";
 
-function createPlaceholderSummary(jobName: SyncJobName): Omit<SyncJobSummary, "startedAt" | "finishedAt" | "durationMs"> {
+type JobResult = Omit<SyncJobSummary, "startedAt" | "finishedAt" | "durationMs">;
+
+function createPlaceholderSummary(jobName: SyncJobName): JobResult {
   return {
     jobName,
     status: "success",
@@ -30,8 +33,48 @@ function createPlaceholderSummary(jobName: SyncJobName): Omit<SyncJobSummary, "s
   };
 }
 
+function detailsObject(details: JobResult["details"]) {
+  if (details && typeof details === "object" && !Array.isArray(details)) {
+    return details;
+  }
+
+  return {};
+}
+
+async function withPredictionSettlement(
+  resultPromise: Promise<JobResult>,
+): Promise<JobResult> {
+  const result = await resultPromise;
+
+  try {
+    const predictionSettlement = await runAutomatedPredictionSettlement();
+
+    return {
+      ...result,
+      message: `${result.message ?? "Sync completed."} Prediction settlement checked: ${predictionSettlement.settled.length} settled, ${predictionSettlement.skipped.length} skipped.`,
+      details: {
+        ...detailsObject(result.details),
+        predictionSettlement,
+      },
+    };
+  } catch (error) {
+    return {
+      ...result,
+      status: "partial",
+      message: `${result.message ?? "Sync completed."} Prediction settlement failed: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
+      details: {
+        ...detailsObject(result.details),
+        predictionSettlementError:
+          error instanceof Error ? error.message : "Unknown error",
+      },
+    };
+  }
+}
+
 export async function runBootstrapSyncJob() {
-  return runApiFootballBootstrapSync();
+  return withPredictionSettlement(runApiFootballBootstrapSync());
 }
 
 export async function runTeamsSyncJob() {
@@ -43,11 +86,11 @@ export async function runStandingsSyncJob() {
 }
 
 export async function runFixturesSyncJob() {
-  return runApiFootballFixturesSync();
+  return withPredictionSettlement(runApiFootballFixturesSync());
 }
 
 export async function runLiveSyncJob() {
-  return createPlaceholderSummary("live-sync");
+  return withPredictionSettlement(Promise.resolve(createPlaceholderSummary("live-sync")));
 }
 
 export async function runEnrichmentSyncJob() {
@@ -55,15 +98,19 @@ export async function runEnrichmentSyncJob() {
 }
 
 export async function runFinalizationSyncJob() {
-  return createPlaceholderSummary("finalization-sync");
+  return withPredictionSettlement(
+    Promise.resolve(createPlaceholderSummary("finalization-sync")),
+  );
 }
 
 export async function runMissingDataBackfillJob() {
   return createPlaceholderSummary("missing-data-backfill");
 }
+
 export async function runFullSyncJob() {
-  return runApiFootballFullIngestSync();
+  return withPredictionSettlement(runApiFootballFullIngestSync());
 }
+
 export async function runTeamSquadsSync1Job() {
   return runApiFootballSquadsChunkSync({
     offset: 0,
@@ -95,6 +142,7 @@ export async function runTeamSquadsSync4Job() {
     jobName: "team-squads-sync-4",
   });
 }
+
 export async function runMatchContextSync1Job() {
   return runApiFootballMatchContextChunkSync({
     offset: 0,
@@ -142,29 +190,68 @@ export async function runMatchContextSync6Job() {
     jobName: "match-context-sync-6",
   });
 }
+
 export async function runMatchdayDataSync1Job() {
-  return runApiFootballMatchdayDataChunkSync({ offset: 0, limit: 12, jobName: "matchday-data-sync-1" });
+  return withPredictionSettlement(
+    runApiFootballMatchdayDataChunkSync({
+      offset: 0,
+      limit: 12,
+      jobName: "matchday-data-sync-1",
+    }),
+  );
 }
 
 export async function runMatchdayDataSync2Job() {
-  return runApiFootballMatchdayDataChunkSync({ offset: 12, limit: 12, jobName: "matchday-data-sync-2" });
+  return withPredictionSettlement(
+    runApiFootballMatchdayDataChunkSync({
+      offset: 12,
+      limit: 12,
+      jobName: "matchday-data-sync-2",
+    }),
+  );
 }
 
 export async function runMatchdayDataSync3Job() {
-  return runApiFootballMatchdayDataChunkSync({ offset: 24, limit: 12, jobName: "matchday-data-sync-3" });
+  return withPredictionSettlement(
+    runApiFootballMatchdayDataChunkSync({
+      offset: 24,
+      limit: 12,
+      jobName: "matchday-data-sync-3",
+    }),
+  );
 }
 
 export async function runMatchdayDataSync4Job() {
-  return runApiFootballMatchdayDataChunkSync({ offset: 36, limit: 12, jobName: "matchday-data-sync-4" });
+  return withPredictionSettlement(
+    runApiFootballMatchdayDataChunkSync({
+      offset: 36,
+      limit: 12,
+      jobName: "matchday-data-sync-4",
+    }),
+  );
 }
 
 export async function runMatchdayDataSync5Job() {
-  return runApiFootballMatchdayDataChunkSync({ offset: 48, limit: 12, jobName: "matchday-data-sync-5" });
+  return withPredictionSettlement(
+    runApiFootballMatchdayDataChunkSync({
+      offset: 48,
+      limit: 12,
+      jobName: "matchday-data-sync-5",
+    }),
+  );
 }
 
 export async function runMatchdayDataSync6Job() {
-  return runApiFootballMatchdayDataChunkSync({ offset: 60, limit: 12, jobName: "matchday-data-sync-6" });
+  return withPredictionSettlement(
+    runApiFootballMatchdayDataChunkSync({
+      offset: 60,
+      limit: 12,
+      jobName: "matchday-data-sync-6",
+    }),
+  );
 }
+
 export async function runTopStatsSyncJob() {
   return runApiFootballTopStatsSync();
 }
+
