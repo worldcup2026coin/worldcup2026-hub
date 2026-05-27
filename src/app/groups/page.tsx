@@ -75,21 +75,16 @@ export default async function GroupsPage() {
                       </p>
                     </article>
 
-                    <div className="grid gap-4">
-                      <h3 className="text-xl font-black uppercase text-white">
-                        Upcoming fixtures
-                      </h3>
-                      {groupFixtures.length > 0 ? (
-                        groupFixtures.map((fixture) => (
+                    {groupFixtures.length > 0 ? (
+                      <div className="grid gap-4">
+                        <h3 className="text-xl font-black uppercase text-white">
+                          Upcoming fixtures
+                        </h3>
+                        {groupFixtures.map((fixture) => (
                           <FixtureCard key={fixture.id} fixture={fixture} />
-                        ))
-                      ) : (
-                        <EmptyState
-                          title="Key fixtures updating"
-                          description="Upcoming fixtures for this group will appear here once fixture data is available."
-                        />
-                      )}
-                    </div>
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
                 </section>
               );

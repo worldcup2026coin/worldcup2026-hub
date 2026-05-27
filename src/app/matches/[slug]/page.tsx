@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { JsonLd } from "@/components/seo/json-ld";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Container } from "@/components/ui/container";
@@ -196,25 +195,6 @@ export default async function MatchPage({ params }: MatchPageProps) {
             <MatchLineups lineups={lineups} />
             </div>
 
-            <section className="rounded-[2rem] border border-emerald-400/15 bg-emerald-400/[0.04] p-5">
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-300">
-                Prediction hub
-              </p>
-              <h2 className="mt-3 text-2xl font-black text-white">
-                Fan and AI-assisted reads live in one place
-              </h2>
-              <p className="mt-3 text-sm leading-6 text-slate-300">
-                For match reads, group calls and tournament outlooks, use the
-                dedicated prediction hub. This match centre stays focused on
-                factual fixture information.
-              </p>
-              <Link
-                href="/predictions"
-                className="glow-button-secondary mt-5"
-              >
-                View predictions
-              </Link>
-            </section>
           </div>
 
           <aside className="grid content-start gap-6">
