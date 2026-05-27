@@ -63,23 +63,41 @@ export type TournamentWindowGenerationResult = {
 const PROTECTED_WINDOW_STATUSES = new Set([
   "locked",
   "settled",
-  "archived",
   "void",
 ]);
 
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .trim()
-    .replace(/['"]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
+const REAL_GROUP_NAMES = new Set(
+  Array.from({ length: 12 }, (_, index) =>
+    `group ${String.fromCharCode(97 + index)}`,
+  ),
+);
+
+const EXCLUDED_GROUP_PATTERNS = [
+  "ranking of third-placed teams",
+  "third placed",
+  "third-placed",
+  "best third",
+  "overall ranking",
+];
 
 function getGroupLetter(value: string) {
-  const match = value.match(/group\s+([a-l])/i) ?? value.match(/\b([a-l])\b/i);
+  const match = value.match(/^group\s+([a-l])$/i);
 
-  return match?.[1]?.toLowerCase() ?? slugify(value).replace(/^group-/, "");
+  return match?.[1]?.toLowerCase() ?? null;
+}
+
+function normaliseGroupName(value: string) {
+  return value.toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+function isRealWorldCupGroup(value: string) {
+  const normalised = normaliseGroupName(value);
+
+  if (EXCLUDED_GROUP_PATTERNS.some((pattern) => normalised.includes(pattern))) {
+    return false;
+  }
+
+  return REAL_GROUP_NAMES.has(normalised);
 }
 
 function getTournamentKickoff(fixtures: Fixture[]) {
@@ -217,7 +235,9 @@ function buildLongTermWindows(input: {
 
   const groupNames = Array.from(
     new Set(standings.map((row) => row.group_name).filter(Boolean)),
-  ).sort();
+  )
+    .filter(isRealWorldCupGroup)
+    .sort();
 
   for (const groupName of groupNames) {
     const groupTeams = standings
@@ -231,6 +251,11 @@ function buildLongTermWindows(input: {
 
     const groupKickoff = getGroupKickoff(fixtures, groupName, tournamentKickoff);
     const groupLetter = getGroupLetter(groupName);
+
+    if (!groupLetter) {
+      continue;
+    }
+
     const groupSort = Math.floor(groupKickoff.getTime() / 1000) - 50000;
 
     windows.push(
