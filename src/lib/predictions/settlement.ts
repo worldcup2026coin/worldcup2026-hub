@@ -161,11 +161,15 @@ function getCorrectExactScore(
 }
 
 function windowGroupSlug(window: PredictionWindow) {
-  const match = window.slug.match(
-    /^(?:group-winner|group-top-two|full-group-standings)-(.+)-2026$/,
-  );
+  const match =
+    window.slug.match(/^group-([a-l])-winner$/) ??
+    window.slug.match(
+      /^(?:group-winner|group-top-two|full-group-standings)-(.+)-2026$/,
+    );
 
-  return match?.[1] ?? null;
+  const value = match?.[1] ?? null;
+
+  return value ? `group-${value}` : null;
 }
 
 async function getFinalFixture(supabase: ReturnType<typeof createSupabaseAdminClient>) {
@@ -329,6 +333,7 @@ async function buildTournamentFinalDecision(
   }
 
   const correctPick =
+    window.prediction_type === "runner_up" ||
     window.prediction_type === "tournament_runner_up"
       ? result.runnerUp
       : result.winner;
@@ -407,12 +412,16 @@ async function buildSettlementDecision(
 
   if (
     window.prediction_type === "tournament_winner" ||
+    window.prediction_type === "runner_up" ||
     window.prediction_type === "tournament_runner_up"
   ) {
     return buildTournamentFinalDecision(supabase, window);
   }
 
-  if (window.prediction_type === "golden_boot_winner") {
+  if (
+    window.prediction_type === "golden_boot" ||
+    window.prediction_type === "golden_boot_winner"
+  ) {
     return buildGoldenBootDecision(supabase, window);
   }
 

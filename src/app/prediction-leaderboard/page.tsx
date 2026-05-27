@@ -55,13 +55,14 @@ type LeaderboardRow = {
 const MATCH_TYPES = new Set(["match_result", "exact_score"]);
 const LONG_TERM_TYPES = new Set([
   "tournament_winner",
+  "runner_up",
   "tournament_runner_up",
   "semi_finalists",
   "quarter_finalists",
+  "golden_boot",
   "golden_boot_winner",
   "host_nation_furthest",
   "dark_horse",
-  "group_winner",
   "group_top_two",
   "full_group_standings",
   "best_third_placed_teams",
@@ -318,7 +319,7 @@ export default async function PredictionLeaderboardPage({
       .in("status", ["open", "locked", "settled"])
       .order("status", { ascending: true })
       .order("sort_order", { ascending: true })
-      .limit(140),
+      .limit(260),
     supabase
       .from("prediction_leaderboard")
       .select(
@@ -350,11 +351,17 @@ export default async function PredictionLeaderboardPage({
   );
 
   const visibleWindows = ((windows ?? []) as PredictionWindow[]).filter(
-    (window) => window.status !== "draft" && window.status !== "archived",
+    (window) =>
+      window.status !== "draft" &&
+      window.status !== "archived" &&
+      window.slug !== "tournament-winner-2026",
   );
   const openWindows = visibleWindows.filter((window) => window.status === "open");
   const longTermWindows = openWindows
     .filter((window) => LONG_TERM_TYPES.has(window.prediction_type))
+    .slice(0, 24);
+  const groupWinnerWindows = openWindows
+    .filter((window) => window.prediction_type === "group_winner")
     .slice(0, 24);
   const matchWindows = openWindows
     .filter((window) => MATCH_TYPES.has(window.prediction_type))
@@ -518,6 +525,30 @@ export default async function PredictionLeaderboardPage({
                 <p className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm font-bold text-slate-300">
                   No long-term prediction windows are open right now. They will
                   appear here when the tournament game opens them.
+                </p>
+              )}
+            </div>
+          </section>
+
+          <section className="neon-panel rounded-[2rem] p-6">
+            <p className="neon-kicker">Group picks</p>
+            <h2 className="mt-4 text-3xl font-black uppercase text-white">
+              Group winner picks
+            </h2>
+            <div className="mt-6 grid gap-5">
+              {groupWinnerWindows.length ? (
+                groupWinnerWindows.map((window) => (
+                  <WindowCard
+                    key={window.id}
+                    window={window}
+                    existing={predictionMap.get(window.id)}
+                    canSubmit={canSubmit}
+                  />
+                ))
+              ) : (
+                <p className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm font-bold text-slate-300">
+                  Group winner windows will appear here when group/team data is
+                  available.
                 </p>
               )}
             </div>

@@ -35,7 +35,7 @@ type PlannedLongTermWindow = {
   title: string;
   description: string;
   prediction_type: string;
-  status: "draft" | "open" | "locked";
+  status: "open";
   options: string[];
   opens_at: string;
   locks_at: string;
@@ -43,6 +43,10 @@ type PlannedLongTermWindow = {
   points_exact: number;
   sort_order: number;
   fixture_api_id: null;
+  visibility: "active";
+  display_group: "tournament" | "groups";
+  settlement_strategy: "final_result" | "top_scorer" | "group_standings" | "manual_safe";
+  max_points: number;
 };
 
 export type TournamentWindowGenerationResult = {
@@ -72,8 +76,10 @@ function slugify(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
-function statusForWindow(lockAt: Date, now: Date): "draft" | "open" | "locked" {
-  return now >= lockAt ? "locked" : "open";
+function getGroupLetter(value: string) {
+  const match = value.match(/group\s+([a-l])/i) ?? value.match(/\b([a-l])\b/i);
+
+  return match?.[1]?.toLowerCase() ?? slugify(value).replace(/^group-/, "");
 }
 
 function getTournamentKickoff(fixtures: Fixture[]) {
@@ -112,6 +118,22 @@ function hostNationOptions(teams: Team[]) {
   return options.length ? options.sort() : ["United States", "Mexico", "Canada"];
 }
 
+function withMetadata(
+  window: Omit<
+    PlannedLongTermWindow,
+    "status" | "visibility" | "points_exact" | "fixture_api_id" | "max_points"
+  >,
+): PlannedLongTermWindow {
+  return {
+    ...window,
+    status: "open",
+    visibility: "active",
+    points_exact: 0,
+    fixture_api_id: null,
+    max_points: window.points_result,
+  };
+}
+
 function buildLongTermWindows(input: {
   teams: Team[];
   standings: Standing[];
@@ -123,94 +145,74 @@ function buildLongTermWindows(input: {
   const tournamentKickoff = getTournamentKickoff(fixtures);
   const opensAt = now.toISOString();
   const tournamentLock = tournamentKickoff.toISOString();
-  const tournamentStatus = statusForWindow(tournamentKickoff, now);
   const baseSort = Math.floor(tournamentKickoff.getTime() / 1000) - 100000;
 
   const windows: PlannedLongTermWindow[] = [
-    {
-      slug: "tournament-winner-2026",
+    withMetadata({
+      slug: "tournament-winner",
       title: "Tournament winner",
       description: "Pick the team you think will become World Cup 2026 champion.",
       prediction_type: "tournament_winner",
-      status: tournamentStatus,
       options: teamOptions,
       opens_at: opensAt,
       locks_at: tournamentLock,
       points_result: getTournamentPredictionPoints("tournament_winner"),
-      points_exact: 0,
       sort_order: baseSort,
-      fixture_api_id: null,
-    },
-    {
-      slug: "tournament-runner-up-2026",
+      display_group: "tournament",
+      settlement_strategy: "final_result",
+    }),
+    withMetadata({
+      slug: "runner-up",
       title: "Runner-up",
       description: "Pick the team you think will finish as runner-up.",
-      prediction_type: "tournament_runner_up",
-      status: tournamentStatus,
+      prediction_type: "runner_up",
       options: teamOptions,
       opens_at: opensAt,
       locks_at: tournamentLock,
-      points_result: getTournamentPredictionPoints("tournament_runner_up"),
-      points_exact: 0,
+      points_result: getTournamentPredictionPoints("runner_up"),
       sort_order: baseSort + 1,
-      fixture_api_id: null,
-    },
-    {
-      slug: "golden-boot-winner-2026",
+      display_group: "tournament",
+      settlement_strategy: "final_result",
+    }),
+    withMetadata({
+      slug: "golden-boot-winner",
       title: "Golden Boot winner",
       description: "Pick the player you think will finish as the tournament top scorer.",
-      prediction_type: "golden_boot_winner",
-      status: tournamentStatus,
+      prediction_type: "golden_boot",
       options: [],
       opens_at: opensAt,
       locks_at: tournamentLock,
-      points_result: getTournamentPredictionPoints("golden_boot_winner"),
-      points_exact: 0,
+      points_result: getTournamentPredictionPoints("golden_boot"),
       sort_order: baseSort + 2,
-      fixture_api_id: null,
-    },
-    {
-      slug: "host-nation-furthest-2026",
+      display_group: "tournament",
+      settlement_strategy: "top_scorer",
+    }),
+    withMetadata({
+      slug: "host-nation-furthest",
       title: "Host nation furthest",
       description: "Pick which host nation will go deepest in the tournament.",
       prediction_type: "host_nation_furthest",
-      status: tournamentStatus,
       options: hostNationOptions(teams),
       opens_at: opensAt,
       locks_at: tournamentLock,
       points_result: getTournamentPredictionPoints("host_nation_furthest"),
-      points_exact: 0,
       sort_order: baseSort + 3,
-      fixture_api_id: null,
-    },
-    {
-      slug: "dark-horse-2026",
+      display_group: "tournament",
+      settlement_strategy: "manual_safe",
+    }),
+    withMetadata({
+      slug: "dark-horse-pick",
       title: "Dark horse pick",
       description: "Pick a team you think can outperform expectations.",
       prediction_type: "dark_horse",
-      status: tournamentStatus,
       options: teamOptions,
       opens_at: opensAt,
       locks_at: tournamentLock,
       points_result: getTournamentPredictionPoints("dark_horse"),
-      points_exact: 0,
       sort_order: baseSort + 4,
-      fixture_api_id: null,
-    },
-    {
-      slug: "best-third-placed-teams-2026",
-      title: "Best third-placed teams",
-      description: "Pick teams you think will advance through the third-place table.",
-      prediction_type: "best_third_placed_teams",
-      status: tournamentStatus,
-      options: teamOptions,
-      opens_at: opensAt,
-      locks_at: tournamentLock,
-      points_result: getTournamentPredictionPoints("best_third_placed_teams"),
-      points_exact: 0,
-      sort_order: baseSort + 5,
-      fixture_api_id: null,
-    },
+      display_group: "tournament",
+      settlement_strategy: "manual_safe",
+    }),
   ];
 
   const groupNames = Array.from(
@@ -222,54 +224,29 @@ function buildLongTermWindows(input: {
       .filter((row) => row.group_name === groupName)
       .sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99))
       .map((row) => row.team_name);
+
+    if (groupTeams.length === 0) {
+      continue;
+    }
+
     const groupKickoff = getGroupKickoff(fixtures, groupName, tournamentKickoff);
-    const groupStatus = statusForWindow(groupKickoff, now);
-    const groupSlug = slugify(groupName);
+    const groupLetter = getGroupLetter(groupName);
     const groupSort = Math.floor(groupKickoff.getTime() / 1000) - 50000;
 
     windows.push(
-      {
-        slug: `group-winner-${groupSlug}-2026`,
+      withMetadata({
+        slug: `group-${groupLetter}-winner`,
         title: `${groupName} winner`,
         description: `Pick the team you think will finish first in ${groupName}.`,
         prediction_type: "group_winner",
-        status: groupStatus,
         options: groupTeams,
         opens_at: opensAt,
         locks_at: groupKickoff.toISOString(),
         points_result: getGroupPredictionPoints("group_winner"),
-        points_exact: 0,
         sort_order: groupSort,
-        fixture_api_id: null,
-      },
-      {
-        slug: `group-top-two-${groupSlug}-2026`,
-        title: `${groupName} top two`,
-        description: `Pick the top two teams in ${groupName}, in order.`,
-        prediction_type: "group_top_two",
-        status: groupStatus,
-        options: groupTeams,
-        opens_at: opensAt,
-        locks_at: groupKickoff.toISOString(),
-        points_result: getGroupPredictionPoints("group_top_two"),
-        points_exact: 0,
-        sort_order: groupSort + 1,
-        fixture_api_id: null,
-      },
-      {
-        slug: `full-group-standings-${groupSlug}-2026`,
-        title: `${groupName} full standings`,
-        description: `Pick the full 1st to 4th order for ${groupName}.`,
-        prediction_type: "full_group_standings",
-        status: groupStatus,
-        options: groupTeams,
-        opens_at: opensAt,
-        locks_at: groupKickoff.toISOString(),
-        points_result: getGroupPredictionPoints("full_group_standings"),
-        points_exact: 0,
-        sort_order: groupSort + 2,
-        fixture_api_id: null,
-      },
+        display_group: "groups",
+        settlement_strategy: "group_standings",
+      }),
     );
   }
 
@@ -346,20 +323,14 @@ export async function generateTournamentPredictionWindows({
       continue;
     }
 
-    const nextStatus =
-      existing?.status === "open" && window.status === "draft"
-        ? "open"
-        : window.status;
-
     const payload = {
       ...window,
-      status: nextStatus,
       updated_at: now.toISOString(),
     };
 
     if (!existing) {
       inserted += 1;
-      if (nextStatus === "open") opened += 1;
+      opened += 1;
 
       if (!dryRun) {
         const { error: insertError } = await supabase
@@ -375,7 +346,7 @@ export async function generateTournamentPredictionWindows({
     }
 
     updated += 1;
-    if (existing.status !== "open" && nextStatus === "open") opened += 1;
+    if (existing.status !== "open") opened += 1;
 
     if (!dryRun) {
       const { error: updateError } = await supabase

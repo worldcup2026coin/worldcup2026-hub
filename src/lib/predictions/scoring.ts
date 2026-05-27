@@ -47,7 +47,7 @@ export const TOURNAMENT_PREDICTION_POINTS = {
   goldenBoot: 40,
   hostNationFurthest: 30,
   bestThirdPlacedTeam: 10,
-  darkHorse: 20,
+  darkHorse: 10,
   mostCleanSheets: 25,
   totalGoalsOverUnder: 20,
   finalPenaltyShootout: 20,
@@ -58,7 +58,9 @@ export const PREDICTION_TYPE_LABELS: Record<string, string> = {
   match_result: "Match result",
   exact_score: "Exact score",
   tournament_winner: "Tournament winner",
+  runner_up: "Runner-up",
   tournament_runner_up: "Runner-up",
+  golden_boot: "Golden Boot",
   semi_finalists: "Semi-finalists",
   quarter_finalists: "Quarter-finalists",
   golden_boot_winner: "Golden Boot",
@@ -114,9 +116,11 @@ export function getExactScorePoints(round: string | null | undefined) {
 
 export function getTournamentPredictionPoints(type: string) {
   if (type === "tournament_winner") return TOURNAMENT_PREDICTION_POINTS.champion;
+  if (type === "runner_up") return TOURNAMENT_PREDICTION_POINTS.runnerUp;
   if (type === "tournament_runner_up") return TOURNAMENT_PREDICTION_POINTS.runnerUp;
   if (type === "semi_finalists") return TOURNAMENT_PREDICTION_POINTS.semiFinalistMax;
   if (type === "quarter_finalists") return TOURNAMENT_PREDICTION_POINTS.quarterFinalistMax;
+  if (type === "golden_boot") return TOURNAMENT_PREDICTION_POINTS.goldenBoot;
   if (type === "golden_boot_winner") return TOURNAMENT_PREDICTION_POINTS.goldenBoot;
   if (type === "host_nation_furthest") return TOURNAMENT_PREDICTION_POINTS.hostNationFurthest;
   if (type === "dark_horse") return TOURNAMENT_PREDICTION_POINTS.darkHorse;
