@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/worldcup/page-header";
 import { wc26Config } from "@/lib/wc26";
+import { MascotShowcase } from "@/components/wc26/mascot-showcase";
 
 export const metadata: Metadata = {
   title: "$WC26 Community",
@@ -134,8 +135,10 @@ export default function $WC26Page() {
             ))}
           </div>
         </section>
+        <MascotShowcase />
       </Container>
     </>
   );
 }
+
 

@@ -49,3 +49,7 @@ launch/*.csv
 qa-screenshots.zip
 qa-screenshots/
 qa-logs/
+
+# Local backup folders
+header-cleanup-backup-*/
+wc26-mascot-backup-*/

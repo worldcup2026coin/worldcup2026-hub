@@ -1,36 +1,52 @@
+import Image from "next/image";
+
 export function CommunityCTA() {
   return (
-    <section className="hero-panel rounded-[2.25rem] p-6 sm:p-8">
-      <div className="relative z-10">
-        <p className="neon-kicker">$WC26 community signal</p>
+    <section className="hero-panel overflow-hidden rounded-[2.25rem] p-6 sm:p-8">
+      <div className="relative z-10 grid gap-6 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+        <div>
+          <p className="neon-kicker">$WC26 community signal</p>
 
-        <h2 className="neon-title glow-text mt-4 text-4xl font-black leading-[0.9] text-white sm:text-6xl">
-          Join the football meme layer
-        </h2>
+          <h2 className="neon-title glow-text mt-4 text-4xl font-black leading-[0.9] text-white sm:text-6xl">
+            Join the football meme layer
+          </h2>
 
-        <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300">
-          $WC26 is the fan-made community layer for World Cup chaos, match reactions, memes, polls, predictions and launch updates.
-        </p>
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-300">
+            $WC26 is the fan-made community layer for World Cup chaos, match
+            reactions, memes, polls, predictions and launch updates.
+          </p>
 
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <a href="/wc26" className="glow-button-primary">
-            View $WC26
-          </a>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <a href="/wc26" className="glow-button-primary">
+              View $WC26
+            </a>
 
-          <a href="/launch" className="glow-button-secondary">
-            Launch status
-          </a>
+            <a href="/launch" className="glow-button-secondary">
+              Launch status
+            </a>
 
-          <a href="/how-to-buy" className="glow-button-secondary">
-            How to buy
-          </a>
+            <a href="/how-to-buy" className="glow-button-secondary">
+              How to buy
+            </a>
+          </div>
+
+          <p className="mt-4 max-w-3xl text-xs font-semibold leading-5 text-slate-400">
+            $WC26 is fan-made and unofficial. It is not affiliated with FIFA,
+            World Cup, teams, players, sponsors or governing bodies. Crypto
+            tokens are high risk.
+          </p>
         </div>
 
-        <p className="mt-4 max-w-3xl text-xs font-semibold leading-5 text-slate-400">
-          $WC26 is fan-made and unofficial. It is not affiliated with FIFA, World Cup, teams, players, sponsors or governing bodies. Crypto tokens are high risk.
-        </p>
+        <div className="overflow-hidden rounded-[1.5rem] border border-lime-300/20 bg-black/40 shadow-[0_0_34px_rgba(163,255,18,0.12)]">
+          <Image
+            src="/wc26/wc26-website-hero.png"
+            alt="$WC26 fan-made mascot crew"
+            width={626}
+            height={299}
+            className="h-auto w-full"
+          />
+        </div>
       </div>
     </section>
   );
 }
-
