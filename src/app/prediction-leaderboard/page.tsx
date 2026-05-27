@@ -3,6 +3,12 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import {
+  GROUP_PREDICTION_POINTS,
+  MATCH_RESULT_POINTS,
+  PREDICTION_TYPE_LABELS,
+  TOURNAMENT_PREDICTION_POINTS,
+} from "@/lib/predictions/scoring";
 
 export const metadata: Metadata = {
   title: "Prediction Leaderboard | $WC26",
@@ -18,9 +24,13 @@ type PredictionWindow = {
   prediction_type: string;
   status: string;
   options: string[];
+  opens_at: string | null;
   locks_at: string;
   points_result: number;
   points_exact: number;
+  sort_order: number | null;
+  fixture_api_id: number | null;
+  correct_pick?: string | null;
 };
 
 type FanPrediction = {
@@ -42,6 +52,25 @@ type LeaderboardRow = {
   exact_score_hits: number;
 };
 
+const MATCH_TYPES = new Set(["match_result", "exact_score"]);
+const LONG_TERM_TYPES = new Set([
+  "tournament_winner",
+  "tournament_runner_up",
+  "semi_finalists",
+  "quarter_finalists",
+  "golden_boot_winner",
+  "host_nation_furthest",
+  "dark_horse",
+  "group_winner",
+  "group_top_two",
+  "full_group_standings",
+  "best_third_placed_teams",
+  "most_clean_sheets",
+  "total_tournament_goals",
+  "final_penalty_shootout",
+  "golden_glove_winner",
+]);
+
 async function submitPrediction(formData: FormData) {
   "use server";
 
@@ -49,8 +78,10 @@ async function submitPrediction(formData: FormData) {
   const predictionType = String(formData.get("predictionType") ?? "");
   const selectPick = String(formData.get("pick") ?? "").trim();
   const exactScore = String(formData.get("exactScore") ?? "").trim();
+  const freePick = String(formData.get("freePick") ?? "").trim();
 
-  const pick = predictionType === "exact_score" ? exactScore : selectPick;
+  const pick =
+    predictionType === "exact_score" ? exactScore : selectPick || freePick;
 
   if (!windowId || !pick) {
     redirect("/prediction-leaderboard?error=missing-pick");
@@ -64,6 +95,22 @@ async function submitPrediction(formData: FormData) {
 
   if (!user) {
     redirect("/auth/login");
+  }
+
+  const { data: window, error: windowError } = await supabase
+    .from("prediction_windows")
+    .select("id, status, locks_at")
+    .eq("id", windowId)
+    .maybeSingle();
+
+  if (windowError || !window || window.status !== "open") {
+    redirect("/prediction-leaderboard?error=window-closed");
+  }
+
+  const locksAt = new Date(window.locks_at).getTime();
+
+  if (!Number.isFinite(locksAt) || locksAt <= Date.now()) {
+    redirect("/prediction-leaderboard?error=window-closed");
   }
 
   const { error } = await supabase.from("fan_predictions").upsert(
@@ -118,10 +165,23 @@ async function updateDisplayName(formData: FormData) {
   redirect("/prediction-leaderboard?saved=1");
 }
 
-function formatLockDate(value: string) {
+function formatLockDate(value: string | null | undefined) {
+  if (!value) return "TBC";
+
   return new Intl.DateTimeFormat("en-GB", {
     dateStyle: "medium",
     timeStyle: "short",
+    timeZone: "UTC",
+  }).format(new Date(value));
+}
+
+function formatDateGroup(value: string | null | undefined) {
+  if (!value) return "Date TBC";
+
+  return new Intl.DateTimeFormat("en-GB", {
+    weekday: "long",
+    day: "2-digit",
+    month: "short",
     timeZone: "UTC",
   }).format(new Date(value));
 }
@@ -131,11 +191,110 @@ function pointsLabel(window: PredictionWindow) {
     return `${window.points_exact} pts exact score`;
   }
 
-  if (window.points_exact > 0) {
-    return `${window.points_result} pts result · ${window.points_exact} pts exact`;
-  }
-
   return `${window.points_result} pts`;
+}
+
+function typeLabel(type: string) {
+  return PREDICTION_TYPE_LABELS[type] ?? type.replace(/_/g, " ");
+}
+
+function groupByLockDate(windows: PredictionWindow[]) {
+  return windows.reduce<Record<string, PredictionWindow[]>>((groups, window) => {
+    const key = formatDateGroup(window.locks_at);
+    groups[key] = groups[key] ?? [];
+    groups[key].push(window);
+    return groups;
+  }, {});
+}
+
+function WindowCard({
+  window,
+  existing,
+  canSubmit,
+}: {
+  window: PredictionWindow;
+  existing?: FanPrediction;
+  canSubmit: boolean;
+}) {
+  const isExactScore = window.prediction_type === "exact_score";
+  const hasOptions = window.options.length > 0;
+  const isOpen = window.status === "open";
+
+  return (
+    <article className="rounded-[1.5rem] border border-white/10 bg-black/25 p-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-lime-200">
+            {typeLabel(window.prediction_type)} · {pointsLabel(window)}
+          </p>
+          <h3 className="mt-2 text-xl font-black uppercase text-white">
+            {window.title}
+          </h3>
+          <p className="mt-2 text-sm leading-6 text-slate-300">
+            {window.description}
+          </p>
+        </div>
+        <span className="rounded-full border border-cyan-300/20 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-cyan-100">
+          {isOpen ? "Locks" : window.status} {formatLockDate(window.locks_at)} UTC
+        </span>
+      </div>
+
+      {existing ? (
+        <p className="mt-4 rounded-2xl border border-lime-300/20 bg-lime-300/10 px-4 py-3 text-sm font-bold text-lime-100">
+          Current pick: {existing.pick}
+        </p>
+      ) : null}
+
+      {!isOpen ? null : canSubmit ? (
+        <form action={submitPrediction} className="mt-4 grid gap-3">
+          <input type="hidden" name="windowId" value={window.id} />
+          <input type="hidden" name="predictionType" value={window.prediction_type} />
+
+          {isExactScore ? (
+            <input
+              name="exactScore"
+              required
+              placeholder="Example: Mexico 2-1 South Africa"
+              defaultValue={existing?.exact_score ?? ""}
+              className="rounded-2xl border border-cyan-300/20 bg-black/40 px-4 py-4 text-sm font-bold text-white outline-none transition focus:border-lime-300/60"
+            />
+          ) : hasOptions ? (
+            <select
+              name="pick"
+              required
+              defaultValue={existing?.pick ?? ""}
+              className="rounded-2xl border border-cyan-300/20 bg-black/40 px-4 py-4 text-sm font-bold text-white outline-none transition focus:border-lime-300/60"
+            >
+              <option value="" disabled>
+                Choose your pick
+              </option>
+              {window.options.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              name="freePick"
+              required
+              placeholder="Type your pick"
+              defaultValue={existing?.pick ?? ""}
+              className="rounded-2xl border border-cyan-300/20 bg-black/40 px-4 py-4 text-sm font-bold text-white outline-none transition focus:border-lime-300/60"
+            />
+          )}
+
+          <button type="submit" className="glow-button-secondary">
+            {existing ? "Update pick" : "Submit pick"}
+          </button>
+        </form>
+      ) : (
+        <p className="mt-4 rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-3 text-sm font-bold text-cyan-100">
+          Sign in and create a display name to submit this fan prediction.
+        </p>
+      )}
+    </article>
+  );
 }
 
 export default async function PredictionLeaderboardPage({
@@ -153,12 +312,18 @@ export default async function PredictionLeaderboardPage({
   const [{ data: windows }, { data: leaderboard }] = await Promise.all([
     supabase
       .from("prediction_windows")
-      .select("id, slug, title, description, prediction_type, status, options, locks_at, points_result, points_exact")
-      .eq("status", "open")
-      .order("sort_order"),
+      .select(
+        "id, slug, title, description, prediction_type, status, options, opens_at, locks_at, points_result, points_exact, sort_order, fixture_api_id, correct_pick",
+      )
+      .in("status", ["open", "locked", "settled"])
+      .order("status", { ascending: true })
+      .order("sort_order", { ascending: true })
+      .limit(140),
     supabase
       .from("prediction_leaderboard")
-      .select("user_id, display_name, avatar_label, total_predictions, total_points, correct_picks, exact_score_hits")
+      .select(
+        "user_id, display_name, avatar_label, total_predictions, total_points, correct_picks, exact_score_hits",
+      )
       .limit(25),
   ]);
 
@@ -172,7 +337,8 @@ export default async function PredictionLeaderboardPage({
         supabase
           .from("fan_predictions")
           .select("id, window_id, pick, exact_score, points_awarded, result_status")
-          .eq("user_id", user.id),
+          .eq("user_id", user.id)
+          .order("updated_at", { ascending: false }),
       ])
     : [{ data: null }, { data: [] }];
 
@@ -183,8 +349,26 @@ export default async function PredictionLeaderboardPage({
     ]),
   );
 
-  const openWindows = (windows ?? []) as PredictionWindow[];
+  const visibleWindows = ((windows ?? []) as PredictionWindow[]).filter(
+    (window) => window.status !== "draft" && window.status !== "archived",
+  );
+  const openWindows = visibleWindows.filter((window) => window.status === "open");
+  const longTermWindows = openWindows
+    .filter((window) => LONG_TERM_TYPES.has(window.prediction_type))
+    .slice(0, 24);
+  const matchWindows = openWindows
+    .filter((window) => MATCH_TYPES.has(window.prediction_type))
+    .slice(0, 36);
+  const groupedMatchWindows = groupByLockDate(matchWindows);
+  const recentlyLocked = visibleWindows
+    .filter((window) => window.status === "locked")
+    .slice(0, 8);
+  const recentlySettled = visibleWindows
+    .filter((window) => window.status === "settled")
+    .slice(0, 8);
   const leaderboardRows = (leaderboard ?? []) as LeaderboardRow[];
+  const myRecentPicks = ((myPredictions ?? []) as FanPrediction[]).slice(0, 8);
+  const canSubmit = Boolean(user && profile?.display_name);
 
   const saved = params.saved === "1";
   const error = params.error;
@@ -199,9 +383,9 @@ export default async function PredictionLeaderboardPage({
               Prediction leaderboard
             </h1>
             <p className="mt-5 max-w-3xl text-sm leading-6 text-slate-300 sm:text-base sm:leading-7">
-              Make your World Cup picks, lock them before kick-off and climb
-              the community table. Anyone can view. Only logged-in fans can
-              submit predictions.
+              Make fan predictions, lock them before kick-off and climb the
+              community leaderboard. Anyone can view the competition. Logged-in
+              fans can submit picks with email auth only.
             </p>
           </div>
 
@@ -209,6 +393,11 @@ export default async function PredictionLeaderboardPage({
             <p className="neon-kicker">Participation rule</p>
             <p className="mt-4 text-lg font-black text-white">
               Email login only · no wallet · no token holding · no payment
+            </p>
+            <p className="mt-3 text-sm leading-6 text-slate-300">
+              Old predictions stay in the record forever and continue counting
+              toward cumulative leaderboard totals after they leave the active
+              view.
             </p>
             <div className="mt-5 flex flex-col gap-3">
               {user ? (
@@ -230,152 +419,143 @@ export default async function PredictionLeaderboardPage({
 
       {saved ? (
         <p className="mt-6 rounded-2xl border border-lime-300/30 bg-lime-300/10 px-4 py-3 text-sm font-bold text-lime-100">
-          Saved. Your prediction is locked in unless you update it before the window closes.
+          Saved. Your prediction is locked in unless you update it before the
+          window closes.
         </p>
       ) : null}
 
       {error ? (
         <p className="mt-6 rounded-2xl border border-fuchsia-300/30 bg-fuchsia-300/10 px-4 py-3 text-sm font-bold text-fuchsia-100">
-          Something needs attention. Check your pick, display name, or sign-in session.
+          Something needs attention. Check your pick, display name, or sign-in
+          session.
         </p>
       ) : null}
 
       <section className="mt-8 grid gap-6 lg:grid-cols-3">
         <article className="neon-card rounded-[2rem] p-6">
-          <p className="neon-kicker">Step 1</p>
-          <h2 className="mt-4 text-2xl font-black uppercase text-white">Sign in</h2>
+          <p className="neon-kicker">How it works</p>
+          <h2 className="mt-4 text-2xl font-black uppercase text-white">
+            Open windows
+          </h2>
           <p className="mt-3 text-sm leading-6 text-slate-300">
-            Use email magic link login. Your email is not shown publicly.
+            Prediction windows open before the relevant match or tournament
+            deadline. Draft future windows stay hidden from visitors.
           </p>
         </article>
         <article className="neon-card rounded-[2rem] p-6">
-          <p className="neon-kicker">Step 2</p>
-          <h2 className="mt-4 text-2xl font-black uppercase text-white">Make picks</h2>
+          <p className="neon-kicker">Scoring</p>
+          <h2 className="mt-4 text-2xl font-black uppercase text-white">
+            Points stack up
+          </h2>
           <p className="mt-3 text-sm leading-6 text-slate-300">
-            Submit tournament and match predictions before each window locks.
+            Match values rise by round, from group-stage calls to the final.
+            Exact-score windows score separately.
           </p>
         </article>
         <article className="neon-card rounded-[2rem] p-6">
-          <p className="neon-kicker">Step 3</p>
-          <h2 className="mt-4 text-2xl font-black uppercase text-white">Score points</h2>
+          <p className="neon-kicker">Record</p>
+          <h2 className="mt-4 text-2xl font-black uppercase text-white">
+            Cumulative table
+          </h2>
           <p className="mt-3 text-sm leading-6 text-slate-300">
-            Correct calls earn points after results are settled.
+            Settled and archived predictions are hidden from the main action
+            list, but their points remain in the community leaderboard.
           </p>
         </article>
       </section>
 
       <section className="mt-8 grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="neon-panel rounded-[2rem] p-6">
-          <p className="neon-kicker">Active windows</p>
-          <h2 className="mt-4 text-3xl font-black uppercase text-white">
-            Make your picks
-          </h2>
+        <div className="grid gap-8">
+          <section className="neon-panel rounded-[2rem] p-6">
+            <p className="neon-kicker">Active windows</p>
+            <h2 className="mt-4 text-3xl font-black uppercase text-white">
+              Long-term tournament picks
+            </h2>
 
-          {!user ? (
-            <div className="mt-6 rounded-[1.5rem] border border-cyan-300/20 bg-black/30 p-5">
-              <p className="text-sm leading-6 text-slate-300">
-                Sign in to submit predictions. You can still view the windows
-                and leaderboard without logging in.
-              </p>
-              <Link href="/auth/login" className="glow-button-primary mt-5">
-                Sign in
-              </Link>
+            {!user ? (
+              <div className="mt-6 rounded-[1.5rem] border border-cyan-300/20 bg-black/30 p-5">
+                <p className="text-sm leading-6 text-slate-300">
+                  Sign in to submit predictions. You can still view every open
+                  window and the leaderboard without logging in.
+                </p>
+                <Link href="/auth/login" className="glow-button-primary mt-5">
+                  Sign in
+                </Link>
+              </div>
+            ) : !profile?.display_name ? (
+              <form
+                action={updateDisplayName}
+                className="mt-6 grid gap-4 rounded-[1.5rem] border border-lime-300/20 bg-black/30 p-5"
+              >
+                <p className="text-sm leading-6 text-slate-300">
+                  Choose a display name before making picks.
+                </p>
+                <input
+                  name="displayName"
+                  required
+                  minLength={2}
+                  maxLength={32}
+                  placeholder="Mystery Fan"
+                  className="rounded-2xl border border-cyan-300/20 bg-black/40 px-4 py-4 text-base font-bold text-white outline-none transition focus:border-lime-300/60"
+                />
+                <button type="submit" className="glow-button-primary">
+                  Save display name
+                </button>
+              </form>
+            ) : null}
+
+            <div className="mt-6 grid gap-5">
+              {longTermWindows.length ? (
+                longTermWindows.map((window) => (
+                  <WindowCard
+                    key={window.id}
+                    window={window}
+                    existing={predictionMap.get(window.id)}
+                    canSubmit={canSubmit}
+                  />
+                ))
+              ) : (
+                <p className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm font-bold text-slate-300">
+                  No long-term prediction windows are open right now. They will
+                  appear here when the tournament game opens them.
+                </p>
+              )}
             </div>
-          ) : !profile?.display_name ? (
-            <form action={updateDisplayName} className="mt-6 grid gap-4 rounded-[1.5rem] border border-lime-300/20 bg-black/30 p-5">
-              <p className="text-sm leading-6 text-slate-300">
-                Choose a display name before making picks.
-              </p>
-              <input
-                name="displayName"
-                required
-                minLength={2}
-                maxLength={32}
-                placeholder="Mystery Fan"
-                className="rounded-2xl border border-cyan-300/20 bg-black/40 px-4 py-4 text-base font-bold text-white outline-none transition focus:border-lime-300/60"
-              />
-              <button type="submit" className="glow-button-primary">
-                Save display name
-              </button>
-            </form>
-          ) : null}
+          </section>
 
-          <div className="mt-6 grid gap-5">
-            {openWindows.map((window) => {
-              const existing = predictionMap.get(window.id);
-              const isExactScore = window.prediction_type === "exact_score";
-
-              return (
-                <article
-                  key={window.id}
-                  className="rounded-[1.5rem] border border-white/10 bg-black/25 p-5"
-                >
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <p className="text-xs font-black uppercase tracking-[0.28em] text-lime-200">
-                        {pointsLabel(window)}
-                      </p>
-                      <h3 className="mt-2 text-xl font-black uppercase text-white">
-                        {window.title}
-                      </h3>
-                      <p className="mt-2 text-sm leading-6 text-slate-300">
-                        {window.description}
-                      </p>
-                    </div>
-                    <span className="rounded-full border border-cyan-300/20 px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-cyan-100">
-                      Locks {formatLockDate(window.locks_at)} UTC
-                    </span>
+          <section className="neon-panel rounded-[2rem] p-6">
+            <p className="neon-kicker">Match picks</p>
+            <h2 className="mt-4 text-3xl font-black uppercase text-white">
+              Open match windows
+            </h2>
+            <div className="mt-6 grid gap-6">
+              {Object.entries(groupedMatchWindows).length ? (
+                Object.entries(groupedMatchWindows).map(([date, dateWindows]) => (
+                  <div key={date} className="grid gap-4">
+                    <h3 className="text-lg font-black uppercase text-white">
+                      {date}
+                    </h3>
+                    {dateWindows.map((window) => (
+                      <WindowCard
+                        key={window.id}
+                        window={window}
+                        existing={predictionMap.get(window.id)}
+                        canSubmit={canSubmit}
+                      />
+                    ))}
                   </div>
-
-                  {existing ? (
-                    <p className="mt-4 rounded-2xl border border-lime-300/20 bg-lime-300/10 px-4 py-3 text-sm font-bold text-lime-100">
-                      Current pick: {existing.pick}
-                    </p>
-                  ) : null}
-
-                  {user && profile?.display_name ? (
-                    <form action={submitPrediction} className="mt-4 grid gap-3">
-                      <input type="hidden" name="windowId" value={window.id} />
-                      <input type="hidden" name="predictionType" value={window.prediction_type} />
-
-                      {isExactScore ? (
-                        <input
-                          name="exactScore"
-                          required
-                          placeholder="Example: Mexico 2-1 South Africa"
-                          defaultValue={existing?.exact_score ?? ""}
-                          className="rounded-2xl border border-cyan-300/20 bg-black/40 px-4 py-4 text-sm font-bold text-white outline-none transition focus:border-lime-300/60"
-                        />
-                      ) : (
-                        <select
-                          name="pick"
-                          required
-                          defaultValue={existing?.pick ?? ""}
-                          className="rounded-2xl border border-cyan-300/20 bg-black/40 px-4 py-4 text-sm font-bold text-white outline-none transition focus:border-lime-300/60"
-                        >
-                          <option value="" disabled>
-                            Choose your pick
-                          </option>
-                          {window.options.map((option) => (
-                            <option key={option} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
-                      )}
-
-                      <button type="submit" className="glow-button-secondary">
-                        {existing ? "Update pick" : "Submit pick"}
-                      </button>
-                    </form>
-                  ) : null}
-                </article>
-              );
-            })}
-          </div>
+                ))
+              ) : (
+                <p className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm font-bold text-slate-300">
+                  No match windows are open right now. Match result and exact
+                  score windows open 72 hours before kick-off.
+                </p>
+              )}
+            </div>
+          </section>
         </div>
 
-        <aside className="grid gap-6">
+        <aside className="grid content-start gap-6">
           <section className="neon-panel rounded-[2rem] p-6">
             <p className="neon-kicker">Community table</p>
             <h2 className="mt-4 text-3xl font-black uppercase text-white">
@@ -394,8 +574,9 @@ export default async function PredictionLeaderboardPage({
                     </span>
                     <div>
                       <p className="font-black text-white">{row.display_name}</p>
-                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                        {row.avatar_label} · {row.correct_picks} correct · {row.exact_score_hits} exact
+                      <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+                        {row.avatar_label} · {row.correct_picks} correct ·{" "}
+                        {row.exact_score_hits} exact
                       </p>
                     </div>
                     <span className="text-2xl font-black text-white">
@@ -413,26 +594,92 @@ export default async function PredictionLeaderboardPage({
           </section>
 
           <section className="neon-card rounded-[2rem] p-6">
-            <p className="neon-kicker">Scoring</p>
+            <p className="neon-kicker">My picks</p>
             <h2 className="mt-4 text-3xl font-black uppercase text-white">
-              Points rules
+              Recent picks
+            </h2>
+            <div className="mt-5 grid gap-3">
+              {user && myRecentPicks.length ? (
+                myRecentPicks.map((prediction) => (
+                  <p
+                    key={prediction.id}
+                    className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm font-bold text-slate-300"
+                  >
+                    {prediction.pick} · {prediction.result_status} ·{" "}
+                    {prediction.points_awarded} pts
+                  </p>
+                ))
+              ) : (
+                <p className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm font-bold text-slate-300">
+                  Your recent picks appear here after you sign in and submit.
+                </p>
+              )}
+            </div>
+          </section>
+
+          <section className="neon-card rounded-[2rem] p-6">
+            <p className="neon-kicker">Recently locked</p>
+            <div className="mt-5 grid gap-3">
+              {recentlyLocked.length ? (
+                recentlyLocked.map((window) => (
+                  <p
+                    key={window.id}
+                    className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm font-bold text-slate-300"
+                  >
+                    {window.title} · settling when results are ready
+                  </p>
+                ))
+              ) : (
+                <p className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm font-bold text-slate-300">
+                  Locked windows will appear here briefly while they wait for
+                  reliable result data.
+                </p>
+              )}
+            </div>
+          </section>
+
+          <section className="neon-card rounded-[2rem] p-6">
+            <p className="neon-kicker">Recently settled</p>
+            <div className="mt-5 grid gap-3">
+              {recentlySettled.length ? (
+                recentlySettled.map((window) => (
+                  <p
+                    key={window.id}
+                    className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm font-bold text-slate-300"
+                  >
+                    {window.title} · correct: {window.correct_pick ?? "recorded"}
+                  </p>
+                ))
+              ) : (
+                <p className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 text-sm font-bold text-slate-300">
+                  Settled windows appear after results have been confirmed.
+                </p>
+              )}
+            </div>
+          </section>
+
+          <section className="neon-card rounded-[2rem] p-6">
+            <p className="neon-kicker">Scoring rules</p>
+            <h2 className="mt-4 text-3xl font-black uppercase text-white">
+              Points
             </h2>
             <ul className="mt-5 grid gap-3 text-sm font-bold leading-6 text-slate-300">
-              <li>Correct match result: 3 points</li>
-              <li>Exact opening score: 8 points</li>
-              <li>Tournament winner: 25 points</li>
-              <li>Golden Boot winner: 15 points</li>
-              <li>Dark horse pick: 10 points</li>
-              <li>Host nation furthest: 10 points</li>
+              <li>Match result: {Object.values(MATCH_RESULT_POINTS).slice(0, 6).join(" / ")} pts by round</li>
+              <li>Exact score: separate windows, no result double count</li>
+              <li>Tournament winner: {TOURNAMENT_PREDICTION_POINTS.champion} pts</li>
+              <li>Runner-up: {TOURNAMENT_PREDICTION_POINTS.runnerUp} pts</li>
+              <li>Golden Boot: {TOURNAMENT_PREDICTION_POINTS.goldenBoot} pts</li>
+              <li>Group winner: {GROUP_PREDICTION_POINTS.winner} pts</li>
+              <li>Perfect full-group order bonus: {GROUP_PREDICTION_POINTS.perfectGroupBonus} pts</li>
             </ul>
           </section>
 
           <section className="neon-card rounded-[2rem] p-6">
             <p className="neon-kicker">Disclaimer</p>
             <p className="mt-4 text-sm font-bold leading-6 text-slate-300">
-              Fan predictions are for community entertainment and tournament
-              debate only. They are not betting advice, financial advice or a
-              promise of rewards.
+              Fan predictions are for community entertainment and football
+              debate only. They are not betting advice, financial advice,
+              official tournament content, or a promise of rewards.
             </p>
           </section>
         </aside>

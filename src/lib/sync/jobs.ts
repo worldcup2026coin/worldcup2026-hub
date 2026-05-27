@@ -108,7 +108,7 @@ export async function runTeamsSyncJob() {
 }
 
 export async function runStandingsSyncJob() {
-  return runApiFootballStandingsSync();
+  return withPredictionAutomation(runApiFootballStandingsSync());
 }
 
 export async function runFixturesSyncJob() {
@@ -280,5 +280,5 @@ export async function runMatchdayDataSync6Job() {
 }
 
 export async function runTopStatsSyncJob() {
-  return runApiFootballTopStatsSync();
+  return withPredictionAutomation(runApiFootballTopStatsSync());
 }

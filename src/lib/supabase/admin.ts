@@ -13,7 +13,8 @@ function getSupabaseUrl() {
 }
 
 function getSupabaseServiceRoleKey() {
-  const value = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const value =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SECRET_KEY;
 
   if (!value) {
     throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY");

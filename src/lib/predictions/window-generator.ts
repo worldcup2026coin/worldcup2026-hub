@@ -1,6 +1,15 @@
 import "server-only";
 
-import { createClient } from "@supabase/supabase-js";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import {
+  detectTournamentPhase,
+  getExactScorePoints,
+  getMatchResultPoints,
+} from "@/lib/predictions/scoring";
+import {
+  generateTournamentPredictionWindows,
+  type TournamentWindowGenerationResult,
+} from "@/lib/predictions/tournament-window-generator";
 
 type Fixture = {
   api_fixture_id: number;
@@ -8,6 +17,7 @@ type Fixture = {
   away_team_name: string | null;
   match_date: string | null;
   status_short: string | null;
+  round: string | null;
 };
 
 type ExistingWindow = {
@@ -22,7 +32,7 @@ type PlannedWindow = {
   title: string;
   description: string;
   prediction_type: "match_result" | "exact_score";
-  status: "draft" | "open";
+  status: "draft" | "open" | "locked";
   options: string[];
   opens_at: string;
   locks_at: string;
@@ -60,24 +70,12 @@ const BLOCKED_STATUSES = new Set([
   "WO",
 ]);
 
-const PROTECTED_WINDOW_STATUSES = new Set(["locked", "settled", "void"]);
-
-function getAdminClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey =
-    process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SECRET_KEY;
-
-  if (!supabaseUrl || !serviceRoleKey) {
-    throw new Error("Missing Supabase admin environment variables.");
-  }
-
-  return createClient(supabaseUrl, serviceRoleKey, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-    },
-  });
-}
+const PROTECTED_WINDOW_STATUSES = new Set([
+  "locked",
+  "settled",
+  "archived",
+  "void",
+]);
 
 function teamSlug(value: string | null | undefined) {
   return String(value ?? "")
@@ -93,6 +91,10 @@ function isBlockedFixtureStatus(status: string | null | undefined) {
 }
 
 function buildWindowStatus(matchDate: Date, opensAt: Date, now: Date) {
+  if (now >= matchDate) {
+    return "locked" as const;
+  }
+
   if (now >= opensAt && now < matchDate) {
     return "open" as const;
   }
@@ -100,7 +102,11 @@ function buildWindowStatus(matchDate: Date, opensAt: Date, now: Date) {
   return "draft" as const;
 }
 
-function buildPlannedWindows(fixture: Fixture, now: Date): PlannedWindow[] {
+function buildPlannedWindows(
+  fixture: Fixture,
+  now: Date,
+  horizonHours: number,
+): PlannedWindow[] {
   if (!fixture.api_fixture_id || !fixture.match_date) {
     return [];
   }
@@ -115,11 +121,11 @@ function buildPlannedWindows(fixture: Fixture, now: Date): PlannedWindow[] {
 
   const matchDate = new Date(fixture.match_date);
 
-  if (Number.isNaN(matchDate.getTime()) || matchDate <= now) {
+  if (Number.isNaN(matchDate.getTime())) {
     return [];
   }
 
-  const opensAt = new Date(matchDate.getTime() - HORIZON_HOURS * 60 * 60 * 1000);
+  const opensAt = new Date(matchDate.getTime() - horizonHours * 60 * 60 * 1000);
   const status = buildWindowStatus(matchDate, opensAt, now);
   const home = fixture.home_team_name;
   const away = fixture.away_team_name;
@@ -127,18 +133,22 @@ function buildPlannedWindows(fixture: Fixture, now: Date): PlannedWindow[] {
   const awaySlug = teamSlug(away);
   const baseSlug = `${homeSlug}-vs-${awaySlug}-${fixture.api_fixture_id}`;
   const sortBase = Math.floor(matchDate.getTime() / 1000);
+  const phase = detectTournamentPhase(fixture.round);
+  const phaseLabel = phase.replace(/_/g, " ");
+  const resultPoints = getMatchResultPoints(fixture.round);
+  const exactPoints = getExactScorePoints(fixture.round);
 
   return [
     {
       slug: `${baseSlug}-result`,
       title: `${home} vs ${away} Result`,
-      description: `Pick the match result for ${home} vs ${away}.`,
+      description: `Pick the match result for ${home} vs ${away}. ${phaseLabel} scoring.`,
       prediction_type: "match_result",
       status,
       options: [`${home} win`, "Draw", `${away} win`],
       opens_at: opensAt.toISOString(),
       locks_at: matchDate.toISOString(),
-      points_result: 3,
+      points_result: resultPoints,
       points_exact: 0,
       sort_order: sortBase,
       fixture_api_id: fixture.api_fixture_id,
@@ -153,7 +163,7 @@ function buildPlannedWindows(fixture: Fixture, now: Date): PlannedWindow[] {
       opens_at: opensAt.toISOString(),
       locks_at: matchDate.toISOString(),
       points_result: 0,
-      points_exact: 8,
+      points_exact: exactPoints,
       sort_order: sortBase + 1,
       fixture_api_id: fixture.api_fixture_id,
     },
@@ -171,18 +181,17 @@ export async function runAutomatedPredictionWindowGeneration({
   dryRun?: boolean;
   horizonHours?: number;
 } = {}): Promise<PredictionWindowGenerationResult> {
-  const supabase = getAdminClient();
+  const supabase = createSupabaseAdminClient();
   const now = new Date();
 
   const { data: fixtures, error: fixturesError } = await supabase
     .from("fixtures")
     .select(
-      "api_fixture_id, home_team_name, away_team_name, match_date, status_short",
+      "api_fixture_id, home_team_name, away_team_name, match_date, status_short, round",
     )
     .eq("season", 2026)
     .not("api_fixture_id", "is", null)
     .not("match_date", "is", null)
-    .gt("match_date", now.toISOString())
     .order("match_date", { ascending: true })
     .limit(500);
 
@@ -191,7 +200,9 @@ export async function runAutomatedPredictionWindowGeneration({
   }
 
   const typedFixtures = (fixtures ?? []) as Fixture[];
-  const planned = typedFixtures.flatMap((fixture) => buildPlannedWindows(fixture, now));
+  const planned = typedFixtures.flatMap((fixture) =>
+    buildPlannedWindows(fixture, now, horizonHours),
+  );
   const slugs = planned.map((window) => window.slug);
   const fixtureIds = Array.from(
     new Set(planned.map((window) => window.fixture_api_id)),
@@ -334,11 +345,32 @@ export async function runAutomatedPredictionWindowGeneration({
     }
   }
 
+  let tournamentWindows: TournamentWindowGenerationResult | null = null;
+
+  try {
+    tournamentWindows = await generateTournamentPredictionWindows({
+      supabase,
+      dryRun,
+      now,
+    });
+    inserted += tournamentWindows.inserted;
+    updated += tournamentWindows.updated;
+    opened += tournamentWindows.opened;
+    skipped.push(...tournamentWindows.skipped);
+  } catch (error) {
+    skipped.push({
+      reason:
+        error instanceof Error
+          ? `Long-term window generation skipped: ${error.message}`
+          : "Long-term window generation skipped.",
+    });
+  }
+
   return {
     dryRun,
     horizonHours,
     fixturesSeen: typedFixtures.length,
-    windowsPlanned: planned.length,
+    windowsPlanned: planned.length + (tournamentWindows?.windowsPlanned ?? 0),
     inserted,
     updated,
     opened,
