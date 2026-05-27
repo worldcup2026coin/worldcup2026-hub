@@ -28,11 +28,12 @@ export function SiteHeader() {
               <span className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.75),transparent_32%)]" />
               <span className="relative">26</span>
             </span>
-            <span className="min-w-0">`r`n              <span className="block truncate text-base font-black uppercase leading-none tracking-[0.18em] text-white group-hover:text-lime-200">
+            <span className="min-w-0">
+              <span className="block truncate text-base font-black uppercase leading-none tracking-[0.18em] text-white group-hover:text-lime-200">
                 WC26 HUB
               </span>
               <span className="mt-1 block truncate text-[0.68rem] font-bold uppercase tracking-[0.12em] text-cyan-200/80">
-                Football signal Â· fan chaos
+                Football signal - fan chaos
               </span>
             </span>
           </Link>
@@ -75,7 +76,11 @@ export function SiteHeader() {
             aria-label="Toggle navigation menu"
             aria-expanded={isOpen}
           >
-            {isOpen ? "Ã—" : "â˜°"}
+            {isOpen ? (
+              <span aria-hidden="true">&times;</span>
+            ) : (
+              <span aria-hidden="true">&#9776;</span>
+            )}
           </button>
         </div>
 

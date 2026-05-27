@@ -175,7 +175,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
         eyebrow={standing?.group_name ?? "Team"}
         title={team.name}
         description={`${team.name} tournament outlook with group position, qualification route, coach, squad, fixtures and results.`}
-        meta={`${team.code ?? "Code TBC"} Â· ${team.country ?? "Country TBC"}`}
+        meta={`${team.code ?? "Code TBC"}  -  ${team.country ?? "Country TBC"}`}
       />
 
       <Container className="pb-14">
@@ -377,7 +377,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
                   </h2>
                   <p className="mt-2 text-sm text-slate-300">
                     {coach.nationality ?? "Nationality TBC"}
-                    {coach.age ? ` Â· Age ${coach.age}` : ""}
+                    {coach.age ? `  -  Age ${coach.age}` : ""}
                   </p>
                 </div>
               ) : (
@@ -428,7 +428,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
                   </h3>
                   <p className="mt-2 text-sm text-slate-400">
                     {player.position ?? "Position TBC"}
-                    {player.number ? ` Â· #${player.number}` : ""}
+                    {player.number ? `  -  #${player.number}` : ""}
                   </p>
                 </Link>
               ))}

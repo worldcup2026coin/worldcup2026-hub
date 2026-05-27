@@ -4,8 +4,7 @@ import Image from "next/image";
 import type { Fixture } from "@/lib/data/worldcup";
 import {
   fixtureSlug,
-  formatDateTime,
-  formatVenueDateTime,
+  formatFixtureTimes,
   getFixtureDisplayStatus,
   teamSlug,
 } from "@/lib/worldcup/format";
@@ -102,6 +101,7 @@ export function FixtureCard({ fixture }: FixtureCardProps) {
     home_team_name: fixture.home_team_name,
     away_team_name: fixture.away_team_name,
   });
+  const times = formatFixtureTimes(fixture);
 
   return (
     <article className="neon-card group w-full max-w-full rounded-[2rem] p-5">
@@ -111,7 +111,7 @@ export function FixtureCard({ fixture }: FixtureCardProps) {
           statusLong={fixture.status_long}
         />
         <span className="max-w-full break-words rounded-full border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-1 text-xs font-black uppercase tracking-[0.1em] text-fuchsia-100">
-          {formatVenueDateTime(fixture)}
+          {times.venueTimeLabel}
         </span>
       </div>
 
@@ -139,10 +139,8 @@ export function FixtureCard({ fixture }: FixtureCardProps) {
           {fixture.venue_city ? `, ${fixture.venue_city}` : ""}
         </p>
         <p>
-          <span className="text-lime-200">Your time:</span>{" "}
-          {formatDateTime(fixture.match_date, "Europe/Dublin", {
-            includeTimeZoneName: true,
-          })}
+          <span className="text-lime-200">Site time:</span>{" "}
+          {times.userTimeLabel}
         </p>
         <p className="sm:col-span-2">
           <span className="text-fuchsia-200">Round:</span>{" "}

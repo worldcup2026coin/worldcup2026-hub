@@ -111,7 +111,69 @@ export function getFixtureVenueTimeZone(input: {
   venue_city?: string | null;
   timezone?: string | null;
 }) {
-  return getFixtureHostCity(input)?.timezone ?? input.timezone ?? null;
+  return input.timezone ?? getFixtureHostCity(input)?.timezone ?? null;
+}
+
+
+export type FixtureTimeInput = {
+  match_date?: string | null;
+  kickoff_at?: string | null;
+  venue_name?: string | null;
+  venue_city?: string | null;
+  timezone?: string | null;
+};
+
+export function getFixtureKickoffIso(input: FixtureTimeInput) {
+  const rawKickoff = input.kickoff_at ?? input.match_date ?? null;
+
+  if (!rawKickoff) {
+    return null;
+  }
+
+  const date = new Date(rawKickoff);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return date.toISOString();
+}
+
+export function formatFixtureTimes(
+  input: FixtureTimeInput,
+  options: { userTimeZone?: string | null; locale?: string } = {}
+) {
+  const kickoffIso = getFixtureKickoffIso(input);
+
+  if (!kickoffIso) {
+    return {
+      kickoffIso: null,
+      venueTimeLabel: "Venue time TBC",
+      utcTimeLabel: "UTC time TBC",
+      userTimeLabel: "Site time TBC",
+    };
+  }
+
+  const venueTimeZone = getFixtureVenueTimeZone(input);
+  const userTimeZone = options.userTimeZone ?? "Europe/Dublin";
+
+  return {
+    kickoffIso,
+    venueTimeLabel: venueTimeZone
+      ? formatDateTime(kickoffIso, venueTimeZone, {
+          includeTimeZoneName: true,
+          locale: options.locale,
+        })
+      : "Venue time TBC",
+    utcTimeLabel: formatDateTime(kickoffIso, "UTC", {
+      includeTimeZoneName: true,
+      locale: options.locale,
+    }),
+    userTimeLabel: formatDateTime(kickoffIso, userTimeZone, {
+      includeTimeZoneName: true,
+      locale: options.locale,
+    }),
+  };
 }
 
 export function formatVenueDateTime(input: {

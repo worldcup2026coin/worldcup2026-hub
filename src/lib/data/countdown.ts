@@ -1,6 +1,6 @@
 import { getFixturesPageData } from "@/lib/data/worldcup";
 
-export const OPENING_FIXTURE_FALLBACK_UTC = "2026-06-11T21:00:00Z";
+export const OPENING_FIXTURE_FALLBACK_UTC = "2026-06-11T18:00:00Z";
 
 function isValidDate(value: string | null | undefined) {
   if (!value) return false;

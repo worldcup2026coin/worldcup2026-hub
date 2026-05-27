@@ -126,7 +126,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
   const shareText = `${getMatchTitle(
     fixture.home_team_name,
     fixture.away_team_name
-  )} Â· ${formatDateOnly(fixture.match_date)} Â· World Cup 2026 Hub`;
+  )}  -  ${formatDateOnly(fixture.match_date)}  -  World Cup 2026 Hub`;
 
   return (
     <div data-match-page className="w-full max-w-full overflow-x-clip py-10 sm:py-14">

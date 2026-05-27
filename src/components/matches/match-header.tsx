@@ -1,7 +1,7 @@
 
 import type { Fixture } from "@/lib/data/matches";
 import Image from "next/image";
-import { formatDateTime, formatVenueDateTime } from "@/lib/worldcup/format";
+import { formatFixtureTimes } from "@/lib/worldcup/format";
 import { getMatchStatusInfo } from "@/lib/worldcup/match-status";
 import { MatchStatusBadge } from "@/components/matches/match-status-badge";
 
@@ -64,6 +64,8 @@ function ScoreBox({ fixture }: { fixture: Fixture }) {
 }
 
 export function MatchHeader({ fixture }: MatchHeaderProps) {
+  const times = formatFixtureTimes(fixture);
+
   return (
     <section className="hero-panel w-full max-w-full overflow-hidden rounded-[2.25rem] p-6 sm:p-10">
       <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
@@ -72,7 +74,7 @@ export function MatchHeader({ fixture }: MatchHeaderProps) {
             {fixture.round || fixture.group_name || "World Cup 2026"}
           </p>
           <p className="mt-3 text-sm font-semibold uppercase tracking-[0.14em] text-slate-300">
-            {formatVenueDateTime(fixture)}
+            {times.venueTimeLabel}
           </p>
         </div>
 
@@ -108,7 +110,7 @@ export function MatchHeader({ fixture }: MatchHeaderProps) {
           </p>
           <p className="mt-2 font-semibold text-white">
             {fixture.venue_name ?? "Venue TBC"}
-            {fixture.venue_city ? ` Â· ${fixture.venue_city}` : ""}
+            {fixture.venue_city ? `  -  ${fixture.venue_city}` : ""}
           </p>
         </div>
 
@@ -123,12 +125,10 @@ export function MatchHeader({ fixture }: MatchHeaderProps) {
 
         <div className="rounded-2xl border border-fuchsia-300/20 bg-fuchsia-400/10 p-4">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-fuchsia-200">
-            Your time
+            Site time
           </p>
           <p className="mt-2 font-semibold text-white">
-            {formatDateTime(fixture.match_date, "Europe/Dublin", {
-              includeTimeZoneName: true,
-            })}
+            {times.userTimeLabel}
           </p>
         </div>
       </div>
