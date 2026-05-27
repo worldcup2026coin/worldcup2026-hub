@@ -208,32 +208,56 @@ function groupByLockDate(windows: PredictionWindow[]) {
   }, {});
 }
 
+function groupWinnerOrder(window: PredictionWindow) {
+  const match =
+    window.slug.match(/^group-([a-l])-winner$/i) ??
+    window.title.match(/^group\s+([a-l])\b/i);
+
+  if (!match) {
+    return 999;
+  }
+
+  return match[1].toLowerCase().charCodeAt(0) - "a".charCodeAt(0);
+}
+
 function WindowCard({
   window,
   existing,
   canSubmit,
+  compact = false,
 }: {
   window: PredictionWindow;
   existing?: FanPrediction;
   canSubmit: boolean;
+  compact?: boolean;
 }) {
   const isExactScore = window.prediction_type === "exact_score";
   const hasOptions = window.options.length > 0;
   const isOpen = window.status === "open";
 
   return (
-    <article className="rounded-[1.5rem] border border-white/10 bg-black/25 p-5">
+    <article
+      className={`rounded-[1.5rem] border border-white/10 bg-black/25 ${
+        compact ? "p-4" : "p-5"
+      }`}
+    >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.22em] text-lime-200">
             {typeLabel(window.prediction_type)} · {pointsLabel(window)}
           </p>
-          <h3 className="mt-2 text-xl font-black uppercase text-white">
+          <h3
+            className={`mt-2 font-black uppercase text-white ${
+              compact ? "text-lg" : "text-xl"
+            }`}
+          >
             {window.title}
           </h3>
-          <p className="mt-2 text-sm leading-6 text-slate-300">
-            {window.description}
-          </p>
+          {!compact ? (
+            <p className="mt-2 text-sm leading-6 text-slate-300">
+              {window.description}
+            </p>
+          ) : null}
         </div>
         <span className="rounded-full border border-cyan-300/20 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-cyan-100">
           {isOpen ? "Locks" : window.status} {formatLockDate(window.locks_at)} UTC
@@ -289,11 +313,7 @@ function WindowCard({
             {existing ? "Update pick" : "Submit pick"}
           </button>
         </form>
-      ) : (
-        <p className="mt-4 rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-3 text-sm font-bold text-cyan-100">
-          Sign in and create a display name to submit this fan prediction.
-        </p>
-      )}
+      ) : null}
     </article>
   );
 }
@@ -362,6 +382,7 @@ export default async function PredictionLeaderboardPage({
     .slice(0, 24);
   const groupWinnerWindows = openWindows
     .filter((window) => window.prediction_type === "group_winner")
+    .sort((a, b) => groupWinnerOrder(a) - groupWinnerOrder(b))
     .slice(0, 24);
   const matchWindows = openWindows
     .filter((window) => MATCH_TYPES.has(window.prediction_type))
@@ -512,6 +533,20 @@ export default async function PredictionLeaderboardPage({
             ) : null}
 
             <div className="mt-6 grid gap-5">
+              {!canSubmit && longTermWindows.length ? (
+                <div className="rounded-[1.5rem] border border-cyan-300/20 bg-cyan-300/10 p-5">
+                  <p className="text-sm leading-6 text-cyan-100">
+                    Sign in and create a display name once to submit tournament
+                    picks.
+                  </p>
+                  {!user ? (
+                    <Link href="/auth/login" className="glow-button-primary mt-4">
+                      Sign in
+                    </Link>
+                  ) : null}
+                </div>
+              ) : null}
+
               {longTermWindows.length ? (
                 longTermWindows.map((window) => (
                   <WindowCard
@@ -535,7 +570,21 @@ export default async function PredictionLeaderboardPage({
             <h2 className="mt-4 text-3xl font-black uppercase text-white">
               Group winner picks
             </h2>
-            <div className="mt-6 grid gap-5">
+            <div className="mt-6 grid gap-4">
+              {!canSubmit && groupWinnerWindows.length ? (
+                <div className="rounded-[1.5rem] border border-cyan-300/20 bg-cyan-300/10 p-4">
+                  <p className="text-sm leading-6 text-cyan-100">
+                    Sign in and create a display name once to submit group
+                    winner picks.
+                  </p>
+                  {!user ? (
+                    <Link href="/auth/login" className="glow-button-primary mt-4">
+                      Sign in
+                    </Link>
+                  ) : null}
+                </div>
+              ) : null}
+
               {groupWinnerWindows.length ? (
                 groupWinnerWindows.map((window) => (
                   <WindowCard
@@ -543,6 +592,7 @@ export default async function PredictionLeaderboardPage({
                     window={window}
                     existing={predictionMap.get(window.id)}
                     canSubmit={canSubmit}
+                    compact
                   />
                 ))
               ) : (
@@ -560,6 +610,20 @@ export default async function PredictionLeaderboardPage({
               Open match windows
             </h2>
             <div className="mt-6 grid gap-6">
+              {!canSubmit && matchWindows.length ? (
+                <div className="rounded-[1.5rem] border border-cyan-300/20 bg-cyan-300/10 p-5">
+                  <p className="text-sm leading-6 text-cyan-100">
+                    Sign in and create a display name once to submit match
+                    picks.
+                  </p>
+                  {!user ? (
+                    <Link href="/auth/login" className="glow-button-primary mt-4">
+                      Sign in
+                    </Link>
+                  ) : null}
+                </div>
+              ) : null}
+
               {Object.entries(groupedMatchWindows).length ? (
                 Object.entries(groupedMatchWindows).map(([date, dateWindows]) => (
                   <div key={date} className="grid gap-4">
