@@ -31,7 +31,7 @@ export default async function GroupsPage() {
       <PageHeader
         eyebrow="Groups"
         title="Groups and standings"
-        description="Synced group standings with qualification routes, best-third-place pressure, key fixtures and group storylines."
+        description="Synced group tables, teams, upcoming fixtures and qualification rules for World Cup 2026."
         meta={`Last standings sync: ${formatLastUpdated(latestSync?.ended_at)}`}
       />
 
@@ -54,8 +54,6 @@ export default async function GroupsPage() {
                     getFixtureDisplayStatus(fixture.status_short) === "upcoming"
                 )
                 .slice(0, 3);
-              const leader = groupRows.find((row) => row.rank === 1);
-              const third = groupRows.find((row) => row.rank === 3);
 
               return (
                 <section
@@ -66,30 +64,20 @@ export default async function GroupsPage() {
 
                   <div className="grid content-start gap-4">
                     <article className="rounded-3xl border border-cyan-300/20 bg-cyan-300/10 p-5">
-                      <p className="neon-kicker">Group storyline</p>
+                      <p className="neon-kicker">Qualification rules</p>
                       <h3 className="mt-3 text-2xl font-black uppercase text-white">
-                        {leader?.team_name ?? groupName} set the pace
+                        Top two go straight through
                       </h3>
                       <p className="mt-3 text-sm leading-6 text-slate-300">
-                        Top two spots send teams straight through.{" "}
-                        {third
-                          ? `${third.team_name} are the third-place marker right now, so every goal difference swing can matter.`
-                          : "The third-place cut line will become clearer once every group has played."}
-                      </p>
-                    </article>
-
-                    <article className="rounded-3xl border border-lime-300/20 bg-lime-300/10 p-5">
-                      <p className="neon-kicker">Qualification impact</p>
-                      <p className="mt-3 text-sm leading-6 text-slate-300">
-                        Rank 1-2: automatic Round of 32 route. Rank 3: compared
-                        against third-placed teams from the other 11 groups.
-                        Rank 4: needs results to move up before the group closes.
+                        Each group sends its top two teams to the Round of 32.
+                        The eight best third-placed teams across all groups also
+                        advance, based on the tournament tiebreaker order.
                       </p>
                     </article>
 
                     <div className="grid gap-4">
                       <h3 className="text-xl font-black uppercase text-white">
-                        Key fixtures
+                        Upcoming fixtures
                       </h3>
                       {groupFixtures.length > 0 ? (
                         groupFixtures.map((fixture) => (

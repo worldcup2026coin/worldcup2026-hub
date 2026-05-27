@@ -14,9 +14,8 @@ export function MatchPreviewBlock({ fixture }: MatchPreviewBlockProps) {
         {fixture.home_team_name ?? "Home"} vs {fixture.away_team_name ?? "Away"}
       </h2>
       <p className="mt-3 text-sm leading-6 text-slate-300">
-        Follow the fixture details, API prediction signal, odds snapshot,
-        head-to-head record, lineups, events and match stats as they become
-        available from the live data sync.
+        Follow fixture details, venue context, head-to-head record, lineups,
+        events and match stats as they become available from the live data sync.
       </p>
     </section>
   );

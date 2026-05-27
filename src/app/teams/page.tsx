@@ -21,7 +21,7 @@ export default async function TeamsPage() {
       <PageHeader
         eyebrow="Teams"
         title="Team hub"
-        description="All synced World Cup teams from Supabase, with group/rank context where standings data is available."
+        description="All synced World Cup teams from Supabase, with group and points context where standings data is available."
         meta={`Last teams sync: ${formatLastUpdated(latestSync?.ended_at)}`}
       />
 

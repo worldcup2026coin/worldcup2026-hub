@@ -4,7 +4,7 @@ import { Container } from "@/components/ui/container";
 export const metadata = {
   title: "World Cup 2026 Tournament Simulation Hub",
   description:
-    "Predict World Cup 2026 winners, semi-finalists, Golden Boot contenders and dark horses.",
+    "Explore World Cup 2026 tournament paths, bracket structure and future simulation features.",
 };
 
 export default function TournamentSimulationPage() {
@@ -14,12 +14,12 @@ export default function TournamentSimulationPage() {
         <section className="hero-panel rounded-[2.5rem] p-6 sm:p-10">
           <p className="neon-kicker">Simulation hub</p>
           <h1 className="neon-title glow-text mt-5 text-5xl font-black uppercase text-white sm:text-7xl">
-            Predict the tournament
+            Simulate the tournament path
           </h1>
           <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300">
-            A fan-first prediction hub for winners, semi-finalists, Golden Boot
-            picks and dark horses. This creates the structure for community
-            submissions without adding account risk yet.
+            A factual launch shell for bracket paths, knockout routes and
+            tournament structure. Prediction reads live in the dedicated
+            predictions hub.
           </p>
         </section>
 
@@ -31,21 +31,21 @@ export default function TournamentSimulationPage() {
             ["Dark horses", "Spot the team that breaks the bracket."],
           ].map(([title, copy]) => (
             <article key={title} className="neon-card rounded-[2rem] p-6">
-              <span className="neon-badge neon-badge-cyan">Prediction</span>
+              <span className="neon-badge neon-badge-cyan">Simulation</span>
               <h2 className="mt-4 text-3xl font-black uppercase text-white">
                 {title}
               </h2>
               <p className="mt-3 text-sm leading-6 text-slate-300">{copy}</p>
               <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950/45 p-4 text-sm text-slate-300">
-                Interactive submission controls can connect to the community
-                prediction backend when user accounts are ready.
+                Interactive controls can be added later when the bracket data
+                is final and reviewed.
               </div>
             </article>
           ))}
         </section>
 
         <Link href="/predictions" className="glow-button-secondary mt-8">
-          View match predictions
+          Open predictions hub
         </Link>
       </Container>
     </main>

@@ -82,7 +82,6 @@ export function StandingsTable({ groupName, rows }: StandingsTableProps) {
                     ) : (
                       <TeamFlag name={row.team_name} className="h-8 w-8 text-base" />
                     )}
-                    <TeamFlag name={row.team_name} className="h-7 w-7 text-base" />
                     <span className="truncate">{row.team_name}</span>
                   </Link>
                 </td>

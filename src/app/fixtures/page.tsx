@@ -15,7 +15,8 @@ export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Fixtures",
-  description: "World Cup 2026 fixtures from Supabase.",
+  description:
+    "World Cup 2026 fixtures by date, team, group, venue and kickoff time, with synced match status and tournament context.",
 };
 
 type FixturesPageProps = {

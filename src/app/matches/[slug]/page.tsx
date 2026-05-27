@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { JsonLd } from "@/components/seo/json-ld";
 import { notFound, permanentRedirect } from "next/navigation";
 import { Container } from "@/components/ui/container";
@@ -9,14 +10,11 @@ import { MatchLineups } from "@/components/matches/match-lineups";
 import { MatchPollPlaceholder } from "@/components/matches/match-poll-placeholder";
 import { PollCard } from "@/components/community/poll-card";
 import { MatchPreviewBlock } from "@/components/matches/match-preview-block";
-import { ApiFootballPredictionCard } from "@/components/matches/api-football-prediction-card";
 import { MatchHeadToHeadCard } from "@/components/matches/match-head-to-head-card";
-import { MatchOddsSnapshot } from "@/components/matches/match-odds-snapshot";
 import { InjuryList } from "@/components/matches/injury-list";
 import { MatchShareButtons } from "@/components/matches/match-share-buttons";
 import { MatchStats } from "@/components/matches/match-stats";
 import { EmailSignupForm } from "@/components/community/email-signup-form";
-import { MatchPredictionSections } from "@/components/predictions/match-prediction-sections";
 import { MatchCountdown } from "@/components/worldcup/match-countdown";
 import { WorldClock } from "@/components/worldcup/world-clock";
 import {
@@ -25,7 +23,6 @@ import {
   getMatchTitle,
   getPublicSiteUrl,
 } from "@/lib/data/matches";
-import { getPredictionContentForFixture } from "@/lib/data/predictions";
 import { getPublishedPolls } from "@/lib/data/community";
 import { formatDateOnly } from "@/lib/worldcup/format";
 import { getFixtureVenueTimeZone } from "@/lib/worldcup/format";
@@ -64,7 +61,7 @@ export async function generateMetadata({
 
   const title = `${matchName} | World Cup 2026 Preview, Live Score & Stats`;
 
-  const description = `Follow ${matchName} at World Cup 2026 with live score, match stats, team news, predictions and fan insights.`;
+  const description = `Follow ${matchName} at World Cup 2026 with live score, venue context, match stats, team news and fan conversation.`;
 
   return {
     metadataBase: new URL(siteUrl),
@@ -106,20 +103,15 @@ export default async function MatchPage({ params }: MatchPageProps) {
     events,
     stats,
     lineups,
-    apiPrediction,
-    apiOdds,
     headToHead,
     injuries,
   } = data;
 
-  const [predictionContent, fixturePolls] = await Promise.all([
-    getPredictionContentForFixture(fixture.id),
-    getPublishedPolls({
+  const fixturePolls = await getPublishedPolls({
       contextType: "fixture",
       fixtureId: fixture.id,
       limit: 1,
-    }),
-  ]);
+    });
 
   const siteUrl = getPublicSiteUrl();
   const shareUrl = `${siteUrl}/matches/${canonicalSlug}`;
@@ -164,7 +156,6 @@ export default async function MatchPage({ params }: MatchPageProps) {
               ["Overview", "overview"],
               ["Venue", "venue"],
               ["Preview", "preview"],
-              ["Predictions", "predictions"],
               ["Stats", "stats"],
               ["Lineups", "lineups"],
             ].map(([label, id]) => (
@@ -195,8 +186,6 @@ export default async function MatchPage({ params }: MatchPageProps) {
             <div id="preview" className="scroll-mt-24">
             <MatchPreviewBlock fixture={fixture} />
             </div>
-            <ApiFootballPredictionCard prediction={apiPrediction} />
-            <MatchOddsSnapshot odds={apiOdds} />
             <MatchHeadToHeadCard headToHead={headToHead} />
             <InjuryList title="Match injury news" injuries={injuries} />
             <MatchEventsTimeline events={events} />
@@ -207,24 +196,24 @@ export default async function MatchPage({ params }: MatchPageProps) {
             <MatchLineups lineups={lineups} />
             </div>
 
-            <section id="predictions" className="scroll-mt-24 rounded-[2rem] border border-emerald-400/15 bg-emerald-400/[0.04] p-5">
+            <section className="rounded-[2rem] border border-emerald-400/15 bg-emerald-400/[0.04] p-5">
               <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-300">
-                Tips and predictions
+                Prediction hub
               </p>
               <h2 className="mt-3 text-2xl font-black text-white">
-                Fan insights and match context
+                Fan and AI-assisted reads live in one place
               </h2>
               <p className="mt-3 text-sm leading-6 text-slate-300">
-                This section combines published fan insight with synced API context where available. It is informational only and does not guarantee any outcome.
+                For match reads, group calls and tournament outlooks, use the
+                dedicated prediction hub. This match centre stays focused on
+                factual fixture information.
               </p>
-
-              <div className="mt-5">
-                <MatchPredictionSections
-                  fixture={fixture}
-                  tips={predictionContent.tips}
-                  oddsRecords={predictionContent.oddsRecords}
-                />
-              </div>
+              <Link
+                href="/predictions"
+                className="glow-button-secondary mt-5"
+              >
+                View predictions
+              </Link>
             </section>
           </div>
 

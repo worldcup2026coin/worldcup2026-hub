@@ -394,60 +394,16 @@ return (
             </div>
 
             <div className="mt-5 grid gap-4 lg:grid-cols-2">
-              {data.latestPredictions.length === 0 ? (
-                <div className="rounded-3xl border border-dashed border-cyan-300/20 bg-cyan-300/10 p-6 text-center">
-                  <h3 className="text-lg font-black text-white">
-                    No prediction signal yet
-                  </h3>
-                  <p className="mt-2 text-sm text-slate-300">
-                    Publish prediction rows in Supabase and they will light up here.
-                  </p>
-                </div>
-              ) : (
-                <>
-                  {data.latestPredictions.slice(0, 3).map((prediction) => (
-                    <Link
-                      key={prediction.id}
-                      href={
-                        prediction.fixture
-                          ? `/predictions/${fixtureSlug({
-                              api_fixture_id: prediction.fixture.api_fixture_id,
-                              match_date: prediction.fixture.match_date,
-                              home_team_name: prediction.fixture.home_team_name,
-                              away_team_name: prediction.fixture.away_team_name,
-                            })}`
-                          : "/predictions"
-                      }
-                      className="neon-card rounded-3xl p-5"
-                    >
-                      <p className="neon-badge neon-badge-cyan">
-                        {prediction.type.replaceAll("_", " ")}  - {" "}
-                        {prediction.risk_level ?? "no lean"}
-                      </p>
-                      <h3 className="mt-3 text-xl font-black uppercase text-white">
-                        {prediction.title}
-                      </h3>
-                      {prediction.summary ? (
-                        <p className="mt-2 text-sm leading-6 text-slate-300">
-                          {prediction.summary}
-                        </p>
-                      ) : null}
-                    </Link>
-                  ))}
-
-                  {[
-                    ["Opening Match Pressure", "Mexico start at home with the whole tournament watching."],
-                    ["Dark Horse Watch", "Track the teams that can break brackets and ruin group predictions."],
-                    ["Golden Boot Signal", "Follow the early scoring race before the first whistle."],
-                  ].map(([title, summary]) => (
-                    <Link key={title} href="/predictions" className="neon-card rounded-3xl p-5">
-                      <p className="neon-badge neon-badge-pink">Tournament read</p>
-                      <h3 className="mt-3 text-xl font-black uppercase text-white">{title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-slate-300">{summary}</p>
-                    </Link>
-                  ))}
-                </>
-              )}
+              {[
+                ["AI-assisted match reads", "Uploaded reads live in the dedicated predictions hub."],
+                ["Group and tournament calls", "Track group winners, dark horses and the prediction record in one place."],
+              ].map(([title, summary]) => (
+                <Link key={title} href="/predictions" className="neon-card rounded-3xl p-5">
+                  <p className="neon-badge neon-badge-pink">Prediction hub</p>
+                  <h3 className="mt-3 text-xl font-black uppercase text-white">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-300">{summary}</p>
+                </Link>
+              ))}
             </div>
           </div>
 

@@ -71,13 +71,13 @@ export function MascotShowcase() {
       <div className="grid gap-6 lg:grid-cols-3">
         {mascots.map((mascot) => (
           <article key={mascot.name} className="neon-card rounded-[2rem] p-5">
-            <div className="flex min-h-[260px] items-end justify-center rounded-[1.5rem] border border-white/10 bg-black/30 p-4">
+            <div className="flex aspect-[4/5] min-h-[280px] items-end justify-center overflow-hidden rounded-[1.5rem] border border-white/10 bg-black/30 p-2">
               <Image
                 src={mascot.image}
                 alt={mascot.name}
                 width={220}
                 height={330}
-                className="h-auto max-h-[250px] w-auto object-contain drop-shadow-[0_0_22px_rgba(163,255,18,0.18)]"
+                className="h-full max-h-[330px] w-auto object-contain drop-shadow-[0_0_22px_rgba(163,255,18,0.18)]"
               />
             </div>
 
@@ -97,7 +97,7 @@ export function MascotShowcase() {
           <div>
             <p className="neon-kicker">Sticker energy</p>
             <h2 className="mt-4 text-3xl font-black uppercase text-white">
-              Built for memes, replies and raids
+              Built for memes, replies and matchday missions
             </h2>
             <p className="mt-3 text-sm leading-6 text-slate-300">
               Use the mascot crew for daily prompts, Telegram stickers, X reply
@@ -116,6 +116,33 @@ export function MascotShowcase() {
           </div>
         </div>
       </div>
+
+      <section className="neon-panel rounded-[2rem] p-6">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="neon-kicker">Ready for launch?</p>
+            <h2 className="mt-4 text-3xl font-black uppercase text-white">
+              Join the community and trust this site only
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
+              Check launch status, learn the safer buying flow and only use
+              links published on this site.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <a href="/launch" className="glow-button-primary">
+              Launch Status
+            </a>
+            <a href="/how-to-buy" className="glow-button-secondary">
+              How to Buy
+            </a>
+            <a href="/community" className="glow-button-secondary">
+              Community
+            </a>
+          </div>
+        </div>
+      </section>
     </section>
   );
 }

@@ -56,7 +56,6 @@ function TeamLine({
   const content = (
     <div className="flex min-w-0 items-center gap-3">
       <TeamLogo src={logo} alt={displayName} />
-      <TeamFlag name={displayName} className="h-7 w-7 text-base" />
       <span
         className={`truncate text-sm font-black ${
           isWinner ? "text-lime-200 glow-text" : "text-white"

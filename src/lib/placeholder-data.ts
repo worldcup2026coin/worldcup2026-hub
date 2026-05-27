@@ -294,7 +294,7 @@ export const routeContent: Record<string, RouteContent> = {
     eyebrow: "Predictions",
     title: "Predictions and match insights",
     description:
-      "A future home for prediction-style previews, betting-style notes, confidence levels, and match context.",
+      "A future home for football reads, confidence levels, and match context.",
     heroNote:
       "Prediction-style previews and match context will appear when published.",
     cards: [
@@ -308,7 +308,7 @@ export const routeContent: Record<string, RouteContent> = {
       },
       {
         eyebrow: "Markets",
-        title: "Betting-style sections",
+        title: "Football read sections",
         description:
           "This area can eventually support match winner, goals, team goals, and value notes.",
         meta: "Responsible-use view",

@@ -10,8 +10,8 @@ export function OddsStyleTable({ records }: OddsStyleTableProps) {
   if (records.length === 0) {
     return (
       <PredictionEmptyState
-        title="Odds unavailable"
-        description="Odds-style snapshots will appear here when reliable market data is available."
+        title="Market context unavailable"
+        description="Manual market context can appear here if it is reviewed and clearly labelled."
       />
     );
   }
@@ -19,9 +19,9 @@ export function OddsStyleTable({ records }: OddsStyleTableProps) {
   return (
     <section className="neon-card rounded-[2rem] p-5">
       <p className="neon-kicker">Market signal</p>
-      <h2 className="mt-4 text-2xl font-black uppercase text-white">Odds-style records</h2>
+      <h2 className="mt-4 text-2xl font-black uppercase text-white">Reviewed market context</h2>
       <p className="mt-2 text-sm leading-6 text-slate-300">
-        Informational odds-style display only. No affiliate links are included.
+        Informational football context only. No affiliate links are included.
       </p>
 
       <div className="cyber-table mt-5">

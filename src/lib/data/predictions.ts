@@ -55,7 +55,7 @@ export type PredictionIndexItem = {
 };
 
 export const responsibleUseText =
-  "Betting-style content is for entertainment and informational purposes only. It is not financial advice, gambling advice, or a guarantee of outcome. Odds and availability may vary by location and provider. Only participate where legal, and never risk money you cannot afford to lose.";
+  "Predictions are fan and AI-assisted football analysis only. They are not financial advice, not wagering guidance, not official tournament content and never a guarantee of outcome.";
 
 function asPredictionTips(data: unknown): PredictionTip[] {
   return (data ?? []) as PredictionTip[];
@@ -83,7 +83,7 @@ function isMissingOptionalTableError(error: { code?: string; message?: string })
 export function getPredictionTypeLabel(type: PredictionType) {
   if (type === "fan_preview") return "Fan preview";
   if (type === "fantasy_tip") return "Fantasy-style";
-  return "Betting-style";
+  return "Football read";
 }
 
 export async function getPublishedPredictionTips() {

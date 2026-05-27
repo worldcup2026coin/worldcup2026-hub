@@ -25,9 +25,12 @@ export default function TermsPage() {
             World Cup 2026 Hub provides football information, fixtures, fan content, predictions, polls and community features for entertainment and informational purposes.
           </p>
 
-          <h2 className="mt-8 text-2xl font-black text-white">Predictions and betting-style content</h2>
+          <h2 className="mt-8 text-2xl font-black text-white">Predictions</h2>
           <p className="mt-4">
-            Betting-style content is for entertainment and informational purposes only. It is not financial guidance, wagering guidance, or a promise of outcome. Odds and availability may vary by location and provider. Only participate where legal, and never risk money you cannot afford to lose.
+            Predictions are fan-made and AI-assisted football analysis for
+            entertainment and informational purposes only. They are not
+            financial guidance, wagering guidance, official tournament content or
+            a promise of outcome.
           </p>
 
           <h2 className="mt-8 text-2xl font-black text-white">No promised outcomes</h2>

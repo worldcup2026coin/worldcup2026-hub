@@ -39,7 +39,7 @@ export function MatchPredictionPlaceholder({
 
         <div className="rounded-2xl bg-slate-950/50 p-4">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-            Betting-style section
+            Football read
           </p>
           <p className="mt-2 text-sm text-slate-300">
             Prediction data is unavailable for this match right now.
@@ -48,9 +48,8 @@ export function MatchPredictionPlaceholder({
       </div>
 
       <p className="mt-5 text-xs leading-5 text-amber-100/80">
-        Responsible use: any future betting-style content should be treated as
-        informational only, never as certain advice. Only gamble where legal,
-        and never stake more than you can afford to lose.
+        Responsible use: future prediction content should be treated as
+        informational football analysis only, never as certain advice.
       </p>
     </section>
   );

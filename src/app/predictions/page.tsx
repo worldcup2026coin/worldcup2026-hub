@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/worldcup/page-header";
 import { PredictionCard } from "@/components/predictions/prediction-card";
@@ -6,15 +7,60 @@ import { PredictionEmptyState } from "@/components/predictions/prediction-empty-
 import { ResponsibleUseDisclaimer } from "@/components/predictions/responsible-use-disclaimer";
 import { TeamFlag } from "@/components/worldcup/team-flag";
 import { getPredictionsIndexData } from "@/lib/data/predictions";
+import {
+  darkHorseWatch,
+  groupPredictionSlots,
+  predictionRecordRows,
+  tournamentOutrightSlots,
+  upsetWatch,
+  type PredictionHubItem,
+} from "@/lib/data/prediction-hub";
 import { formatVenueDateTime } from "@/lib/worldcup/format";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "World Cup 2026 Predictions & Fan Insights",
+  title: "World Cup 2026 Predictions",
   description:
-    "World Cup 2026 match previews, fantasy-style notes, risk-labelled predictions and betting-style informational views.",
+    "World Cup 2026 AI-assisted fan match reads, group predictions, tournament outrights, dark horse watch and prediction record.",
 };
+
+function PredictionSlotGrid({
+  title,
+  eyebrow,
+  items,
+}: {
+  title: string;
+  eyebrow: string;
+  items: PredictionHubItem[];
+}) {
+  return (
+    <section className="neon-panel rounded-[2rem] p-5">
+      <p className="neon-kicker">{eyebrow}</p>
+      <h2 className="mt-4 text-3xl font-black uppercase text-white">
+        {title}
+      </h2>
+      <div className="mt-5 grid gap-4 md:grid-cols-3">
+        {items.map((item) => (
+          <article
+            key={item.title}
+            className="rounded-3xl border border-white/10 bg-slate-950/45 p-5"
+          >
+            <span className="neon-badge">
+              {item.status === "ready" ? "Published" : "Awaiting upload"}
+            </span>
+            <h3 className="mt-4 text-xl font-black uppercase text-white">
+              {item.title}
+            </h3>
+            <p className="mt-3 text-sm leading-6 text-slate-300">
+              {item.summary}
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
 
 export default async function PredictionsPage() {
   const predictionItems = await getPredictionsIndexData();
@@ -23,31 +69,35 @@ export default async function PredictionsPage() {
     <>
       <PageHeader
         eyebrow="Predictions"
-        title="World Cup 2026 predictions and fan insights"
-        description="Safe, risk-labelled match preview content from Supabase. This section separates fan previews, fantasy-style notes and betting-style informational views."
-        meta="No promised outcomes · No affiliate links · Informational views only"
+        title="World Cup 2026 Predictions"
+        description="AI-assisted fan match reads, group calls, outrights and prediction records. Football analysis only: no betting tips, no guarantees and no official tournament claim."
+        meta="Fan-made reads · AI-assisted · Football analysis only"
       />
 
       <Container className="pb-14">
         <ResponsibleUseDisclaimer />
 
-        <section className="mt-8 grid gap-4 lg:grid-cols-3">
+        <section className="mt-8 grid gap-4 lg:grid-cols-4">
           {[
             [
-              "Match angle",
-              "Every preview starts with the game state: stakes, venue, group pressure and team context.",
+              "Today’s AI Match Reads",
+              "Uploaded match reads appear first, with clear empty states before upload.",
             ],
             [
-              "Risk notes",
-              "Prediction cards separate low-confidence reads from stronger signals and avoid overclaiming.",
+              "Group Predictions",
+              "Group winners, qualifiers and danger spots sit in their own section.",
             ],
             [
-              "Likely script",
-              "Fan previews describe how the match may unfold instead of dumping raw odds or data tables.",
+              "Tournament Outrights",
+              "Winner, finalist, semi-finalist and dark horse calls have dedicated space.",
+            ],
+            [
+              "Prediction Record",
+              "Results tracking starts only when matches produce real outcomes.",
             ],
           ].map(([title, copy]) => (
             <article key={title} className="neon-card rounded-[2rem] p-5">
-              <span className="neon-badge neon-badge-cyan">Fan preview</span>
+              <span className="neon-badge neon-badge-cyan">Prediction hub</span>
               <h2 className="mt-4 text-2xl font-black uppercase text-white">
                 {title}
               </h2>
@@ -56,15 +106,26 @@ export default async function PredictionsPage() {
           ))}
         </section>
 
-        {predictionItems.length === 0 ? (
-          <div className="mt-8">
-            <PredictionEmptyState
-              title="No prediction published yet"
-              description="Prediction and tip rows can be inserted through Supabase. Published rows will appear here automatically."
-            />
+        <section className="mt-8">
+          <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="neon-kicker">Today’s AI Match Reads</p>
+              <h2 className="mt-4 text-3xl font-black uppercase text-white">
+                Uploaded match predictions
+              </h2>
+            </div>
+            <Link href="/fixtures" className="glow-button-secondary">
+              Browse fixtures
+            </Link>
           </div>
-        ) : (
-          <div className="mt-8 grid gap-6">
+
+          {predictionItems.length === 0 ? (
+            <PredictionEmptyState
+              title="No AI match reads uploaded yet"
+              description="Upload prediction rows in Supabase and they will appear here automatically. Until then, the hub shows the launch structure without pretending results exist."
+            />
+          ) : (
+          <div className="grid gap-6">
             {predictionItems.map((item) => (
               <section
                 key={item.fixture.id}
@@ -73,7 +134,7 @@ export default async function PredictionsPage() {
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                   <div>
                     <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">
-                      Match predictions
+                      AI-assisted match read
                     </p>
                     <h2 className="mt-2 text-2xl font-black text-white">
                       <TeamFlag
@@ -92,7 +153,7 @@ export default async function PredictionsPage() {
                     href={`/predictions/${item.canonicalSlug}`}
                     className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 text-sm font-bold text-white transition hover:bg-white/10"
                   >
-                    View prediction page
+                    View full read
                   </a>
                 </div>
 
@@ -141,7 +202,84 @@ export default async function PredictionsPage() {
               </section>
             ))}
           </div>
-        )}
+          )}
+        </section>
+
+        <div className="mt-8 grid gap-6">
+          <PredictionSlotGrid
+            eyebrow="Group Predictions"
+            title="Winner and qualifier calls"
+            items={groupPredictionSlots}
+          />
+          <PredictionSlotGrid
+            eyebrow="Tournament Outrights"
+            title="Winner, finalist and semi-finalist spaces"
+            items={tournamentOutrightSlots}
+          />
+        </div>
+
+        <section className="mt-8 grid gap-6 lg:grid-cols-2">
+          <PredictionSlotGrid
+            eyebrow="Dark Horse Watch"
+            title="Teams that can break brackets"
+            items={darkHorseWatch}
+          />
+          <PredictionSlotGrid
+            eyebrow="Upset Watch"
+            title="Matches with chaos potential"
+            items={upsetWatch}
+          />
+        </section>
+
+        <section className="neon-card mt-8 rounded-[2rem] p-5">
+          <p className="neon-kicker">Prediction Record</p>
+          <h2 className="mt-4 text-3xl font-black uppercase text-white">
+            Results tracking
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
+            This table will track uploaded prediction records only after real
+            match, group or tournament outcomes are known.
+          </p>
+          <div className="cyber-table mt-5">
+            <table className="min-w-[680px] text-left text-sm">
+              <thead>
+                <tr>
+                  <th>Track</th>
+                  <th className="text-center">Correct</th>
+                  <th className="text-center">Missed</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {predictionRecordRows.map(([track, correct, missed, notes]) => (
+                  <tr key={track} className="text-slate-200">
+                    <td className="font-black text-white">{track}</td>
+                    <td className="text-center font-black text-lime-200">
+                      {correct}
+                    </td>
+                    <td className="text-center font-black text-fuchsia-100">
+                      {missed}
+                    </td>
+                    <td>{notes}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className="neon-panel mt-8 rounded-[2rem] p-5">
+          <p className="neon-kicker">Method / Disclaimer</p>
+          <h2 className="mt-4 text-3xl font-black uppercase text-white">
+            Football reads, not guarantees
+          </h2>
+          <p className="mt-3 max-w-4xl text-sm leading-6 text-slate-300">
+            These predictions are fan-made and AI-assisted football analysis
+            based on available fixture, team, venue and tournament context. They
+            are not financial advice, not wagering guidance, not official
+            tournament content and not a promise of any outcome.
+          </p>
+        </section>
       </Container>
     </>
   );

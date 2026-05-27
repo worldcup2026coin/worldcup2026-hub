@@ -136,12 +136,10 @@ function CardInner({ tip, fixture }: Pick<PredictionCardProps, "tip" | "fixture"
       {tip.type === "betting_style" ? (
         <div className="mt-5 rounded-2xl border border-amber-300/25 bg-amber-300/10 p-4">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-amber-200">
-            Betting-style view
+            Football read
           </p>
           <p className="mt-2 text-sm text-amber-50/90">
-            {tip.market_label ?? "Market unavailable"}
-            {tip.odds_decimal ? ` · Decimal odds ${tip.odds_decimal}` : ""}
-            {tip.bookmaker ? ` · ${tip.bookmaker}` : ""}
+            {tip.market_label ?? "Read unavailable"}
           </p>
         </div>
       ) : null}

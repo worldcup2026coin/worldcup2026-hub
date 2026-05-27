@@ -69,6 +69,18 @@ export default async function NewsPage() {
           ))}
         </section>
 
+        <section className="neon-panel mt-10 rounded-[2rem] p-5">
+          <p className="neon-kicker">Editorial flow</p>
+          <h2 className="mt-4 text-3xl font-black uppercase text-white">
+            Review first, publish after
+          </h2>
+          <p className="mt-3 max-w-4xl text-sm leading-6 text-slate-300">
+            News and guide posts should be added through a reviewed workflow:
+            source idea, clean football context, verify wording, then publish.
+            No unchecked auto-publishing and no copied article text.
+          </p>
+        </section>
+
         <section className="mt-10 rounded-[2rem] border border-white/10 bg-white/[0.04] p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>

@@ -144,10 +144,8 @@ export default async function TeamPage({ params }: TeamPageProps) {
   const anchorLinks = [
     ["Overview", "overview"],
     ["Group", "group"],
-    ["Coach", "coach"],
-    ["Squad", "squad"],
+    ["Key players", "squad"],
     ["Fixtures", "fixtures"],
-    ["Results", "results"],
   ];
 
   return (
@@ -174,7 +172,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
       <PageHeader
         eyebrow={standing?.group_name ?? "Team"}
         title={team.name}
-        description={`${team.name} tournament outlook with group position, qualification route, coach, squad, fixtures and results.`}
+        description={`${team.name} tournament outlook with group context, next match, key players, fixtures and results.`}
         meta={`${team.code ?? "Code TBC"}  -  ${team.country ?? "Country TBC"}`}
       />
 
@@ -215,12 +213,6 @@ export default async function TeamPage({ params }: TeamPageProps) {
 
               <div>
                 <h2 className="flex min-w-0 items-center gap-2 text-2xl font-black text-white">
-                  <TeamFlag
-                    code={team.code}
-                    name={team.name}
-                    country={team.country}
-                    className="h-8 w-8"
-                  />
                   {team.name}
                 </h2>
                 <p className="mt-1 text-sm text-slate-400">
@@ -235,7 +227,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
               </p>
               <p className="mt-3 text-sm leading-6 text-slate-200">
                 {team.name} are in {standing?.group_name ?? "a group still to be confirmed"} and are{" "}
-                {standing?.rank ? `currently ${standing.rank}${standing.rank === 1 ? "st" : standing.rank === 2 ? "nd" : standing.rank === 3 ? "rd" : "th"}` : "waiting for a confirmed table position"}.
+                {standing?.rank ? `currently sitting in a table position that matters for qualification` : "waiting for a confirmed table position"}.
                 {" "}
                 {qualificationRoute}
               </p>
@@ -250,9 +242,9 @@ export default async function TeamPage({ params }: TeamPageProps) {
               </div>
 
               <div className="rounded-2xl bg-white/[0.04] p-4">
-                <p className="text-slate-400">Current position</p>
+                <p className="text-slate-400">Points</p>
                 <p className="mt-1 font-black text-white">
-                  {standing?.rank ? `#${standing.rank}` : "TBC"}
+                  {standing?.points ?? "TBC"}
                 </p>
               </div>
 
@@ -471,7 +463,69 @@ export default async function TeamPage({ params }: TeamPageProps) {
                 />
               </div>
             ) : (
-              <div className="mt-6 grid min-w-0 gap-5">
+              <>
+                <div className="mt-5 grid gap-3 sm:grid-cols-3 md:hidden">
+                  {Object.entries(squadGroups).map(([position, players]) => (
+                    <div
+                      key={position}
+                      className="rounded-2xl border border-white/10 bg-slate-950/40 p-4"
+                    >
+                      <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">
+                        {position}
+                      </p>
+                      <p className="mt-2 text-2xl font-black text-white">
+                        {players.length}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <details className="mt-5 rounded-2xl border border-white/10 bg-slate-950/35 p-4 md:hidden">
+                  <summary className="cursor-pointer text-sm font-black uppercase tracking-[0.14em] text-lime-100">
+                    Show full squad list
+                  </summary>
+                  <div className="mt-4 grid min-w-0 gap-5">
+                    {Object.entries(squadGroups).map(([position, players]) => (
+                      <div key={position} className="rounded-2xl bg-white/[0.04] p-4">
+                        <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-300">
+                          {position}
+                        </h3>
+
+                        <div className="mt-4 grid min-w-0 gap-2">
+                          {players.map((player) => (
+                            <div
+                              key={`${player.api_team_id}-${player.api_player_id}`}
+                              className="flex min-w-0 items-center justify-between rounded-xl border border-white/10 bg-slate-950/30 px-3 py-2"
+                            >
+                              <div>
+                                <Link
+                                  href={`/players/${playerSlug(
+                                    player.player_name,
+                                    player.api_player_id
+                                  )}`}
+                                  className="text-sm font-bold text-white hover:text-emerald-300"
+                                >
+                                  {player.player_name ?? "Player TBC"}
+                                </Link>
+                                <p className="text-xs text-slate-400">
+                                  {player.position ?? "Position TBC"}
+                                </p>
+                              </div>
+
+                              {player.number ? (
+                                <span className="rounded-full bg-white/10 px-2 py-1 text-xs font-black text-emerald-200">
+                                  #{player.number}
+                                </span>
+                              ) : null}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+
+              <div className="mt-6 hidden min-w-0 gap-5 md:grid">
                 {Object.entries(squadGroups).map(([position, players]) => (
                   <div key={position} className="rounded-2xl bg-white/[0.04] p-4">
                     <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-300">
@@ -510,6 +564,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
                   </div>
                 ))}
               </div>
+              </>
             )}
           </div>
         </section>

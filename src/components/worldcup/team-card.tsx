@@ -33,12 +33,6 @@ export function TeamCard({ team, standing }: TeamCardProps) {
 
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <TeamFlag
-              code={team.code}
-              name={team.name}
-              country={team.country}
-              className="h-7 w-7 text-base"
-            />
             <p className="neon-badge neon-badge-cyan">
               {standing?.group_name ?? "Group TBC"}
             </p>
@@ -58,7 +52,7 @@ export function TeamCard({ team, standing }: TeamCardProps) {
         </span>
         {standing ? (
           <span className="min-w-0 break-words rounded-2xl border border-lime-300/25 bg-lime-300/10 px-3 py-2 text-xs font-black uppercase tracking-[0.1em] text-lime-100">
-            Rank {standing.rank ?? "-"}
+            {standing.points ?? 0} pts
           </span>
         ) : (
           <span className="min-w-0 break-words rounded-2xl border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-2 text-xs font-black uppercase tracking-[0.1em] text-fuchsia-100">

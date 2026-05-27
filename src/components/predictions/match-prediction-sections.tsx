@@ -38,10 +38,10 @@ const sections: {
   },
   {
     type: "betting_style",
-    title: "Betting-style view",
-    emptyTitle: "Betting-style signal unavailable",
+    title: "Football read",
+    emptyTitle: "Football read unavailable",
     emptyDescription:
-      "No betting-style view has been published for this match yet.",
+      "No football read has been published for this match yet.",
   },
 ];
 

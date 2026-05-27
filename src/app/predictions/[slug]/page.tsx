@@ -46,7 +46,7 @@ export async function generateMetadata({
   );
 
   const title = `${matchName} | World Cup 2026 Predictions & Fan Insights`;
-  const description = `Read safe World Cup 2026 fan predictions, fantasy-style players to watch and risk-labelled betting-style views for ${matchName}.`;
+  const description = `Read World Cup 2026 fan and AI-assisted football predictions, player watch notes and risk-labelled match reads for ${matchName}.`;
 
   return {
     metadataBase: new URL(siteUrl),
