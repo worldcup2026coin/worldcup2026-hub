@@ -13,6 +13,7 @@ type ArticleLayoutProps = {
 export function ArticleLayout({ post }: ArticleLayoutProps) {
   const tags = tagsToArray(post.tags);
   const headings = getArticleHeadings(post.body);
+  const isSourced = post.content_origin === "rss" && post.source_name;
 
   return (
     <article>
@@ -43,6 +44,25 @@ export function ArticleLayout({ post }: ArticleLayoutProps) {
         <p className="mt-6 text-sm text-slate-400">
           Published {formatDateOnly(post.published_at ?? post.created_at)}
         </p>
+
+        {isSourced ? (
+          <div className="mt-5 rounded-2xl border border-cyan-300/20 bg-cyan-300/10 p-4">
+            <p className="text-sm font-bold leading-6 text-cyan-100">
+              Sourced update from {post.source_name}. This page contains a short
+              attributed summary and links to the original publisher.
+            </p>
+            {post.external_url ? (
+              <Link
+                href={post.external_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex text-sm font-black uppercase tracking-[0.16em] text-emerald-300"
+              >
+                Read original source
+              </Link>
+            ) : null}
+          </div>
+        ) : null}
       </header>
 
       <div className="mt-8 grid gap-8 xl:grid-cols-[1fr_18rem]">

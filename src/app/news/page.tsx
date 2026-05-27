@@ -10,6 +10,7 @@ import {
   getBlogCategorySlug,
   getFeaturedBlogPosts,
   getPublishedBlogPosts,
+  getSourcedRssBlogPosts,
 } from "@/lib/data/blog";
 
 export const dynamic = "force-dynamic";
@@ -27,9 +28,10 @@ export const metadata: Metadata = {
 };
 
 export default async function NewsPage() {
-  const [featuredPosts, latestPosts] = await Promise.all([
+  const [featuredPosts, latestPosts, sourcedPosts] = await Promise.all([
     getFeaturedBlogPosts(3),
     getPublishedBlogPosts(12),
+    getSourcedRssBlogPosts(6),
   ]);
 
   const heroPost = featuredPosts[0] ?? latestPosts[0] ?? null;
@@ -79,6 +81,41 @@ export default async function NewsPage() {
             source idea, clean football context, verify wording, then publish.
             No unchecked auto-publishing and no copied article text.
           </p>
+        </section>
+
+        <section className="mt-10 rounded-[2rem] border border-cyan-300/15 bg-cyan-300/[0.06] p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-cyan-200">
+                Sourced latest updates
+              </p>
+              <h2 className="mt-2 text-2xl font-black text-white">
+                From reviewed public feeds
+              </h2>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
+                These cards are short attributed summaries from external
+                publishers. Use the source link for the full original story.
+              </p>
+            </div>
+          </div>
+
+          {sourcedPosts.length ? (
+            <div className="mt-6 grid gap-4 lg:grid-cols-3">
+              {sourcedPosts.map((post) => (
+                <BlogCard key={post.id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-6 rounded-3xl border border-dashed border-white/15 bg-white/[0.04] p-6 text-center">
+              <h3 className="text-lg font-black text-white">
+                No sourced feed cards yet
+              </h3>
+              <p className="mt-2 text-sm text-slate-300">
+                Run the protected news sync after reviewing the source list and
+                migration.
+              </p>
+            </div>
+          )}
         </section>
 
         <section className="mt-10 rounded-[2rem] border border-white/10 bg-white/[0.04] p-5">

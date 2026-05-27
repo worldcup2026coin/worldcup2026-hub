@@ -3,10 +3,15 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { getPublicSiteUrl } from "@/lib/data/matches";
 
 export type BlogCategory =
+  | "latest_news"
+  | "team_news"
   | "match_previews"
+  | "injury_updates"
   | "team_guides"
   | "group_previews"
+  | "host_city_news"
   | "stadium_host_city_guides"
+  | "guides"
   | "what_to_watch_today"
   | "fan_culture"
   | "crypto_native_football_culture"
@@ -30,13 +35,28 @@ export type BlogPost = {
   published_at: string | null;
   created_at: string;
   updated_at: string;
+  source_name: string | null;
+  source_url: string | null;
+  external_url: string | null;
+  source_published_at: string | null;
+  content_origin: "manual" | "rss" | string | null;
+  ingestion_hash: string | null;
+  last_seen_at: string | null;
+  reviewed_at: string | null;
+  news_confidence: string | null;
+  language: string | null;
 };
 
 export const blogCategoryLabels: Record<BlogCategory, string> = {
+  latest_news: "Latest news",
+  team_news: "Team news",
   match_previews: "Match previews",
+  injury_updates: "Injury updates",
   team_guides: "Team guides",
   group_previews: "Group previews",
+  host_city_news: "Host city news",
   stadium_host_city_guides: "Stadium & host city guides",
+  guides: "Guides",
   what_to_watch_today: "What to watch today",
   fan_culture: "Fan culture",
   crypto_native_football_culture: "Digital football culture",
@@ -118,6 +138,34 @@ export async function getPublishedBlogPosts(limit?: number) {
     }
 
     throw new Error(`Failed to load blog posts: ${error.message}`);
+  }
+
+  return asBlogPosts(data);
+}
+
+export async function getSourcedRssBlogPosts(limit = 6) {
+  const supabase = createSupabaseAdminClient();
+
+  const { data, error } = await supabase
+    .from("blog_posts")
+    .select("*")
+    .eq("status", "published")
+    .eq("content_origin", "rss")
+    .order("source_published_at", { ascending: false })
+    .order("published_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    if (
+      isMissingOptionalTableError(error) ||
+      error.code === "42703" ||
+      error.code === "PGRST204" ||
+      (error.message ?? "").includes("content_origin")
+    ) {
+      return [];
+    }
+
+    throw new Error(`Failed to load sourced RSS posts: ${error.message}`);
   }
 
   return asBlogPosts(data);

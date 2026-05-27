@@ -12,6 +12,7 @@ type BlogCardProps = {
 
 export function BlogCard({ post, featured = false }: BlogCardProps) {
   const tags = tagsToArray(post.tags).slice(0, 3);
+  const isSourced = post.content_origin === "rss" && post.source_name;
 
   return (
     <article
@@ -55,6 +56,12 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
           <p className="mt-3 text-sm leading-6 text-slate-300">{post.excerpt}</p>
         ) : null}
 
+        {isSourced ? (
+          <p className="mt-3 text-xs font-bold uppercase tracking-[0.16em] text-cyan-200">
+            Sourced from {post.source_name}
+          </p>
+        ) : null}
+
         <div className="mt-5 flex flex-wrap gap-2">
           {tags.map((tag) => (
             <span
@@ -69,10 +76,12 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
         <div className="mt-5 flex items-center justify-between gap-4 text-xs text-slate-400">
           <span>{formatDateOnly(post.published_at ?? post.created_at)}</span>
           <Link
-            href={`/news/${post.slug}`}
+            href={isSourced && post.external_url ? post.external_url : `/news/${post.slug}`}
+            target={isSourced && post.external_url ? "_blank" : undefined}
+            rel={isSourced && post.external_url ? "noopener noreferrer" : undefined}
             className="font-black uppercase tracking-[0.16em] text-emerald-300"
           >
-            Read
+            {isSourced ? "Source" : "Read"}
           </Link>
         </div>
       </div>
