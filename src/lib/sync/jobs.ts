@@ -8,6 +8,7 @@ import { runApiFootballTeamsSync } from "./api-football-teams";
 import { runApiFootballBootstrapSync } from "./api-football-bootstrap";
 import { runApiFootballFixturesSync } from "./api-football-fixtures";
 import { runAutomatedPredictionSettlement } from "@/lib/predictions/settlement";
+import { runAutomatedPredictionWindowGeneration } from "@/lib/predictions/window-generator";
 import "server-only";
 
 import type { SyncJobName, SyncJobSummary } from "./types";
@@ -41,40 +42,65 @@ function detailsObject(details: JobResult["details"]) {
   return {};
 }
 
-async function withPredictionSettlement(
+async function withPredictionAutomation(
   resultPromise: Promise<JobResult>,
 ): Promise<JobResult> {
   const result = await resultPromise;
+  let status = result.status;
+  let message = result.message ?? "Sync completed.";
+  const details = detailsObject(result.details);
+
+  try {
+    const predictionWindowGeneration =
+      await runAutomatedPredictionWindowGeneration();
+
+    message = `${message} Prediction windows checked: ${predictionWindowGeneration.inserted} inserted, ${predictionWindowGeneration.updated} updated, ${predictionWindowGeneration.opened} opened.`;
+
+    Object.assign(details, {
+      predictionWindowGeneration,
+    });
+  } catch (error) {
+    status = "partial";
+    const predictionWindowGenerationError =
+      error instanceof Error ? error.message : "Unknown error";
+
+    message = `${message} Prediction window generation failed: ${predictionWindowGenerationError}`;
+
+    Object.assign(details, {
+      predictionWindowGenerationError,
+    });
+  }
 
   try {
     const predictionSettlement = await runAutomatedPredictionSettlement();
 
-    return {
-      ...result,
-      message: `${result.message ?? "Sync completed."} Prediction settlement checked: ${predictionSettlement.settled.length} settled, ${predictionSettlement.skipped.length} skipped.`,
-      details: {
-        ...detailsObject(result.details),
-        predictionSettlement,
-      },
-    };
+    message = `${message} Prediction settlement checked: ${predictionSettlement.settled.length} settled, ${predictionSettlement.skipped.length} skipped.`;
+
+    Object.assign(details, {
+      predictionSettlement,
+    });
   } catch (error) {
-    return {
-      ...result,
-      status: "partial",
-      message: `${result.message ?? "Sync completed."} Prediction settlement failed: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`,
-      details: {
-        ...detailsObject(result.details),
-        predictionSettlementError:
-          error instanceof Error ? error.message : "Unknown error",
-      },
-    };
+    status = "partial";
+    const predictionSettlementError =
+      error instanceof Error ? error.message : "Unknown error";
+
+    message = `${message} Prediction settlement failed: ${predictionSettlementError}`;
+
+    Object.assign(details, {
+      predictionSettlementError,
+    });
   }
+
+  return {
+    ...result,
+    status,
+    message,
+    details,
+  };
 }
 
 export async function runBootstrapSyncJob() {
-  return withPredictionSettlement(runApiFootballBootstrapSync());
+  return withPredictionAutomation(runApiFootballBootstrapSync());
 }
 
 export async function runTeamsSyncJob() {
@@ -86,11 +112,13 @@ export async function runStandingsSyncJob() {
 }
 
 export async function runFixturesSyncJob() {
-  return withPredictionSettlement(runApiFootballFixturesSync());
+  return withPredictionAutomation(runApiFootballFixturesSync());
 }
 
 export async function runLiveSyncJob() {
-  return withPredictionSettlement(Promise.resolve(createPlaceholderSummary("live-sync")));
+  return withPredictionAutomation(
+    Promise.resolve(createPlaceholderSummary("live-sync")),
+  );
 }
 
 export async function runEnrichmentSyncJob() {
@@ -98,7 +126,7 @@ export async function runEnrichmentSyncJob() {
 }
 
 export async function runFinalizationSyncJob() {
-  return withPredictionSettlement(
+  return withPredictionAutomation(
     Promise.resolve(createPlaceholderSummary("finalization-sync")),
   );
 }
@@ -108,7 +136,7 @@ export async function runMissingDataBackfillJob() {
 }
 
 export async function runFullSyncJob() {
-  return withPredictionSettlement(runApiFootballFullIngestSync());
+  return withPredictionAutomation(runApiFootballFullIngestSync());
 }
 
 export async function runTeamSquadsSync1Job() {
@@ -192,7 +220,7 @@ export async function runMatchContextSync6Job() {
 }
 
 export async function runMatchdayDataSync1Job() {
-  return withPredictionSettlement(
+  return withPredictionAutomation(
     runApiFootballMatchdayDataChunkSync({
       offset: 0,
       limit: 12,
@@ -202,7 +230,7 @@ export async function runMatchdayDataSync1Job() {
 }
 
 export async function runMatchdayDataSync2Job() {
-  return withPredictionSettlement(
+  return withPredictionAutomation(
     runApiFootballMatchdayDataChunkSync({
       offset: 12,
       limit: 12,
@@ -212,7 +240,7 @@ export async function runMatchdayDataSync2Job() {
 }
 
 export async function runMatchdayDataSync3Job() {
-  return withPredictionSettlement(
+  return withPredictionAutomation(
     runApiFootballMatchdayDataChunkSync({
       offset: 24,
       limit: 12,
@@ -222,7 +250,7 @@ export async function runMatchdayDataSync3Job() {
 }
 
 export async function runMatchdayDataSync4Job() {
-  return withPredictionSettlement(
+  return withPredictionAutomation(
     runApiFootballMatchdayDataChunkSync({
       offset: 36,
       limit: 12,
@@ -232,7 +260,7 @@ export async function runMatchdayDataSync4Job() {
 }
 
 export async function runMatchdayDataSync5Job() {
-  return withPredictionSettlement(
+  return withPredictionAutomation(
     runApiFootballMatchdayDataChunkSync({
       offset: 48,
       limit: 12,
@@ -242,7 +270,7 @@ export async function runMatchdayDataSync5Job() {
 }
 
 export async function runMatchdayDataSync6Job() {
-  return withPredictionSettlement(
+  return withPredictionAutomation(
     runApiFootballMatchdayDataChunkSync({
       offset: 60,
       limit: 12,
@@ -254,4 +282,3 @@ export async function runMatchdayDataSync6Job() {
 export async function runTopStatsSyncJob() {
   return runApiFootballTopStatsSync();
 }
-
