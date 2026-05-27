@@ -8,6 +8,7 @@ import { TeamFlag } from "@/components/worldcup/team-flag";
 type StandingsTableProps = {
   groupName: string;
   rows: Standing[];
+  variant?: "card" | "embedded";
 };
 
 function badgeForRank(rank: number | null | undefined) {
@@ -24,9 +25,15 @@ function rowGlow(rank: number | null | undefined) {
   return "bg-fuchsia-400/[0.035]";
 }
 
-export function StandingsTable({ groupName, rows }: StandingsTableProps) {
+export function StandingsTable({
+  groupName,
+  rows,
+  variant = "card",
+}: StandingsTableProps) {
   return (
-    <section className="neon-card rounded-[2rem] p-5">
+    <section
+      className={variant === "card" ? "neon-card rounded-[2rem] p-5" : ""}
+    >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="neon-kicker">Group signal</p>
@@ -39,8 +46,8 @@ export function StandingsTable({ groupName, rows }: StandingsTableProps) {
         </p>
       </div>
 
-      <div className="cyber-table mt-5">
-        <table className="min-w-[820px] text-left text-sm">
+      <div className="cyber-table mt-5 max-w-full overflow-x-auto">
+        <table className="min-w-[620px] text-left text-xs sm:text-sm xl:min-w-0 xl:w-full">
           <thead>
             <tr>
               <th className="text-left">Rank</th>
