@@ -12,6 +12,18 @@
     {
       "path": "/api/cron/news-sync",
       "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/cron/fixtures-sync",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/standings-sync",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/top-stats-sync",
+      "schedule": "0 8 * * *"
     }
   ]
 }
