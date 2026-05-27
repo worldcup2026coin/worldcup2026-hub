@@ -52,7 +52,7 @@ export function MatchCountdown({
 
   if (timeLeft.live) {
     return (
-      <div className="rounded-2xl border border-lime-300/25 bg-lime-300/10 p-4">
+      <div className="w-full max-w-full overflow-hidden rounded-2xl border border-lime-300/25 bg-lime-300/10 p-4">
         <p className="text-xs font-black uppercase tracking-[0.18em] text-lime-200">
           Match signal
         </p>
@@ -62,11 +62,11 @@ export function MatchCountdown({
   }
 
   return (
-    <div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 p-4">
+    <div className="w-full max-w-full overflow-hidden rounded-2xl border border-cyan-300/20 bg-cyan-300/10 p-4">
       <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-100">
         {label}
       </p>
-      <div data-countdown-grid className="mt-4 grid grid-cols-3 gap-2 max-[430px]:gap-1 max-[430px]:gap-1">
+      <div data-countdown-grid className="mt-4 grid w-full max-w-full grid-cols-3 gap-2 max-[430px]:gap-1">
         {[
           ["Days", timeLeft.days],
           ["Hours", timeLeft.hours],
@@ -76,7 +76,7 @@ export function MatchCountdown({
             key={unit}
             data-countdown-unit className="min-w-0 rounded-xl border border-white/10 bg-slate-950/45 p-3 text-center max-[430px]:p-2"
           >
-            <p className="text-2xl font-black text-white">{value}</p>
+            <p className="break-words text-2xl font-black text-white max-[380px]:text-xl">{value}</p>
             <p className="mt-1 text-[0.62rem] font-black uppercase tracking-[0.16em] text-slate-400">
               {unit}
             </p>

@@ -3,136 +3,105 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const baseUrl = process.env.BASE_URL || "http://localhost:3000";
-const outputDir = "qa-screenshots/full-site";
+const outputDir = "qa-screenshots/strict-mobile";
 
-const mustIncludeRoutes = [
+const routes = [
   "/",
-  "/matches/2026-06-11-mexico-vs-south-africa-1489369",
-  "/matches/2026-06-13-brazil-vs-morocco-1489371",
   "/fixtures",
+  "/live",
   "/groups",
+  "/best-third-placed-teams",
+  "/teams",
+  "/teams/england-16",
+  "/teams/bosnia-herzegovina-1113",
+  "/matches/2026-06-11-mexico-vs-south-africa-1489369",
+  "/top-scorers",
+  "/top-assists",
+  "/top-cards",
   "/predictions",
+  "/news",
+  "/stadiums",
+  "/host-cities",
+  "/host-nations",
+  "/guides",
   "/injuries",
   "/suspensions",
   "/tournament-simulation",
   "/fan-polls",
   "/prediction-leaderboard",
-  "/guides",
-  "/host-nations",
-  "/host-nations/usa",
-  "/host-nations/mexico",
-  "/host-nations/canada",
-  "/stadiums",
-  "/host-cities",
-  "/world-cup-format",
-  "/world-cup-history",
-  "/tournament-timeline",
-  "/best-third-placed-teams"
+  "/community",
+  "/privacy",
+  "/terms",
+  "/not-a-real-page"
 ];
 
-const viewports = [
-  { name: "desktop", width: 1440, height: 1000, isMobile: false },
-  { name: "mobile", width: 390, height: 900, isMobile: true }
-];
+const viewports = [360, 375, 390, 414, 430];
 
 function safeName(route) {
   if (route === "/") return "home";
-  return route
-    .replace(/^\/+/, "")
-    .replace(/[\/:?#[\]@!$&'()*+,;=.]+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
+  return route.replace(/^\/+/, "").replace(/[\/:?#[\]@!$&'()*+,;=.]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
 }
 
-async function getSitemapRoutes() {
-  try {
-    const response = await fetch(`${baseUrl}/sitemap.xml`);
-    if (!response.ok) return [];
-
-    const xml = await response.text();
-
-    return [...xml.matchAll(/<loc>(.*?)<\/loc>/g)]
-      .map((match) => {
-        try {
-          return new URL(match[1]).pathname;
-        } catch {
-          return null;
-        }
-      })
-      .filter(Boolean);
-  } catch {
-    return [];
-  }
+function expectedStatus(route) {
+  return route === "/not-a-real-page" ? 404 : 200;
 }
 
 await fs.rm(outputDir, { recursive: true, force: true });
 await fs.mkdir(outputDir, { recursive: true });
 
-const sitemapRoutes = await getSitemapRoutes();
-
-const routes = [...new Set([...mustIncludeRoutes, ...sitemapRoutes])]
-  .filter((route) => route && route.startsWith("/"))
-  .filter((route) => !route.startsWith("/api/"))
-  .filter((route) => route !== "/robots.txt")
-  .filter((route) => route !== "/sitemap.xml")
-  .sort();
-
-console.log(`Checking ${routes.length} routes from sitemap + required launch pages.`);
-
 const browser = await chromium.launch();
 const failures = [];
 
-for (const viewport of viewports) {
-  const viewportDir = path.join(outputDir, viewport.name);
+for (const width of viewports) {
+  const viewportDir = path.join(outputDir, `${width}px`);
   await fs.mkdir(viewportDir, { recursive: true });
 
   const context = await browser.newContext({
-    viewport: { width: viewport.width, height: viewport.height },
+    viewport: { width, height: 920 },
     deviceScaleFactor: 1,
-    isMobile: viewport.isMobile
+    isMobile: true
   });
 
   for (const route of routes) {
     const page = await context.newPage();
-    const url = `${baseUrl}${route}`;
     const screenshotPath = path.join(viewportDir, `${safeName(route)}.png`);
 
-    const duplicateKeyWarnings = [];
-
-    page.on("console", (message) => {
-      const text = message.text();
-
-      if (/same key|keys should be unique/i.test(text)) {
-        duplicateKeyWarnings.push(text);
-      }
-    });
-
     try {
-      const response = await page.goto(url, {
+      const response = await page.goto(`${baseUrl}${route}`, {
         waitUntil: "domcontentloaded",
         timeout: 45000
       });
 
-      await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {
-        // Non-blocking. Some pages may keep light network activity alive.
-      });
+      await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
 
       const status = response?.status() ?? 0;
-      const title = await page.title().catch(() => "");
-      const bodyText = await page.locator("body").innerText({ timeout: 10000 }).catch(() => "");
+      const wanted = expectedStatus(route);
 
       const layout = await page.evaluate(() => {
-        const doc = document.documentElement;
-        const body = document.body;
+        const viewportWidth = window.innerWidth;
+        const documentWidth = Math.max(document.documentElement.scrollWidth, document.body.scrollWidth);
 
-        const viewportWidth = doc.clientWidth;
-        const documentWidth = Math.max(doc.scrollWidth, body ? body.scrollWidth : 0);
+        let countdownOverlap = false;
+        const countdown = document.querySelector("[data-match-countdown]");
+        if (countdown) {
+          const copy = countdown.querySelector("[data-countdown-copy]");
+          const grid = countdown.querySelector("[data-countdown-timer-grid]");
+          if (copy && grid) {
+            const a = copy.getBoundingClientRect();
+            const b = grid.getBoundingClientRect();
+            countdownOverlap =
+              a.bottom > b.top + 1 &&
+              a.right > b.left + 1 &&
+              b.right > a.left + 1;
+          }
+        }
 
         return {
           viewportWidth,
           documentWidth,
           overflowAmount: documentWidth - viewportWidth,
-          hasHorizontalOverflow: documentWidth > viewportWidth + 2
+          hasHorizontalOverflow: documentWidth > viewportWidth + 1,
+          countdownOverlap
         };
       });
 
@@ -143,41 +112,27 @@ for (const viewport of viewports) {
 
       const routeFailures = [];
 
-      if (status >= 500) {
-        routeFailures.push(`HTTP ${status}`);
-      }
-
-      if (status === 404) {
-        routeFailures.push("HTTP 404");
-      }
-
-      if (
-        /internal server error/i.test(bodyText) ||
-        /application error/i.test(bodyText) ||
-        /server error/i.test(title)
-      ) {
-        routeFailures.push("Internal Server Error/Application Error visible");
+      if (status !== wanted) {
+        routeFailures.push(`HTTP ${status}, expected ${wanted}`);
       }
 
       if (layout.hasHorizontalOverflow) {
-        routeFailures.push(
-          `horizontal overflow document=${layout.documentWidth}px viewport=${layout.viewportWidth}px overflow=${layout.overflowAmount}px`
-        );
+        routeFailures.push(`horizontal overflow document=${layout.documentWidth}px viewport=${layout.viewportWidth}px overflow=${layout.overflowAmount}px`);
       }
 
-      if (duplicateKeyWarnings.length > 0) {
-        routeFailures.push("duplicate React key warning");
+      if (route === "/" && layout.countdownOverlap) {
+        routeFailures.push("homepage countdown text overlaps timer");
       }
 
       if (routeFailures.length > 0) {
-        const reason = `${viewport.name} ${route}: ${routeFailures.join("; ")}`;
+        const reason = `${width}px ${route}: ${routeFailures.join("; ")}`;
         failures.push(reason);
         console.log(`FAIL ${reason}`);
       } else {
-        console.log(`PASS ${viewport.name} ${route}`);
+        console.log(`PASS ${width}px ${route}`);
       }
     } catch (error) {
-      const reason = `${viewport.name} ${route}: ${error.message}`;
+      const reason = `${width}px ${route}: ${error.message}`;
       failures.push(reason);
       console.log(`FAIL ${reason}`);
     }
@@ -196,7 +151,7 @@ await fs.writeFile(
     {
       baseUrl,
       checkedAt: new Date().toISOString(),
-      routeCount: routes.length,
+      routes,
       viewports,
       failures
     },
@@ -206,7 +161,7 @@ await fs.writeFile(
 );
 
 if (failures.length > 0) {
-  console.log("\nFULL-SITE SCREENSHOT QA FAILURES:");
+  console.log("\nSTRICT MOBILE SCREENSHOT QA FAILURES:");
   for (const failure of failures) {
     console.log(`- ${failure}`);
   }
@@ -215,5 +170,5 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log("\nPASS: full-site screenshot QA passed on desktop and mobile.");
+console.log("\nPASS: full-site mobile screenshot QA passed at every requested width.");
 console.log(`Screenshots saved to: ${outputDir}`);

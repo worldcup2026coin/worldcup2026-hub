@@ -36,7 +36,7 @@ function TeamBadge({
         )}
       </span>
 
-      <h1 className="mt-4 w-full max-w-full truncate text-xs font-black uppercase leading-tight tracking-tight text-white sm:max-w-[18rem] sm:overflow-visible sm:text-balance sm:text-4xl lg:max-w-[24rem]">
+      <h1 className="mt-4 w-full max-w-full break-words text-center text-base font-black uppercase leading-tight tracking-tight text-white max-[380px]:text-sm sm:max-w-[18rem] sm:text-balance sm:text-4xl lg:max-w-[24rem]">
         {displayName}
       </h1>
     </div>
@@ -65,7 +65,7 @@ function ScoreBox({ fixture }: { fixture: Fixture }) {
 
 export function MatchHeader({ fixture }: MatchHeaderProps) {
   return (
-    <section className="hero-panel rounded-[2.25rem] p-6 sm:p-10">
+    <section className="hero-panel w-full max-w-full overflow-hidden rounded-[2.25rem] p-6 sm:p-10">
       <div className="relative z-10 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="neon-kicker">
@@ -82,7 +82,7 @@ export function MatchHeader({ fixture }: MatchHeaderProps) {
         />
       </div>
 
-      <div className="relative z-10 mt-10 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 sm:gap-5">
+      <div className="relative z-10 mt-10 grid min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-5">
         <TeamBadge
           name={fixture.home_team_name}
           logo={fixture.home_team_logo_url}
@@ -108,7 +108,7 @@ export function MatchHeader({ fixture }: MatchHeaderProps) {
           </p>
           <p className="mt-2 font-semibold text-white">
             {fixture.venue_name ?? "Venue TBC"}
-            {fixture.venue_city ? ` · ${fixture.venue_city}` : ""}
+            {fixture.venue_city ? ` Â· ${fixture.venue_city}` : ""}
           </p>
         </div>
 

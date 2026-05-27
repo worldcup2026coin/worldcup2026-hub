@@ -126,10 +126,10 @@ export default async function MatchPage({ params }: MatchPageProps) {
   const shareText = `${getMatchTitle(
     fixture.home_team_name,
     fixture.away_team_name
-  )} · ${formatDateOnly(fixture.match_date)} · World Cup 2026 Hub`;
+  )} Â· ${formatDateOnly(fixture.match_date)} Â· World Cup 2026 Hub`;
 
   return (
-    <div className="py-10 sm:py-14">
+    <div data-match-page className="w-full max-w-full overflow-x-clip py-10 sm:py-14">
       <Container>
                 <JsonLd
           data={breadcrumbJsonLd([
@@ -158,8 +158,8 @@ export default async function MatchPage({ params }: MatchPageProps) {
           })}
         />
         <MatchHeader fixture={fixture} />
-        <nav className="sticky top-3 z-20 mt-6 overflow-x-auto rounded-2xl border border-white/10 bg-slate-950/85 p-2 shadow-2xl shadow-slate-950/40 backdrop-blur">
-          <div className="flex min-w-max gap-2">
+        <nav data-sticky-nav className="sticky top-3 z-20 mt-6 w-full max-w-full overflow-x-auto rounded-2xl border border-white/10 bg-slate-950/85 p-2 shadow-2xl shadow-slate-950/40 backdrop-blur">
+          <div className="flex w-max max-w-none gap-2">
             {[
               ["Overview", "overview"],
               ["Venue", "venue"],

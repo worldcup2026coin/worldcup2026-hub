@@ -14,10 +14,10 @@ export function TeamCard({ team, standing }: TeamCardProps) {
   return (
     <Link
       href={`/teams/${teamSlug(team.name, team.api_team_id)}`}
-      className="neon-card group rounded-[2rem] p-5"
+      className="neon-card group w-full max-w-full rounded-[2rem] p-5"
     >
       <div className="flex items-center gap-4">
-        <span className="flex h-16 w-16 items-center justify-center rounded-[1.35rem] border border-lime-300/25 bg-white/10 p-2 shadow-[0_0_24px_rgba(163,255,18,0.10)]">
+        <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[1.35rem] border border-lime-300/25 bg-white/10 p-2 shadow-[0_0_24px_rgba(163,255,18,0.10)]">
           {team.logo_url ? (
             <Image
               src={team.logo_url}
@@ -43,7 +43,7 @@ export function TeamCard({ team, standing }: TeamCardProps) {
               {standing?.group_name ?? "Group TBC"}
             </p>
           </div>
-          <h2 className="mt-2 truncate text-xl font-black uppercase tracking-tight text-white group-hover:text-lime-200">
+          <h2 className="mt-2 break-words text-xl font-black uppercase tracking-tight text-white group-hover:text-lime-200">
             {team.name}
           </h2>
           <p className="mt-1 text-sm font-semibold text-slate-400">
@@ -52,16 +52,16 @@ export function TeamCard({ team, standing }: TeamCardProps) {
         </div>
       </div>
 
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        <span className="rounded-2xl border border-white/10 bg-slate-950/45 px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-slate-300">
+      <div className="mt-5 grid min-w-0 grid-cols-2 gap-3">
+        <span className="min-w-0 break-words rounded-2xl border border-white/10 bg-slate-950/45 px-3 py-2 text-xs font-black uppercase tracking-[0.1em] text-slate-300">
           {team.country ?? "Country TBC"}
         </span>
         {standing ? (
-          <span className="rounded-2xl border border-lime-300/25 bg-lime-300/10 px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-lime-100">
+          <span className="min-w-0 break-words rounded-2xl border border-lime-300/25 bg-lime-300/10 px-3 py-2 text-xs font-black uppercase tracking-[0.1em] text-lime-100">
             Rank {standing.rank ?? "-"}
           </span>
         ) : (
-          <span className="rounded-2xl border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-fuchsia-100">
+          <span className="min-w-0 break-words rounded-2xl border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-2 text-xs font-black uppercase tracking-[0.1em] text-fuchsia-100">
             Signal TBC
           </span>
         )}

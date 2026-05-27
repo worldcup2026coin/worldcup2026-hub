@@ -151,7 +151,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
   ];
 
   return (
-    <>
+    <div data-team-page className="w-full max-w-full overflow-x-clip">
       <JsonLd
         data={breadcrumbJsonLd([
           { name: "Home", path: "/" },
@@ -175,12 +175,12 @@ export default async function TeamPage({ params }: TeamPageProps) {
         eyebrow={standing?.group_name ?? "Team"}
         title={team.name}
         description={`${team.name} tournament outlook with group position, qualification route, coach, squad, fixtures and results.`}
-        meta={`${team.code ?? "Code TBC"} · ${team.country ?? "Country TBC"}`}
+        meta={`${team.code ?? "Code TBC"} Â· ${team.country ?? "Country TBC"}`}
       />
 
       <Container className="pb-14">
-        <nav className="sticky top-3 z-20 mb-6 overflow-x-auto rounded-2xl border border-white/10 bg-slate-950/85 p-2 shadow-2xl shadow-slate-950/40 backdrop-blur">
-          <div className="flex min-w-max gap-2">
+        <nav data-sticky-nav className="sticky top-3 z-20 mb-6 w-full max-w-full overflow-x-auto rounded-2xl border border-white/10 bg-slate-950/85 p-2 shadow-2xl shadow-slate-950/40 backdrop-blur">
+          <div className="flex w-max max-w-none gap-2">
             {anchorLinks.map(([label, id]) => (
               <a
                 key={id}
@@ -377,7 +377,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
                   </h2>
                   <p className="mt-2 text-sm text-slate-300">
                     {coach.nationality ?? "Nationality TBC"}
-                    {coach.age ? ` · Age ${coach.age}` : ""}
+                    {coach.age ? ` Â· Age ${coach.age}` : ""}
                   </p>
                 </div>
               ) : (
@@ -428,7 +428,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
                   </h3>
                   <p className="mt-2 text-sm text-slate-400">
                     {player.position ?? "Position TBC"}
-                    {player.number ? ` · #${player.number}` : ""}
+                    {player.number ? ` Â· #${player.number}` : ""}
                   </p>
                 </Link>
               ))}
@@ -585,12 +585,6 @@ export default async function TeamPage({ params }: TeamPageProps) {
           )}
         </section>
       </Container>
-    </>
+    </div>
   );
 }
-
-
-
-
-
-

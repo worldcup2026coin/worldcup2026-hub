@@ -36,21 +36,21 @@ export function WorldClock({
     : clockZones;
 
   return (
-    <section className="rounded-[2rem] border border-cyan-300/15 bg-cyan-300/[0.06] p-5">
+    <section className="w-full max-w-full overflow-hidden rounded-[2rem] border border-cyan-300/15 bg-cyan-300/[0.06] p-5">
       <p className="neon-kicker">World clock</p>
       <h2 className="mt-4 text-2xl font-black uppercase text-white">
         Kickoff around the world
       </h2>
-      <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mt-5 grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {rows.slice(0, 5).map(([label, zone], index) => (
           <div
             key={`${label}-${zone}-${index}`}
-            className="rounded-2xl border border-white/10 bg-slate-950/45 p-4"
+            className="min-w-0 rounded-2xl border border-white/10 bg-slate-950/45 p-4"
           >
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">
+            <p className="break-words text-xs font-black uppercase tracking-[0.1em] text-slate-400">
               {label}
             </p>
-            <p className="mt-2 text-xl font-black text-white">
+            <p className="break-words mt-2 text-xl font-black text-white">
               {formatClock(matchDate, zone)}
             </p>
           </div>

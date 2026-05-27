@@ -116,7 +116,7 @@ function MiniFixtureCard({ fixture }: { fixture: HomeFixture }) {
 
       <p className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
         {fixture.round ?? "World Cup 2026"}
-        {fixture.venue_name ? ` · ${fixture.venue_name}` : ""}
+        {fixture.venue_name ? ` Â· ${fixture.venue_name}` : ""}
       </p>
     </Link>
   );
@@ -154,7 +154,7 @@ export default async function HomePage() {
   const featuredMatch = data.featuredMatch;
 
   return (
-    <div className="pb-14">
+    <div data-home-page className="w-full max-w-full overflow-x-clip pb-14">
       <section className="px-4 py-8 sm:px-6 lg:px-8">
         <Container className="px-0">
           <div className="hero-panel rounded-[2.5rem] p-6 sm:p-10 lg:p-12">
@@ -172,11 +172,11 @@ export default async function HomePage() {
                 </h1>
                 <p className="mt-6 max-w-2xl text-lg font-semibold leading-8 text-slate-200">
                   The complete World Cup 2026 launch hub with live fixtures, standings, teams, players, stadiums, predictions and global fan energy across USA, Mexico and Canada.
-                </p>                  <div className="mt-7">
+                </p>                  <div data-home-countdown className="mt-7 w-full max-w-full">
                     <CountdownTimer
                       targetDate={countdownTarget}
                       label="Countdown to Kick-Off"
-                      matchLabel="Mexico vs South Africa · 11 June 2026"
+                      matchLabel="Mexico vs South Africa Â· 11 June 2026"
                       badge="Road to 2026"
                     />
                   </div>
@@ -208,7 +208,7 @@ export default async function HomePage() {
                   <p className="mt-5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
                     Data last synced:{" "}
                     {formatDateTime(data.latestSyncLog.ended_at ?? data.latestSyncLog.started_at)}
-                    {" · "}
+                    {" Â· "}
                     {data.latestSyncLog.status}
                   </p>
                 ) : null}
@@ -217,7 +217,7 @@ export default async function HomePage() {
               <div className="grid gap-4">
                 <div className="neon-card rounded-[2rem] p-5">
                   <div className="flex items-center justify-between gap-3">
-                    <p className="neon-kicker">Opening match · Estadio Azteca</p>
+                    <p className="neon-kicker">Opening match Â· Estadio Azteca</p>
                     <span className="neon-badge neon-badge-cyan">11 June 2026</span>
                   </div>
                   <div className="mt-4">
@@ -273,7 +273,7 @@ export default async function HomePage() {
                 </h2>
               </div>
               <Link href="/fixtures" className="link-neon text-sm">
-                Full fixture list →
+                Full fixture list â†’
               </Link>
             </div>
 
@@ -327,7 +327,7 @@ export default async function HomePage() {
                 where the group-stage chaos gets serious.
               </p>
               <span className="mt-5 inline-flex text-sm font-black text-lime-200">
-                View third-place table →
+                View third-place table â†’
               </span>
             </Link>
             <EmailSignupForm
@@ -348,7 +348,7 @@ export default async function HomePage() {
                 </h2>
               </div>
               <Link href="/predictions" className="link-neon text-sm">
-                All predictions →
+                All predictions â†’
               </Link>
             </div>
 
@@ -380,7 +380,7 @@ export default async function HomePage() {
                       className="neon-card rounded-3xl p-5"
                     >
                       <p className="neon-badge neon-badge-cyan">
-                        {prediction.type.replaceAll("_", " ")} ·{" "}
+                        {prediction.type.replaceAll("_", " ")} Â·{" "}
                         {prediction.risk_level ?? "no lean"}
                       </p>
                       <h3 className="mt-3 text-xl font-black uppercase text-white">
@@ -419,7 +419,7 @@ export default async function HomePage() {
                 </h2>
               </div>
               <Link href="/teams" className="link-neon text-sm">
-                Teams →
+                Teams â†’
               </Link>
             </div>
 
@@ -457,7 +457,7 @@ export default async function HomePage() {
                       className="rounded-2xl border border-cyan-300/15 bg-slate-950/45 p-4 transition hover:border-lime-300/30 hover:bg-lime-300/10"
                     >
                       <p className="text-sm font-black uppercase text-white">{team}</p>
-                      <p className="mt-1 text-xs text-slate-400">Squad · fixtures · stats</p>
+                      <p className="mt-1 text-xs text-slate-400">Squad Â· fixtures Â· stats</p>
                     </Link>
                   ))}
             </div>
@@ -472,17 +472,17 @@ export default async function HomePage() {
                 16 host cities across 3 nations
               </h2>
               <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
-                Follow the tournament trail across USA, Mexico and Canada — from Mexico City&apos;s opener to the final in New York/New Jersey.
+                Follow the tournament trail across USA, Mexico and Canada â€” from Mexico City&apos;s opener to the final in New York/New Jersey.
               </p>
             </div>
             <Link href="/stadiums" className="link-neon text-sm">
-              Explore stadiums →
+              Explore stadiums â†’
             </Link>
           </div>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              ["Mexico City", "Opening match · Estadio Azteca"],
+              ["Mexico City", "Opening match Â· Estadio Azteca"],
               ["Los Angeles", "Group-stage spotlight"],
               ["New York/New Jersey", "Final destination"],
               ["Toronto", "Canada host city"],
@@ -519,7 +519,7 @@ export default async function HomePage() {
               ))}
             </div>
             <span className="mt-5 inline-flex text-sm font-black uppercase tracking-[0.14em] text-lime-200">
-              Explore all host cities →
+              Explore all host cities â†’
             </span>
           </Link>
 
@@ -539,7 +539,7 @@ export default async function HomePage() {
               ))}
             </div>
             <span className="mt-5 inline-flex text-sm font-black uppercase tracking-[0.14em] text-lime-200">
-              Explore all stadiums →
+              Explore all stadiums â†’
             </span>
           </Link>
         </section>
@@ -552,7 +552,7 @@ export default async function HomePage() {
               </h2>
             </div>
             <Link href="/news" className="link-neon text-sm">
-              News hub →
+              News hub â†’
             </Link>
           </div>
 

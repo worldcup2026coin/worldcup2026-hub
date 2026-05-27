@@ -22,18 +22,17 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-lime-300/15 bg-[#02030a]/90 shadow-[0_0_38px_rgba(34,211,238,0.08)] backdrop-blur-2xl">
       <Container>
-        <div className="flex min-h-[4.75rem] items-center justify-between gap-4">
-          <Link href="/" className="group flex items-center gap-3">
-            <span className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-lime-300/45 bg-lime-300 text-lg font-black text-slate-950 shadow-[0_0_26px_rgba(163,255,18,0.32)]">
+        <div className="flex min-h-[4.75rem] min-w-0 items-center justify-between gap-3 sm:gap-4">
+          <Link href="/" className="group flex min-w-0 items-center gap-3">
+            <span className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-lime-300/45 bg-lime-300 text-lg font-black text-slate-950 shadow-[0_0_26px_rgba(163,255,18,0.32)]">
               <span className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.75),transparent_32%)]" />
               <span className="relative">26</span>
             </span>
-            <span>
-              <span className="block text-base font-black uppercase leading-none tracking-[0.18em] text-white group-hover:text-lime-200">
+            <span className="min-w-0">`r`n              <span className="block truncate text-base font-black uppercase leading-none tracking-[0.18em] text-white group-hover:text-lime-200">
                 WC26 HUB
               </span>
-              <span className="mt-1 block text-[0.68rem] font-bold uppercase tracking-[0.18em] text-cyan-200/80">
-                Football signal · fan chaos
+              <span className="mt-1 block truncate text-[0.68rem] font-bold uppercase tracking-[0.12em] text-cyan-200/80">
+                Football signal Â· fan chaos
               </span>
             </span>
           </Link>
@@ -76,7 +75,7 @@ export function SiteHeader() {
             aria-label="Toggle navigation menu"
             aria-expanded={isOpen}
           >
-            {isOpen ? "×" : "☰"}
+            {isOpen ? "Ã—" : "â˜°"}
           </button>
         </div>
 

@@ -54,7 +54,7 @@ function formatLocalKickoff(targetDate: string) {
 export function CountdownTimer({
   targetDate,
   label = "Countdown to Kick-Off",
-  matchLabel = "Mexico vs South Africa · 11 June 2026",
+  matchLabel = "Mexico vs South Africa Â· 11 June 2026",
   badge = "Road to 2026",
 }: CountdownTimerProps) {
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
@@ -76,7 +76,7 @@ export function CountdownTimer({
   }, [targetDate]);
 
   return (
-    <section className="neon-card neon-card-hot relative overflow-hidden rounded-[2rem] p-4 shadow-[0_0_60px_rgba(163,230,53,0.18)] sm:p-5">
+    <section data-match-countdown className="neon-card neon-card-hot relative w-full max-w-full overflow-hidden rounded-[2rem] p-4 shadow-[0_0_60px_rgba(163,230,53,0.18)] sm:p-5">
       <div className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-lime-400/25 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-12 left-6 h-32 w-32 rounded-full bg-fuchsia-500/20 blur-3xl" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(163,230,53,0.045)_1px,transparent_1px),linear-gradient(0deg,rgba(34,211,238,0.035)_1px,transparent_1px)] bg-[size:38px_38px]" />
@@ -88,13 +88,12 @@ export function CountdownTimer({
             <span className="neon-badge neon-badge-pink">Kick-off signal loading</span>
           </div>
           <p className="hidden text-xs font-black uppercase tracking-[0.18em] text-lime-200 xl:block">
-            48 teams · 104 matches · one trophy
+            48 teams Â· 104 matches Â· one trophy
           </p>
         </div>
 
         <div className="mt-3 grid gap-4 xl:grid-cols-[0.68fr_1.32fr] xl:items-center">
-          <div>
-            <h2 className="text-2xl font-black uppercase tracking-tight text-white drop-shadow-[0_0_18px_rgba(163,230,53,0.25)] sm:text-3xl">
+          <div data-countdown-copy className="min-w-0">`r`n             <h2 className="text-2xl font-black uppercase tracking-tight text-white drop-shadow-[0_0_18px_rgba(163,230,53,0.25)] sm:text-3xl">
               {label}
             </h2>
             <p className="mt-1 text-sm font-black text-lime-100">
@@ -106,9 +105,9 @@ export function CountdownTimer({
           </div>
 
           {!timeLeft ? (
-            <div data-countdown-timer-grid className="grid grid-cols-2 sm:grid-cols-4 gap-3 min-w-0">
+            <div data-countdown-timer-grid className="grid w-full max-w-full grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
               {["DAYS", "HRS", "MIN", "SEC"].map((unit) => (
-                <div key={unit} className="rounded-2xl border border-white/10 bg-black/50 p-3 text-center">
+                <div key={unit} className="min-w-0 rounded-2xl border border-white/10 bg-black/50 p-3 text-center max-[380px]:p-2">
                   <div className="h-9 animate-pulse rounded-xl bg-white/10" />
                   <p className="mt-2 text-[0.6rem] font-black uppercase tracking-[0.2em] text-slate-500">{unit}</p>
                 </div>
@@ -119,7 +118,7 @@ export function CountdownTimer({
               <p className="text-2xl font-black uppercase text-lime-100">World Cup 2026 is live.</p>
             </div>
           ) : (
-            <div data-countdown-timer-grid className="grid grid-cols-2 sm:grid-cols-4 gap-3 min-w-0">
+            <div data-countdown-timer-grid className="grid w-full max-w-full grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
               {[
                 ["DAYS", timeLeft.days],
                 ["HRS", pad(timeLeft.hours)],
@@ -128,14 +127,14 @@ export function CountdownTimer({
               ].map(([unit, value]) => (
                 <div
                   key={unit}
-                  className={`min-w-0 rounded-[1.7rem] border bg-black/70 px-5 py-4 text-center ${
+                  className={`min-w-0 rounded-[1.4rem] border bg-black/70 px-3 py-3 text-center max-[380px]:px-2 ${
                     unit === "SEC"
                       ? "border-fuchsia-300/35 shadow-[0_0_28px_rgba(217,70,239,0.2)]"
                       : "border-lime-300/25 shadow-[0_0_22px_rgba(34,211,238,0.13)]"
                   }`}
                 >
-                  <p className="font-mono text-4xl font-black tracking-tight text-lime-200 sm:text-5xl">{value}</p>
-                  <p className="mt-1 text-[0.6rem] font-black uppercase tracking-[0.2em] text-cyan-200">{unit}</p>
+                  <p className="font-mono text-3xl font-black tracking-tight text-lime-200 max-[380px]:text-2xl sm:text-5xl">{value}</p>
+                  <p className="mt-1 text-[0.6rem] font-black uppercase tracking-[0.14em] text-cyan-200">{unit}</p>
                 </div>
               ))}
             </div>
@@ -144,13 +143,13 @@ export function CountdownTimer({
 
         <div className="mt-3 grid gap-2 text-[0.6rem] font-black uppercase tracking-[0.14em] text-slate-400 sm:grid-cols-[0.9fr_0.9fr_1.2fr]">
           <p className="rounded-2xl border border-white/10 bg-black/30 px-3 py-2">
-            Mexico City · 15:00 local
+            Mexico City Â· 15:00 local
           </p>
           <p className="rounded-2xl border border-white/10 bg-black/30 px-3 py-2">
-            UTC · 21:00 kick-off
+            UTC Â· 21:00 kick-off
           </p>
           <p className="rounded-2xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-cyan-100" suppressHydrationWarning>
-            Your time · {localKickoff}
+            Your time Â· {localKickoff}
           </p>
         </div>
       </div>

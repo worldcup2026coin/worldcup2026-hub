@@ -28,7 +28,7 @@ function TeamLogo({
   }
 
   return (
-    <span className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/10 p-1 shadow-[0_0_18px_rgba(163,255,18,0.10)]">
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/10 p-1 shadow-[0_0_18px_rgba(163,255,18,0.10)]">
       <Image
         src={src}
         alt={alt}
@@ -75,7 +75,7 @@ function TeamLine({
         : "border-white/10 bg-slate-950/45"
     }`}>
       {apiTeamId && name ? (
-        <Link href={`/teams/${teamSlug(name, apiTeamId)}`} className="min-w-0 hover:text-lime-200">
+        <Link href={`/teams/${teamSlug(name, apiTeamId)}`} className="min-w-0 flex-1 hover:text-lime-200">
           {content}
         </Link>
       ) : (
@@ -104,13 +104,13 @@ export function FixtureCard({ fixture }: FixtureCardProps) {
   });
 
   return (
-    <article className="neon-card group rounded-[2rem] p-5">
+    <article className="neon-card group w-full max-w-full rounded-[2rem] p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <FixtureStatusBadge
           statusShort={fixture.status_short}
           statusLong={fixture.status_long}
         />
-        <span className="rounded-full border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-fuchsia-100">
+        <span className="max-w-full break-words rounded-full border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-1 text-xs font-black uppercase tracking-[0.1em] text-fuchsia-100">
           {formatVenueDateTime(fixture)}
         </span>
       </div>
