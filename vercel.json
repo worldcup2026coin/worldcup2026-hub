@@ -4,6 +4,10 @@
     {
       "path": "/api/cron/bootstrap-sync",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/settle-predictions",
+      "schedule": "*/15 * * * *"
     }
   ]
 }
