@@ -29,16 +29,16 @@ export function SiteHeader() {
             </span>
             <span className="min-w-0">
               <span className="block truncate text-base font-black uppercase leading-none tracking-[0.18em] text-white group-hover:text-lime-200">
-                $WC26 HUB
+                $WC26
               </span>
               <span className="mt-1 block truncate text-[0.68rem] font-bold uppercase tracking-[0.12em] text-cyan-200/80">
-                Football signal - fan chaos
+                Football signal
               </span>
             </span>
           </Link>
 
           <nav
-            className="hidden rounded-full border border-cyan-300/15 bg-white/[0.045] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] lg:flex"
+            className="hidden rounded-full border border-cyan-300/15 bg-white/[0.045] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] xl:flex"
             aria-label="Main"
           >
             {siteConfig.navLinks.map((link) => {
@@ -147,4 +147,5 @@ export function SiteHeader() {
     </header>
   );
 }
+
 
