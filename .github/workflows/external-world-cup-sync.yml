@@ -23,7 +23,7 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     env:
       SITE_URL: https://www.worldcup2026coin.com
@@ -52,22 +52,52 @@ jobs:
 
       - name: Call protected cron endpoints
         run: |
-          set -euo pipefail
+          set -u
+
+          failures=0
+          failed_endpoints=""
 
           for endpoint in ${{ steps.endpoints.outputs.list }}; do
             url="$SITE_URL$endpoint"
+            echo ""
+            echo "========================================="
             echo "Calling $url"
+            echo "========================================="
 
-            http_code=$(curl -sS -o response.json -w "%{http_code}" \
+            set +e
+            http_code=$(curl -sS --max-time 240 -o response.json -w "%{http_code}" \
               -H "Authorization: Bearer $CRON_SECRET" \
               "$url")
+            curl_exit=$?
+            set -e
 
+            echo "curl exit: $curl_exit"
             echo "HTTP $http_code"
-            cat response.json
-            echo ""
 
-            if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
-              echo "Endpoint failed: $endpoint"
-              exit 1
+            if [ -f response.json ]; then
+              cat response.json
+              echo ""
+            else
+              echo "No response body captured."
+            fi
+
+            if [ "$curl_exit" -ne 0 ] || [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+              echo "FAILED: $endpoint"
+              failures=$((failures + 1))
+              failed_endpoints="$failed_endpoints $endpoint"
+            else
+              echo "SUCCESS: $endpoint"
             fi
           done
+
+          echo ""
+          echo "========================================="
+          echo "Sync summary"
+          echo "========================================="
+
+          if [ "$failures" -gt 0 ]; then
+            echo "$failures endpoint(s) failed:$failed_endpoints"
+            exit 1
+          fi
+
+          echo "All endpoints completed successfully."
