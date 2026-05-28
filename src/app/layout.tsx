@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { MobileLaunchCta } from "@/components/wc26/mobile-launch-cta";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -66,9 +67,10 @@ export default function RootLayout({
       >
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 pb-24 md:pb-0">{children}</main>
           <SiteFooter />
         </div>
+        <MobileLaunchCta />
         <JsonLd data={websiteJsonLd()} />
         <JsonLd data={organizationJsonLd()} />
         <Analytics />

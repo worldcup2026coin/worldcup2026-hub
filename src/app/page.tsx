@@ -193,15 +193,15 @@ return (
 
 
 
-                <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                  <Link href="/fixtures" className="glow-button-primary">
-                    View fixtures
+                <div className="mt-7 grid gap-3 sm:grid-cols-3">
+                  <Link href="/fixtures" className="glow-button-primary text-center">
+                    Explore World Cup Hub
                   </Link>
-                  <Link href="/live" className="glow-button-secondary">
-                    Live scores
+                  <Link href="/predictions" className="glow-button-secondary text-center">
+                    Make Predictions
                   </Link>
-                  <Link href="/teams" className="glow-button-secondary">
-                    Explore teams
+                  <Link href="/wc26" className="glow-button-secondary text-center">
+                    Check $WC26 Safely
                   </Link>
                 </div>
 

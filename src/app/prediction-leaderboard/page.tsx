@@ -427,7 +427,9 @@ export default async function PredictionLeaderboardPage({
   const recentlySettled = visibleWindows
     .filter((window) => window.status === "settled")
     .slice(0, 8);
-  const leaderboardRows = (leaderboard ?? []) as LeaderboardRow[];
+  const leaderboardRows = ((leaderboard ?? []) as LeaderboardRow[]).filter(
+    (row) => row.total_predictions > 0 || row.total_points > 0,
+  );
   const myRecentPicks = ((myPredictions ?? []) as FanPrediction[]).slice(0, 8);
   const canSubmit = Boolean(user && profile?.display_name);
 

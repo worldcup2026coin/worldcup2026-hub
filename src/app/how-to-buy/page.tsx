@@ -14,22 +14,42 @@ export const metadata: Metadata = {
     "Beginner-friendly $WC26 buying guide with risk warnings and official-link safety notes.",
 };
 
-const steps = [
+const checklist = [
   {
-    title: "Use official links only",
-    text: "Start from the $WC26 launch page and never trust contract addresses sent by strangers or posted in replies.",
+    title: "Start here only",
+    text: "Use this website and the official launch page as your starting point.",
   },
   {
-    title: "Set up a Solana wallet",
-    text: "Use a wallet you control, keep your recovery phrase private and never share private keys with anyone.",
+    title: "Confirm status is live",
+    text: "Do not act on pre-launch rumors, reply links or screenshots.",
   },
   {
-    title: "Fund carefully",
-    text: "Only use money you can afford to lose. Meme tokens are volatile and can go to zero.",
+    title: "Copy contract here",
+    text: "Copy the contract from this site once the official launch block is live.",
   },
   {
-    title: "Check before confirming",
-    text: "Confirm ticker, contract, link source and transaction details before buying.",
+    title: "Open official pump.fun",
+    text: "Use the official pump.fun link from this site, not search results or DMs.",
+  },
+  {
+    title: "Compare ticker and contract",
+    text: "Check the ticker, contract and page details before confirming anything.",
+  },
+  {
+    title: "Trade only what you can lose",
+    text: "Meme tokens are volatile and can lose all value.",
+  },
+  {
+    title: "Save official links",
+    text: "Bookmark the website, X and Telegram announcements before launch day noise hits.",
+  },
+  {
+    title: "Watch for clones",
+    text: "Ignore fake links, clone tokens, impersonators and replies claiming to be official.",
+  },
+  {
+    title: "Never share your seed phrase",
+    text: "No admin, support account or website should ever ask for your recovery phrase.",
   },
 ];
 
@@ -46,9 +66,9 @@ export default function HowToBuyPage() {
       <Container className="pb-14">
         <section className="hero-panel rounded-[2.5rem] p-6 sm:p-10">
           <div className="relative z-10">
-            <p className="neon-kicker">Safety first</p>
+            <p className="neon-kicker">Safety first · Do not ape blind</p>
             <h1 className="neon-title glow-text mt-4 text-5xl font-black leading-[0.86] text-white sm:text-7xl">
-              DO NOT APE BLIND
+              CHECK $WC26 SAFELY
             </h1>
             <p className="mt-5 max-w-3xl text-base font-semibold leading-7 text-slate-200">
               $WC26 is a fan-made meme token community. This guide exists to reduce
@@ -74,10 +94,10 @@ export default function HowToBuyPage() {
           <OfficialLaunchLinks />
         </div>
 
-        <section className="mt-8 grid gap-6 lg:grid-cols-2">
-          {steps.map((step, index) => (
+        <section className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {checklist.map((step, index) => (
             <div key={step.title} className="neon-card rounded-[2rem] p-6">
-              <p className="neon-badge neon-badge-cyan">Step {index + 1}</p>
+              <p className="neon-badge neon-badge-cyan">Check {index + 1}</p>
               <h2 className="mt-4 text-2xl font-black uppercase text-white">
                 {step.title}
               </h2>

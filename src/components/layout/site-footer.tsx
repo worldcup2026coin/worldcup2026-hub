@@ -1,51 +1,111 @@
-import { SocialLinksRow } from "@/components/layout/social-links-row";
-import { SOCIAL_LINKS } from "@/lib/social-links";
 import Link from "next/link";
+import { SocialLinksRow } from "@/components/layout/social-links-row";
 import { Container } from "@/components/ui/container";
+import { SOCIAL_LINKS } from "@/lib/social-links";
 
-const tournamentLinks = [
-  { href: "/fixtures", label: "Fixtures" },
-  { href: "/live", label: "Live" },
-  { href: "/groups", label: "Groups" },
-  { href: "/teams", label: "Teams" },
-  { href: "/predictions", label: "Predictions" },
-  { href: "/tournament-simulation", label: "Simulation" },
-  { href: "/fan-polls", label: "Fan Polls" },
-  { href: "/prediction-leaderboard", label: "Prediction Leaderboard" },
-  { href: "/news", label: "News" },
+type FooterLink = {
+  href: string;
+  label: string;
+  external?: boolean;
+};
+
+const footerGroups: Array<{ title: string; tone: string; links: FooterLink[] }> = [
+  {
+    title: "Football Hub",
+    tone: "text-cyan-200 hover:text-cyan-100",
+    links: [
+      { href: "/fixtures", label: "Fixtures" },
+      { href: "/live", label: "Live" },
+      { href: "/groups", label: "Groups" },
+      { href: "/teams", label: "Teams" },
+      { href: "/predictions", label: "Predictions" },
+      { href: "/prediction-leaderboard", label: "Prediction Leaderboard" },
+      { href: "/news", label: "News" },
+      { href: "/host-cities", label: "Host Cities" },
+      { href: "/stadiums", label: "Stadiums" },
+      { href: "/host-nations", label: "Host Nations" },
+      { href: "/guides", label: "Guides" },
+      { href: "/injuries", label: "Injuries" },
+      { href: "/suspensions", label: "Suspensions" },
+      { href: "/best-third-placed-teams", label: "Third Place" },
+      { href: "/top-scorers", label: "Top Scorers" },
+      { href: "/top-assists", label: "Top Assists" },
+      { href: "/top-cards", label: "Top Cards" },
+      { href: "/tournament-simulation", label: "Simulation" },
+      { href: "/world-cup-format", label: "Format Guide" },
+      { href: "/tournament-timeline", label: "Timeline" },
+      { href: "/world-cup-history", label: "History" },
+    ],
+  },
+  {
+    title: "$WC26 Safety",
+    tone: "text-lime-200 hover:text-lime-100",
+    links: [
+      { href: "/wc26", label: "$WC26" },
+      { href: "/launch", label: "Launch" },
+      { href: "/how-to-buy", label: "How to Buy" },
+    ],
+  },
+  {
+    title: "Community",
+    tone: "text-fuchsia-200 hover:text-fuchsia-100",
+    links: [
+      { href: "/community", label: "Community" },
+      { href: "/community/chat", label: "Chat" },
+      { href: "/community/memes", label: "Meme Wall" },
+      { href: "/fan-polls", label: "Fan Polls" },
+      { href: SOCIAL_LINKS.x, label: "X", external: true },
+      {
+        href: SOCIAL_LINKS.telegramChannel,
+        label: "Telegram Announcements",
+        external: true,
+      },
+      {
+        href: SOCIAL_LINKS.telegramChat,
+        label: "Telegram Chat",
+        external: true,
+      },
+    ],
+  },
+  {
+    title: "Legal",
+    tone: "text-slate-200 hover:text-white",
+    links: [
+      { href: "/privacy", label: "Privacy" },
+      { href: "/terms", label: "Terms" },
+    ],
+  },
 ];
 
-const exploreLinks = [
-  { href: "/host-cities", label: "Host Cities" },
-  { href: "/stadiums", label: "Stadiums" },
-  { href: "/host-nations", label: "Host Nations" },
-  { href: "/world-cup-format", label: "Format Guide" },
-  { href: "/tournament-timeline", label: "Timeline" },
-  { href: "/world-cup-history", label: "History" },
-  { href: "/guides", label: "Guides" },
-  { href: "/injuries", label: "Injuries" },
-  { href: "/suspensions", label: "Suspensions" },
-  { href: "/best-third-placed-teams", label: "Third Place" },
-  { href: "/top-scorers", label: "Top Scorers" },
-  { href: "/top-assists", label: "Top Assists" },
-  { href: "/top-cards", label: "Top Cards" },
-];
+function FooterNavLink({ link, tone }: { link: FooterLink; tone: string }) {
+  const className = `text-sm font-semibold text-slate-400 transition ${tone}`;
 
-const wc26Links = [
-  { href: "/wc26", label: "$WC26" },
-  { href: "/launch", label: "Launch" },
-  { href: "/how-to-buy", label: "How to Buy" },
-  { href: "/community", label: "Community" },
-  { href: "/community/chat", label: "Chat" },
-  { href: "/community/memes", label: "Meme Wall" },
-];
+  if (link.external) {
+    return (
+      <a
+        href={link.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+      >
+        {link.label}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={link.href} className={className}>
+      {link.label}
+    </Link>
+  );
+}
 
 export function SiteFooter() {
   return (
     <footer className="relative overflow-hidden border-t border-cyan-300/15 bg-[#02030a]">
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_10%_0%,rgba(163,255,18,0.12),transparent_28rem),radial-gradient(circle_at_80%_20%,rgba(255,43,214,0.12),transparent_26rem)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_0%,rgba(163,255,18,0.12),transparent_28rem),radial-gradient(circle_at_80%_20%,rgba(255,43,214,0.12),transparent_26rem)]" />
       <Container className="relative py-8">
-        <div className="grid gap-8 rounded-[2rem] border border-cyan-300/15 bg-white/[0.035] p-6 shadow-[0_0_42px_rgba(34,211,238,0.08)] md:grid-cols-[1.2fr_0.85fr_0.85fr_0.85fr]">
+        <div className="grid gap-8 rounded-[2rem] border border-cyan-300/15 bg-white/[0.035] p-6 shadow-[0_0_42px_rgba(34,211,238,0.08)] lg:grid-cols-[1.1fr_2fr]">
           <div>
             <span className="neon-badge">Tournament pulse</span>
             <p className="mt-4 text-2xl font-black uppercase tracking-tight text-white">
@@ -53,93 +113,43 @@ export function SiteFooter() {
             </p>
             <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300">
               104 matches. 48 teams. 16 host cities. 3 nations. 1 trophy.
-              Follow every fixture, group table, goal, prediction and knockout race
-              from opening match to the final.
+              Follow every fixture, group table, goal, prediction and knockout
+              race from opening match to the final.
             </p>
             <p className="mt-4 text-xs font-semibold leading-5 text-slate-500">
-              $WC26 is a fan-made community layer and is not affiliated with FIFA,
-              World Cup, teams, players, sponsors or governing bodies.
+              $WC26 is a fan-made community layer and is not affiliated with
+              FIFA, World Cup, teams, players, sponsors or governing bodies.
             </p>
-          </div>
-
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-lime-200">
-              $WC26
-            </p>
-            <div className="mt-4 grid gap-2">
-              {wc26Links.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm font-semibold text-slate-400 transition hover:text-lime-200"
-                >
-                  {link.label}
-                </Link>
-              ))}
+            <div className="mt-5">
+              <SocialLinksRow />
             </div>
           </div>
 
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-200">
-              Tournament
-            </p>
-            <div className="mt-4 grid gap-2">
-              {tournamentLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm font-semibold text-slate-400 transition hover:text-cyan-200"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-fuchsia-200">
-              Explore
-            </p>
-            <div className="mt-4 grid gap-2">
-              {exploreLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm font-semibold text-slate-400 transition hover:text-fuchsia-200"
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Link href="/privacy" className="text-sm font-semibold text-slate-400 transition hover:text-white">
-                Privacy
-              </Link>
-              <Link href="/terms" className="text-sm font-semibold text-slate-400 transition hover:text-white">
-                Terms
-              </Link>
-            </div>
+          <div className="grid gap-7 sm:grid-cols-2 xl:grid-cols-4">
+            {footerGroups.map((group) => (
+              <div key={group.title}>
+                <p className={`text-xs font-black uppercase tracking-[0.22em] ${group.tone}`}>
+                  {group.title}
+                </p>
+                <div className="mt-4 grid gap-2">
+                  {group.links.map((link) => (
+                    <FooterNavLink
+                      key={`${group.title}-${link.href}-${link.label}`}
+                      link={link}
+                      tone={group.tone}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="mt-6 flex flex-col gap-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 World Cup 2026 Hub · built for tournament mode.</p>
-          <p>Only trust $WC26 links published on this website.</p><div className="mt-5"><SocialLinksRow /></div><p className="sr-only"></p>
+          <p>Only trust $WC26 links published on this website.</p>
         </div>
       </Container>
     </footer>
   );
 }
-
-
-
-<div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
-  <a
-    href={SOCIAL_LINKS.x}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-4 py-2 font-black uppercase tracking-[0.18em] text-cyan-100 transition hover:border-lime-300/70 hover:bg-lime-300/15 hover:text-lime-100"
-  >
-    Follow @WC26_Hub on X
-  </a>
-</div>
-
-

@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { SOCIAL_LINKS } from "@/lib/social-links";
-import { isExternalLinkReady, wc26Config } from "@/lib/wc26";
+import {
+  formatLaunchStatus,
+  isExternalLinkReady,
+  wc26Config,
+} from "@/lib/wc26";
 
 type OfficialLaunchLinksProps = {
   compact?: boolean;
@@ -14,8 +17,8 @@ const riskCopy =
 export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProps) {
   const [copied, setCopied] = useState(false);
   const isLive = wc26Config.isLive;
-  const contract = wc26Config.contractAddress;
-  const pumpReady = isExternalLinkReady(wc26Config.links.pumpFun);
+  const contract = wc26Config.contractAddress || "Coming at launch";
+  const pumpReady = isExternalLinkReady(wc26Config.pumpFunUrl);
 
   const copyContract = async () => {
     if (!isLive) return;
@@ -33,7 +36,7 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
         <div>
           <p className="neon-kicker">Official launch links</p>
           <h2 className="mt-3 text-2xl font-black uppercase text-white sm:text-3xl">
-            Status: {wc26Config.launchStatus}
+            Status: {formatLaunchStatus(wc26Config.launchStatus)}
           </h2>
         </div>
         <span
@@ -69,7 +72,7 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
         <div className="grid gap-3 sm:grid-cols-2">
           {pumpReady ? (
             <a
-              href={wc26Config.links.pumpFun}
+              href={wc26Config.pumpFunUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="glow-button-primary text-center"
@@ -82,7 +85,7 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
             </div>
           )}
           <a
-            href={SOCIAL_LINKS.x}
+            href={wc26Config.xUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="glow-button-secondary text-center"
@@ -90,7 +93,7 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
             X
           </a>
           <a
-            href={SOCIAL_LINKS.telegramChannel}
+            href={wc26Config.telegramChannelUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="glow-button-secondary text-center"
@@ -98,7 +101,7 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
             Telegram announcements
           </a>
           <a
-            href={SOCIAL_LINKS.telegramChat}
+            href={wc26Config.telegramChatUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="glow-button-secondary text-center"
