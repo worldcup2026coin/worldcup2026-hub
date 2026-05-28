@@ -195,6 +195,7 @@ export function BracketChallengeBuilder({ groups, signedIn }: BuilderProps) {
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
   const cardRef = useRef<HTMLCanvasElement>(null);
+  const completePanelRef = useRef<HTMLDivElement>(null);
   const teamMap = useMemo(() => getTeamMap(groups), [groups]);
   const groupPicks = getCompleteGroupPicks(groups, draft);
   const thirdCandidates = groupPicks.map((pick) => pick.third);
@@ -385,7 +386,7 @@ export function BracketChallengeBuilder({ groups, signedIn }: BuilderProps) {
     setSaving(false);
 
     if (!response.ok || !result?.url) {
-      setNotice(result?.error ?? "Unable to save bracket right now.");
+      setNotice(result?.error ?? "Could not save bracket. Please try again.");
       return;
     }
 
@@ -411,6 +412,125 @@ export function BracketChallengeBuilder({ groups, signedIn }: BuilderProps) {
     window.localStorage.removeItem(draftKey);
     setDraft(createInitialDraft());
     setNotice("Draft cleared.");
+  }
+
+  function renderActionButtons(compact = false) {
+    const buttonClass = compact
+      ? "w-full justify-center sm:w-auto"
+      : "";
+
+    return (
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        {signedIn ? (
+          <button
+            type="button"
+            onClick={saveBracket}
+            disabled={saving}
+            className={`glow-button-primary disabled:cursor-not-allowed disabled:opacity-50 ${buttonClass}`}
+          >
+            {saving ? "Saving..." : "Save Bracket"}
+          </button>
+        ) : (
+          <a href="/auth/login" className={`glow-button-primary ${buttonClass}`}>
+            Sign in to save
+          </a>
+        )}
+        <button
+          type="button"
+          onClick={downloadCard}
+          className={`glow-button-secondary ${buttonClass}`}
+        >
+          Download Card
+        </button>
+        <a
+          href={xShareUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`glow-button-secondary text-center ${buttonClass}`}
+        >
+          Share on X
+        </a>
+        <button
+          type="button"
+          onClick={copyShareLink}
+          className={`glow-button-secondary ${buttonClass}`}
+        >
+          {copied ? "Copied" : "Copy Link"}
+        </button>
+        <button
+          type="button"
+          onClick={clearDraft}
+          className={`glow-button-secondary ${buttonClass}`}
+        >
+          Reset
+        </button>
+      </div>
+    );
+  }
+
+  function renderBracketCompletePanel() {
+    if (!champion) return null;
+
+    return (
+      <div
+        ref={completePanelRef}
+        className="rounded-[2rem] border border-lime-300/35 bg-lime-300/10 p-5 shadow-[0_0_42px_rgba(163,255,18,0.12)]"
+      >
+        <p className="neon-kicker">Bracket complete</p>
+        <h2 className="mt-4 text-3xl font-black uppercase text-white">
+          Bracket complete
+        </h2>
+        <p className="mt-3 text-sm leading-6 text-slate-300">
+          Your WC26 bracket is complete. Save it, download your card, or share
+          your champion call.
+        </p>
+
+        <div className="mt-5 grid gap-3 md:grid-cols-2">
+          <p className="rounded-2xl border border-lime-300/20 bg-lime-300/10 p-4 text-base font-black text-white">
+            Champion: {champion.name}
+          </p>
+          <p className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 p-4 text-base font-black text-cyan-100">
+            Finalist: {finalist?.name ?? "TBD"}
+          </p>
+          {darkHorse ? (
+            <p className="rounded-2xl border border-fuchsia-300/20 bg-fuchsia-400/10 p-4 text-sm font-bold text-fuchsia-100 md:col-span-2">
+              Dark horse: {darkHorse.name}
+            </p>
+          ) : null}
+          {semiFinalists.length ? (
+            <p className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm font-bold leading-6 text-slate-200 md:col-span-2">
+              Semi-finalists:{" "}
+              {semiFinalists.map((team) => team.name).join(" · ")}
+            </p>
+          ) : null}
+        </div>
+
+        {!signedIn ? (
+          <p className="mt-5 rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-3 text-sm font-bold leading-6 text-cyan-100">
+            Sign in to save a public bracket link. You can still download or
+            share your card without signing in.
+          </p>
+        ) : null}
+
+        <div className="mt-6">
+          {renderActionButtons(true)}
+        </div>
+
+        {draft.savedUrl ? (
+          <a
+            href={draft.savedUrl}
+            className="mt-5 block text-sm font-black text-lime-200"
+          >
+            View public share page
+          </a>
+        ) : null}
+        {notice ? (
+          <p className="mt-4 rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-sm font-bold text-slate-200">
+            {notice}
+          </p>
+        ) : null}
+      </div>
+    );
   }
 
   return (
@@ -641,6 +761,7 @@ export function BracketChallengeBuilder({ groups, signedIn }: BuilderProps) {
               </div>
             </div>
           ))}
+          {championId ? renderBracketCompletePanel() : null}
         </section>
       ) : null}
 
