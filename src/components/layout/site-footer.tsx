@@ -11,7 +11,7 @@ const tournamentLinks = [
   { href: "/predictions", label: "Predictions" },
   { href: "/tournament-simulation", label: "Simulation" },
   { href: "/fan-polls", label: "Fan Polls" },
-  { href: "/prediction-leaderboard", label: "Prediction Table" },
+  { href: "/prediction-leaderboard", label: "Prediction Leaderboard" },
   { href: "/news", label: "News" },
 ];
 
@@ -36,6 +36,8 @@ const wc26Links = [
   { href: "/launch", label: "Launch" },
   { href: "/how-to-buy", label: "How to Buy" },
   { href: "/community", label: "Community" },
+  { href: "/community/chat", label: "Chat" },
+  { href: "/community/memes", label: "Meme Wall" },
 ];
 
 export function SiteFooter() {

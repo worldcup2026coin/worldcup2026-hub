@@ -10,6 +10,7 @@ import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/worldcup/page-header";
 import { getCommunityPagePolls } from "@/lib/data/community";
 import { getPublicSiteUrl } from "@/lib/data/matches";
+import { SOCIAL_LINKS } from "@/lib/social-links";
 
 export const dynamic = "force-dynamic";
 
@@ -27,13 +28,77 @@ export default async function CommunityPage() {
     <>
       <PageHeader
         eyebrow="Community"
-        title="World Cup 2026 fan community"
-        description="Polls, social sharing, email updates and football-first fan culture for World Cup 2026."
-        meta="Football-first · Social-shareable · No open comments yet"
+        title="WC26 Community"
+        description="Football-first fan chaos for World Cup 2026 — chat, memes, polls, predictions and matchday signal."
+        meta="Fan-made · Moderated · Unofficial"
       />
 
       <Container className="pb-14">
         <CommunityCTA />
+
+        <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {[
+            {
+              href: "/community/chat",
+              title: "Join Chat",
+              copy: "Live football-first tournament chat.",
+            },
+            {
+              href: "/community/memes",
+              title: "Meme Wall",
+              copy: "Approved fan-made World Cup 2026 memes.",
+            },
+            {
+              href: SOCIAL_LINKS.telegramChat,
+              title: "Telegram Chat",
+              copy: "Jump into the wider WC26 fan chat.",
+              external: true,
+            },
+            {
+              href: SOCIAL_LINKS.telegramChannel,
+              title: "Announcements",
+              copy: "Follow launch and community updates.",
+              external: true,
+            },
+            {
+              href: SOCIAL_LINKS.x,
+              title: "Follow on X",
+              copy: "Matchday posts and community signal.",
+              external: true,
+            },
+            {
+              href: "/fan-polls",
+              title: "Fan Polls",
+              copy: "Vote on tournament storylines.",
+            },
+          ].map((card) =>
+            card.external ? (
+              <a
+                key={card.href}
+                href={card.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="neon-card rounded-[2rem] p-5 transition hover:border-lime-300/50"
+              >
+                <h2 className="text-2xl font-black uppercase text-white">
+                  {card.title}
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-slate-300">{card.copy}</p>
+              </a>
+            ) : (
+              <a
+                key={card.href}
+                href={card.href}
+                className="neon-card rounded-[2rem] p-5 transition hover:border-lime-300/50"
+              >
+                <h2 className="text-2xl font-black uppercase text-white">
+                  {card.title}
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-slate-300">{card.copy}</p>
+              </a>
+            ),
+          )}
+        </section>
 
         <div className="mt-8 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
           <div className="grid gap-6">

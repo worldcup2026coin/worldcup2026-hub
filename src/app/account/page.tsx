@@ -140,6 +140,20 @@ export default async function AccountPage({
           </button>
         </form>
       </section>
+
+      <section className="mt-6 rounded-[2rem] border border-cyan-300/20 bg-cyan-300/10 p-6">
+        <p className="neon-kicker">Community profile</p>
+        <h2 className="mt-3 text-2xl font-black uppercase text-white">
+          Chat and meme wall identity
+        </h2>
+        <p className="mt-3 text-sm leading-6 text-slate-300">
+          Manage the display name, handle and bio shown beside community chat
+          messages and approved memes.
+        </p>
+        <a href="/community/profile" className="glow-button-secondary mt-5">
+          Edit community profile
+        </a>
+      </section>
     </main>
   );
 }
