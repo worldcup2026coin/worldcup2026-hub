@@ -8,14 +8,17 @@ import {
   getGroupsPageData,
   groupStandingsByGroup,
 } from "@/lib/data/worldcup";
+import { createPageMetadata } from "@/lib/seo";
 import { formatLastUpdated, getFixtureDisplayStatus } from "@/lib/worldcup/format";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: "Groups",
-  description: "World Cup 2026 groups and standings from Supabase.",
-};
+  description:
+    "World Cup 2026 groups, standings, qualification rules and group-stage fixture context from the WC26 Hub.",
+  path: "/groups",
+});
 
 const realGroupPattern = /^Group [A-L]$/;
 

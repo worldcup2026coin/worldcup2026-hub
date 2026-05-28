@@ -1,5 +1,6 @@
 import "server-only";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { formatPublicVenueName } from "@/lib/venue-labels";
 import {
   fixtureSlug,
   getFixtureDisplayStatus,
@@ -142,6 +143,7 @@ export type FixtureFilters = {
   group?: string;
   status?: string;
   venue?: string;
+  q?: string;
 };
 
 function asTeams(data: unknown): Team[] {
@@ -583,9 +585,11 @@ export function getFixtureFilterOptions(fixtures: Fixture[], teams: Team[]) {
   const venues = Array.from(
     new Set(
       fixtures
-        .map((fixture) => fixture.venue_name)
-        .filter((value): value is string => Boolean(value))
-    )
+        .map((fixture) =>
+          fixture.venue_name ? formatPublicVenueName(fixture.venue_name) : null,
+        )
+        .filter((value): value is string => Boolean(value)),
+    ),
   ).sort();
 
   return {
@@ -598,6 +602,25 @@ export function getFixtureFilterOptions(fixtures: Fixture[], teams: Team[]) {
 
 export function filterFixtures(fixtures: Fixture[], filters: FixtureFilters) {
   return fixtures.filter((fixture) => {
+    if (filters.q) {
+      const query = filters.q.trim().toLowerCase();
+      const haystack = [
+        fixture.home_team_name,
+        fixture.away_team_name,
+        fixture.venue_name,
+        fixture.venue_city,
+        fixture.group_name,
+        fixture.round,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      if (query && !haystack.includes(query)) {
+        return false;
+      }
+    }
+
     if (filters.date && fixture.match_date?.slice(0, 10) !== filters.date) {
       return false;
     }
@@ -624,7 +647,10 @@ export function filterFixtures(fixtures: Fixture[], filters: FixtureFilters) {
       return false;
     }
 
-    if (filters.venue && fixture.venue_name !== filters.venue) {
+    if (
+      filters.venue &&
+      formatPublicVenueName(fixture.venue_name) !== filters.venue
+    ) {
       return false;
     }
 

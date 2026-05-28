@@ -6,12 +6,14 @@ import {
   OfficialLaunchLinks,
   Wc26RiskWarning,
 } from "@/components/wc26/official-launch-links";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "$WC26 Launch",
   description:
-    "Official $WC26 launch status, contract area, community links and safety warnings.",
-};
+    "Official $WC26 launch status page. Contract address and pump.fun link published here at launch. Crypto-assets are high risk.",
+  path: "/launch",
+});
 
 const launchSteps = [
   "Confirm the contract only from this website.",

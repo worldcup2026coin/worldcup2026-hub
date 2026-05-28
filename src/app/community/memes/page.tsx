@@ -6,15 +6,17 @@ import { SocialLinksPanel } from "@/components/community/social-links-panel";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/worldcup/page-header";
 import { getApprovedMemes } from "@/lib/community/data";
+import { createPageMetadata } from "@/lib/seo";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Meme Wall",
   description:
-    "Approved fan-made World Cup 2026 memes from the WC26 community.",
-};
+    "Fan-made World Cup 2026 meme wall. Submit football memes for review and share approved chaos with the WC26 community.",
+  path: "/community/memes",
+});
 
 export default async function MemeWallPage({
   searchParams,
@@ -44,6 +46,12 @@ export default async function MemeWallPage({
         <div className="grid gap-6 xl:grid-cols-[1fr_23rem]">
           <div className="grid gap-6">
             <div className="flex flex-wrap gap-3">
+              <a
+                href="/community/meme-generator"
+                className="rounded-full border border-lime-300/50 bg-lime-300 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-slate-950"
+              >
+                Create meme
+              </a>
               <a
                 href="/community/memes?sort=newest"
                 className={`rounded-full border px-4 py-2 text-xs font-black uppercase tracking-[0.14em] ${

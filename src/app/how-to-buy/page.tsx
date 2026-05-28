@@ -7,12 +7,14 @@ import {
   Wc26RiskWarning,
 } from "@/components/wc26/official-launch-links";
 import { wc26Config } from "@/lib/wc26";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "How to Buy $WC26",
   description:
-    "Beginner-friendly $WC26 buying guide with risk warnings and official-link safety notes.",
-};
+    "Safer buying guide for $WC26. Verify the official contract here. Never trust DMs, screenshots or search results.",
+  path: "/how-to-buy",
+});
 
 const checklist = [
   {

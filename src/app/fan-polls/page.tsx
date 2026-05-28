@@ -1,12 +1,19 @@
+import type { Metadata } from "next";
+import { PollCard } from "@/components/community/poll-card";
 import { Container } from "@/components/ui/container";
+import { getPublishedPolls } from "@/lib/data/community";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = createPageMetadata({
   title: "World Cup 2026 Fan Polls",
   description:
-    "Fan polls for World Cup 2026 groups, matches, dark horses and tournament predictions.",
-};
+    "Vote in World Cup 2026 fan polls and track community opinion across teams, dark horses, favourites and host nations.",
+  path: "/fan-polls",
+});
 
-const polls = [
+const launchPollPrompts = [
   {
     title: "Who wins the tournament?",
     options: ["Argentina", "France", "Brazil", "Spain"],
@@ -31,27 +38,11 @@ const polls = [
     title: "Most chaotic group?",
     options: ["Group A", "Group D", "Group G", "Group J"],
   },
-  {
-    title: "Team most likely to bottle it?",
-    options: ["A favourite", "A host nation", "A dark horse", "Too early"],
-  },
-  {
-    title: "Best fanbase?",
-    options: ["Mexico", "Argentina", "Morocco", "Japan"],
-  },
-  {
-    title: "Most exciting young player?",
-    options: ["Musiala", "Yamal", "Endrick", "Bellingham"],
-  },
-  {
-    title: "Biggest group-stage shock?",
-    options: ["Favourite exits", "Host run", "New nation breaks out", "Goal storm"],
-  },
 ];
 
-const samplePercentages = [38, 27, 21, 14];
+export default async function FanPollsPage() {
+  const polls = await getPublishedPolls({ limit: 12 }).catch(() => []);
 
-export default function FanPollsPage() {
   return (
     <main className="py-10 sm:py-14">
       <Container>
@@ -61,51 +52,49 @@ export default function FanPollsPage() {
             Vote the tournament mood
           </h1>
           <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300">
-            Static launch polls for groups, matches and tournament storylines.
-            Live voting can plug into this hub later; these cards are launch
-            prompts for review and community discussion.
+            Vote in World Cup 2026 fan polls and reveal community results after
+            your pick. No fake counts, no inflated social proof, just real
+            recorded votes as the community wakes up.
           </p>
         </section>
 
-        <section className="mt-8 grid gap-5 lg:grid-cols-2">
-          {polls.map((poll) => (
-            <article key={poll.title} className="neon-panel rounded-[2rem] p-5">
-              <p className="neon-kicker">Launch poll prompt</p>
-              <h2 className="mt-4 text-2xl font-black uppercase text-white">
-                {poll.title}
-              </h2>
-              <div className="mt-5 grid gap-3">
-                {poll.options.map((option, index) => {
-                  const value = samplePercentages[index] ?? 14;
-
-                  return (
+        {polls.length > 0 ? (
+          <section className="mt-8 grid gap-5 lg:grid-cols-2">
+            {polls.map((poll) => (
+              <PollCard key={poll.id} poll={poll} source="fan_polls" />
+            ))}
+          </section>
+        ) : (
+          <section className="mt-8 grid gap-5 lg:grid-cols-2">
+            {launchPollPrompts.map((poll) => (
+              <article key={poll.title} className="neon-panel rounded-[2rem] p-5">
+                <p className="neon-kicker">Launch poll prompt</p>
+                <h2 className="mt-4 text-2xl font-black uppercase text-white">
+                  {poll.title}
+                </h2>
+                <div className="mt-5 grid gap-3">
+                  {poll.options.map((option) => (
                     <div
                       key={option}
                       className="rounded-2xl border border-white/10 bg-slate-950/45 p-4"
                     >
                       <div className="flex items-center justify-between gap-3">
                         <p className="font-black text-white">{option}</p>
-                        <p className="text-sm font-black text-lime-200">
-                          {value}%
+                        <p className="text-sm font-black text-slate-500">
+                          0 votes
                         </p>
                       </div>
-                      <div className="mt-3 h-2 rounded-full bg-white/10">
-                        <div
-                          className="h-2 rounded-full bg-lime-300"
-                          style={{ width: `${value}%` }}
-                        />
-                      </div>
                     </div>
-                  );
-                })}
+                  ))}
                 </div>
-              <p className="mt-4 text-xs font-semibold text-slate-500">
-                Static launch sample. Live vote totals will be labelled when
-                voting is connected.
-              </p>
-            </article>
-          ))}
-        </section>
+                <p className="mt-4 rounded-2xl border border-cyan-300/15 bg-cyan-300/10 px-4 py-3 text-xs font-semibold leading-5 text-cyan-100">
+                  Vote to reveal community results once this poll is published
+                  in the live Supabase poll system.
+                </p>
+              </article>
+            ))}
+          </section>
+        )}
       </Container>
     </main>
   );

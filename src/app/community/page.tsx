@@ -8,17 +8,20 @@ import { PredictionGameTeaser } from "@/components/community/prediction-game-tea
 import { SocialShareButtons } from "@/components/community/social-share-buttons";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/worldcup/page-header";
+import { StickerPackSection } from "@/components/wc26/sticker-pack-section";
 import { getCommunityPagePolls } from "@/lib/data/community";
 import { getPublicSiteUrl } from "@/lib/data/matches";
+import { createPageMetadata } from "@/lib/seo";
 import { SOCIAL_LINKS } from "@/lib/social-links";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "World Cup 2026 Community",
   description:
-    "Join World Cup 2026 Hub community polls, fan updates, social sharing and football-first fan culture.",
-};
+    "Join the WC26 Hub community for World Cup 2026 chat, fan predictions, memes, polls and matchday chaos.",
+  path: "/community",
+});
 
 export default async function CommunityPage() {
   const polls = await getCommunityPagePolls();
@@ -49,6 +52,16 @@ export default async function CommunityPage() {
               copy: "Approved fan-made World Cup 2026 memes.",
             },
             {
+              href: "/community/meme-generator",
+              title: "Meme Generator",
+              copy: "Create simple WC26 fan memes.",
+            },
+            {
+              href: "/community/factions",
+              title: "Country Factions",
+              copy: "Choose your side for fan banter.",
+            },
+            {
               href: SOCIAL_LINKS.telegramChat,
               title: "Telegram Chat",
               copy: "Jump into the wider WC26 fan chat.",
@@ -70,6 +83,11 @@ export default async function CommunityPage() {
               href: "/fan-polls",
               title: "Fan Polls",
               copy: "Vote on tournament storylines.",
+            },
+            {
+              href: "/prediction-leaderboard",
+              title: "Prediction Leaderboard",
+              copy: "Track community prediction points.",
             },
           ].map((card) =>
             card.external ? (
@@ -99,6 +117,7 @@ export default async function CommunityPage() {
             ),
           )}
         </section>
+        <StickerPackSection />
 
         <div className="mt-8 grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
           <div className="grid gap-6">

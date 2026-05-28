@@ -9,16 +9,17 @@ import {
   getFixturesPageData,
   type FixtureFilters,
 } from "@/lib/data/worldcup";
-import { formatPublicVenueName } from "@/lib/venue-labels";
+import { createPageMetadata } from "@/lib/seo";
 import { formatDateOnly, formatLastUpdated } from "@/lib/worldcup/format";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
+export const metadata = createPageMetadata({
   title: "Fixtures",
   description:
     "World Cup 2026 fixtures by date, team, group, venue and kickoff time, with synced match status and tournament context.",
-};
+  path: "/fixtures",
+});
 
 type FixturesPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -44,6 +45,7 @@ export default async function FixturesPage({
   const { fixtures, teams, latestSync } = await getFixturesPageData();
 
   const filters: FixtureFilters = {
+    q: getParam(params, "q") || undefined,
     date: getParam(params, "date") || undefined,
     team: getParam(params, "team") || undefined,
     group: getParam(params, "group") || undefined,
@@ -67,6 +69,18 @@ export default async function FixturesPage({
 
       <Container className="pb-14">
         <form className="rounded-3xl border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-slate-950/30">
+          <label className="mb-4 grid gap-2">
+            <span className="text-xs font-bold uppercase tracking-[0.18em] text-lime-200">
+              Search fixtures
+            </span>
+            <input
+              name="q"
+              defaultValue={filters.q ?? ""}
+              placeholder="Search team, venue or group..."
+              className="min-h-12 rounded-2xl border border-lime-300/20 bg-slate-950 px-4 text-sm font-bold text-white outline-none placeholder:text-slate-500 focus:border-lime-300/70"
+            />
+          </label>
+
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
             <label className="grid gap-2">
               <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
@@ -152,7 +166,7 @@ export default async function FixturesPage({
                 <option value="">All venues</option>
                 {options.venues.map((venue) => (
                   <option key={venue} value={venue}>
-                    {formatPublicVenueName(venue)}
+                    {venue}
                   </option>
                 ))}
               </select>
@@ -187,6 +201,8 @@ export default async function FixturesPage({
           <p className="max-w-2xl text-xs font-semibold leading-5 text-slate-400 sm:text-right">
             Showing 72 group-stage fixtures. Knockout fixtures will populate as
             the bracket is confirmed. The full tournament has 104 matches.
+            Fixture and venue data is refreshed from provider syncs and may
+            update as official records change.
           </p>
           {activeFilterCount > 0 ? (
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">

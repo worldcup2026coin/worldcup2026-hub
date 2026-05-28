@@ -9,15 +9,17 @@ import {
   ensureCommunityProfile,
   getRecentChatMessages,
 } from "@/lib/community/data";
+import { createPageMetadata } from "@/lib/seo";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "WC26 Chat",
   description:
-    "Football-first tournament chat for World Cup 2026 fan chaos.",
-};
+    "Football-first World Cup 2026 community chat for matchday debate, fan banter and moderated WC26 Hub chaos.",
+  path: "/community/chat",
+});
 
 export default async function CommunityChatPage() {
   const supabase = await createClient();

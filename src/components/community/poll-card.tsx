@@ -116,6 +116,10 @@ export function PollCard({ poll, source }: PollCardProps) {
         </div>
       ) : (
         <div className="mt-5 grid gap-3">
+          <p className="rounded-2xl border border-emerald-300/15 bg-emerald-300/10 px-4 py-3 text-xs font-bold text-emerald-100">
+            Vote to reveal community results. Counts and percentages use real
+            recorded votes only.
+          </p>
           {currentPoll.parsedOptions.map((option) => (
             <label
               key={option.id}

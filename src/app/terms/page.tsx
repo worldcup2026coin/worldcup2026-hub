@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/worldcup/page-header";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Terms & Disclaimer",
   description:
     "Terms and disclaimer for World Cup 2026 Hub football content, predictions, polls and community features.",
-};
+  path: "/terms",
+});
 
 export default function TermsPage() {
   return (
@@ -35,12 +37,25 @@ export default function TermsPage() {
 
           <h2 className="mt-8 text-2xl font-black text-white">No promised outcomes</h2>
           <p className="mt-4">
-            Match outcomes, predictions, statistics, fixtures and live data may change. The site should not be treated as an official tournament source.
+            Match outcomes, predictions, statistics, fixtures, venues, live data
+            and football records may change. World Cup 2026 Hub does not
+            guarantee uptime, uninterrupted access, data accuracy or football
+            data accuracy. The site should not be treated as an official
+            tournament source.
           </p>
 
           <h2 className="mt-8 text-2xl font-black text-white">Community features</h2>
           <p className="mt-4">
-            Polls, email updates and social sharing are provided as football-first community features. Open comments are not enabled.
+            Chat, meme submissions, polls, email updates and social sharing are
+            provided as football-first community features. Users must not post
+            spam, scams, hate, harassment, impersonation, illegal content, NSFW
+            content, copyrighted material they do not have rights to use, or
+            official FIFA, World Cup, federation, sponsor or team marks.
+          </p>
+          <p className="mt-4">
+            We may hide, reject, delete, flag, moderate, mute or ban community
+            content and accounts without notice when needed to protect the site
+            or community.
           </p>
           <h2 className="mt-8 text-2xl font-black text-white">$WC26 meme token and crypto risk</h2>
           <p className="mt-4">

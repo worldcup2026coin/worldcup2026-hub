@@ -52,10 +52,16 @@ export function SiteHeader() {
           </nav>
 
           <div className="hidden shrink-0 items-center gap-2 xl:flex">
-            <Link href="/wc26" className="glow-button-primary px-4 py-2 text-xs">
+            <Link
+              href="/wc26"
+              className="rounded-full border border-lime-300/50 bg-lime-300 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-slate-950 shadow-[0_0_22px_rgba(163,255,18,0.34)] transition hover:bg-lime-200"
+            >
               $WC26
             </Link>
-            <Link href="/launch" className="glow-button-secondary px-4 py-2 text-xs">
+            <Link
+              href="/launch"
+              className="rounded-full border border-cyan-300/40 bg-cyan-300/10 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-cyan-100 transition hover:border-lime-300/60 hover:bg-lime-300/10 hover:text-lime-100"
+            >
               Launch
             </Link>
           </div>

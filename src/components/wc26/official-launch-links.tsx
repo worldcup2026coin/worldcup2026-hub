@@ -51,6 +51,24 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
       </div>
 
       <div className="mt-5 grid gap-3">
+        <div className="grid gap-3 sm:grid-cols-3">
+          {[
+            ["Blockchain", "Solana"],
+            ["Launch platform", "pump.fun"],
+            ["Launch model", "Fair launch / no presale"],
+          ].map(([label, value]) => (
+            <div
+              key={label}
+              className="rounded-2xl border border-white/10 bg-black/20 p-4"
+            >
+              <p className="text-[0.66rem] font-black uppercase tracking-[0.18em] text-slate-400">
+                {label}
+              </p>
+              <p className="mt-2 text-sm font-black text-white">{value}</p>
+            </div>
+          ))}
+        </div>
+
         <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-lime-200">
             Official contract
@@ -81,7 +99,7 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
             </a>
           ) : (
             <div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-3 text-center text-sm font-black uppercase tracking-[0.12em] text-cyan-100">
-              Official pump.fun: Coming at launch
+              Official link: Coming at launch
             </div>
           )}
           <a

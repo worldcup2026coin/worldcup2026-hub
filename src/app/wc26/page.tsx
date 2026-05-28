@@ -4,16 +4,19 @@ import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/worldcup/page-header";
 import { wc26Config } from "@/lib/wc26";
 import { MascotShowcase } from "@/components/wc26/mascot-showcase";
+import { StickerPackSection } from "@/components/wc26/sticker-pack-section";
 import {
   OfficialLaunchLinks,
   Wc26RiskWarning,
 } from "@/components/wc26/official-launch-links";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "$WC26 Community",
   description:
-    "$WC26 is a fan-made football meme community built around World Cup 2026 chaos, predictions, fan battles and matchday energy.",
-};
+    "$WC26 is the fan-made football meme community layer for World Cup 2026 — memes, fan chaos, launch alerts and matchday signal.",
+  path: "/wc26",
+});
 
 const pillars = [
   {
@@ -120,6 +123,7 @@ export default function $WC26Page() {
             ))}
           </div>
         </section>
+        <StickerPackSection />
         <MascotShowcase />
       </Container>
     </>
