@@ -41,6 +41,11 @@ export function MascotShowcase() {
             Unofficial fan art
           </span>
         </div>
+        <div className="mt-5">
+          <a href="/community/quiz" className="glow-button-secondary">
+            Take the mascot quiz
+          </a>
+        </div>
 
         <div className="mt-6 overflow-hidden rounded-[1.5rem] border border-lime-300/20 bg-black/40 shadow-[0_0_34px_rgba(163,255,18,0.12)]">
           <Image

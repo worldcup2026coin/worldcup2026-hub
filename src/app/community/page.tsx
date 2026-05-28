@@ -62,6 +62,11 @@ export default async function CommunityPage() {
               copy: "Choose your side for fan banter.",
             },
             {
+              href: "/community/quiz",
+              title: "Mascot Quiz",
+              copy: "Find out if you are Maple, Zayu or Clutch.",
+            },
+            {
               href: SOCIAL_LINKS.telegramChat,
               title: "Telegram Chat",
               copy: "Jump into the wider WC26 fan chat.",
