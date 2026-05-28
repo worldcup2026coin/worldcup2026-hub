@@ -62,6 +62,11 @@ export default async function CommunityPage() {
               copy: "Choose your side for fan banter.",
             },
             {
+              href: "/predictions/bracket-challenge",
+              title: "Bracket Challenge",
+              copy: "Build and share your WC26 champion call.",
+            },
+            {
               href: "/community/quiz",
               title: "Mascot Quiz",
               copy: "Find out if you are Maple, Zayu or Clutch.",

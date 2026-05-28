@@ -77,6 +77,27 @@ export default async function PredictionsPage() {
       <Container className="pb-14">
         <ResponsibleUseDisclaimer />
 
+        <section className="neon-panel mt-8 rounded-[2rem] p-6">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="neon-kicker">Bracket Challenge</p>
+              <h2 className="mt-4 text-3xl font-black uppercase text-white">
+                Build your World Cup 2026 path
+              </h2>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
+                Pick group qualifiers, choose the eight best third-placed teams,
+                build the knockout path and share your WC26 champion call.
+              </p>
+            </div>
+            <Link
+              href="/predictions/bracket-challenge"
+              className="glow-button-primary"
+            >
+              Build My Bracket
+            </Link>
+          </div>
+        </section>
+
         <section className="mt-8 grid gap-4 lg:grid-cols-4">
           {[
             [

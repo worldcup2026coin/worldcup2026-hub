@@ -475,6 +475,12 @@ export default async function PredictionLeaderboardPage({
               <Link href="/predictions" className="glow-button-secondary">
                 Official $WC26 AI reads
               </Link>
+              <Link
+                href="/predictions/bracket-challenge"
+                className="glow-button-secondary"
+              >
+                Bracket Challenge
+              </Link>
             </div>
           </div>
         </div>

@@ -19,6 +19,7 @@ const footerGroups: Array<{ title: string; tone: string; links: FooterLink[] }> 
       { href: "/groups", label: "Groups" },
       { href: "/teams", label: "Teams" },
       { href: "/predictions", label: "Predictions" },
+      { href: "/predictions/bracket-challenge", label: "Bracket Challenge" },
       { href: "/prediction-leaderboard", label: "Prediction Leaderboard" },
       { href: "/news", label: "News" },
       { href: "/host-cities", label: "Host Cities" },
@@ -57,6 +58,7 @@ const footerGroups: Array<{ title: string; tone: string; links: FooterLink[] }> 
       { href: "/community/quiz", label: "Mascot Quiz" },
       { href: "/community/factions", label: "Factions" },
       { href: "/fan-polls", label: "Fan Polls" },
+      { href: "/predictions/bracket-challenge", label: "Bracket Challenge" },
       { href: "/prediction-leaderboard", label: "Prediction Leaderboard" },
       { href: SOCIAL_LINKS.x, label: "X", external: true },
       {
