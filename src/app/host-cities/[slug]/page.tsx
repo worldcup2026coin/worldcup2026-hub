@@ -1,8 +1,18 @@
-import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import {
+  FanTravelNotes,
+  HostCityMatchList,
+  HostCityOverviewCard,
+  RelatedTournamentLinks,
+  fixtureMatchesHostCity,
+} from "@/components/venues/venue-content";
+import { getFixtures } from "@/lib/data/worldcup";
 import { hostCities } from "@/lib/data/venues";
 import { getCityImage, getTravelHighlights } from "@/lib/data/visuals";
+import { createPageMetadata } from "@/lib/seo";
+
+export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
   return hostCities.map((city) => ({
@@ -20,10 +30,28 @@ export async function generateMetadata({
 
   if (!city) return { title: "Host city not found" };
 
-  return {
+  return createPageMetadata({
     title: `${city.city} World Cup 2026 Host City Guide`,
-    description: `${city.city} host city guide for World Cup 2026 with ${city.stadium}, fixtures, timezone and fan context.`,
-  };
+    description: `Explore ${city.city}, a World Cup 2026 host city in ${city.country}. View fixtures at ${city.stadium}, fan notes and tournament context.`,
+    path: `/host-cities/${city.slug}`,
+  });
+}
+
+function cityHighlights(cityName: string) {
+  return [
+    {
+      title: "Football atmosphere",
+      copy: `${cityName} is part of the 2026 matchday map, with local fan energy shaped by the fixtures assigned to the city.`,
+    },
+    {
+      title: "Matchday base",
+      copy: "Use the stadium page, fixture list and local time labels together before planning matchday movement.",
+    },
+    {
+      title: "Before travelling",
+      copy: "Confirm tickets, kickoff time, transport options and official event guidance close to matchday.",
+    },
+  ];
 }
 
 export default async function HostCityPage({
@@ -39,11 +67,15 @@ export default async function HostCityPage({
     notFound();
   }
 
+  const [fixtures] = await Promise.all([getFixtures()]);
+  const cityFixtures = fixtures.filter((fixture) =>
+    fixtureMatchesHostCity(fixture, city),
+  );
   const heroImage = getCityImage(city);
   const travelHighlights = getTravelHighlights(city);
 
   return (
-    <main className="container mx-auto px-6 pt-12 pb-16">
+    <main className="container mx-auto px-4 pt-10 pb-16 sm:px-6">
       <section className="hero-panel overflow-hidden rounded-[2.5rem] p-0">
         <div className="relative min-h-80 p-6 sm:p-10">
           {heroImage ? (
@@ -53,13 +85,14 @@ export default async function HostCityPage({
               fill
               sizes="100vw"
               className="object-cover opacity-40"
+              priority
             />
           ) : null}
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-slate-950/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/75 to-slate-950/20" />
           <div className="relative z-10 max-w-5xl">
             <p className="neon-kicker">{city.country}</p>
 
-            <h1 className="mt-4 text-5xl font-black uppercase text-white">
+            <h1 className="mt-4 text-4xl font-black uppercase text-white sm:text-5xl">
               {city.city}
             </h1>
 
@@ -70,77 +103,57 @@ export default async function HostCityPage({
         </div>
       </section>
 
-      <div className="mt-10 grid gap-6 lg:grid-cols-3">
-        <div className="card-panel p-6">
-          <h2 className="text-xl font-bold">Tournament role</h2>
-
-          <ul className="mt-4 space-y-3 text-slate-300">
-            <li><strong>Stadium:</strong> {city.stadium}</li>
-            <li><strong>Matches:</strong> {city.matchesHosted}</li>
-            <li><strong>Timezone:</strong> {city.timezone}</li>
-            <li><strong>Role:</strong> {city.role}</li>
-          </ul>
-        </div>
-
-        <div className="card-panel p-6">
-          <h2 className="text-xl font-bold">Fan notes</h2>
-
-          <p className="mt-4 text-slate-300">
-            {city.fanNote}
-          </p>
-
-          <div className="mt-5 grid gap-2">
-            {travelHighlights.map((highlight) => (
-              <p
-                key={highlight}
-                className="rounded-2xl border border-cyan-300/15 bg-cyan-300/10 px-3 py-2 text-sm text-slate-200"
-              >
-                {highlight}
-              </p>
-            ))}
-          </div>
-        </div>
-
-        <div className="card-panel p-6">
-          <p className="neon-kicker">World Cup 2026</p>
-          <h2 className="mt-4 text-xl font-bold">Tournament facts</h2>
-
-          <div className="mt-5 grid grid-cols-2 gap-3">
-            {[
-              ["48", "Teams"],
-              ["104", "Matches"],
-              ["16", "Host cities"],
-              ["3", "Nations"],
-            ].map(([value, label]) => (
-              <div key={label} className="rounded-2xl border border-lime-300/20 bg-lime-300/10 p-4">
-                <p className="text-2xl font-black text-white">{value}</p>
-                <p className="mt-1 text-[0.65rem] font-black uppercase tracking-[0.16em] text-lime-200">
-                  {label}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="mt-8 grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+        <HostCityOverviewCard city={city} />
+        <HostCityMatchList fixtures={cityFixtures} />
       </div>
 
-      <div className="mt-12 rounded-3xl border border-cyan-300/20 bg-slate-950/45 p-6 shadow-[0_0_34px_rgba(34,211,238,0.08)]">
-        <p className="neon-kicker">Linked venue</p>
-        <h2 className="mt-3 text-2xl font-black uppercase text-white">
-          {city.stadium}
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-          Jump into the stadium profile for capacity, tournament role and venue context.
-        </p>
-        <Link
-          href={`/stadiums/${city.stadiumSlug}`}
-          className="mt-5 inline-flex text-sm font-black uppercase tracking-[0.14em] text-lime-200 transition hover:text-white"
-        >
-          View Stadium →
-        </Link>
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        <FanTravelNotes
+          title="Travel / fan notes"
+          notes={[
+            `Local timezone: ${city.timezone}. Re-check kickoff labels before travelling.`,
+            city.fanNote ||
+              "Use this city guide as a starting point and confirm local matchday guidance close to the fixture.",
+            ...travelHighlights,
+            "Arrive early and use official event guidance for final instructions.",
+          ]}
+        />
+
+        <section className="neon-card rounded-[2rem] p-6">
+          <p className="neon-kicker">City highlights</p>
+          <h2 className="mt-4 text-2xl font-black uppercase text-white">
+            What fans should know
+          </h2>
+          <div className="mt-5 grid gap-3">
+            {cityHighlights(city.city).map((highlight) => (
+              <article
+                key={highlight.title}
+                className="rounded-2xl border border-white/10 bg-white/[0.045] p-4"
+              >
+                <h3 className="font-black uppercase text-white">
+                  {highlight.title}
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-slate-300">
+                  {highlight.copy}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <div className="mt-8">
+        <RelatedTournamentLinks
+          links={[
+            { href: `/stadiums/${city.stadiumSlug}`, label: "Stadium page" },
+            { href: "/fixtures", label: "Fixtures" },
+            { href: "/host-nations", label: "Host nations" },
+            { href: "/predictions", label: "Predictions" },
+            { href: "/community", label: "Community" },
+          ]}
+        />
       </div>
     </main>
   );
 }
-
-
-

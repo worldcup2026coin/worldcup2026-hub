@@ -22,8 +22,6 @@ const cityImages: Record<string, string> = {
     "https://images.unsplash.com/photo-1575917649705-5b59aaa12e6b?auto=format&fit=crop&w=1600&q=80",
   boston:
     "https://images.unsplash.com/photo-1501979376754-2ff867a4f659?auto=format&fit=crop&w=1600&q=80",
-  dallas:
-    "https://images.unsplash.com/photo-1540155945626-4bb6b8e1bb1f?auto=format&fit=crop&w=1600&q=80",
   houston:
     "https://images.unsplash.com/photo-1530089711124-9ca31fb9e863?auto=format&fit=crop&w=1600&q=80",
   "kansas-city":

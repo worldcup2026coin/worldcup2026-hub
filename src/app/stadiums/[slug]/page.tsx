@@ -1,8 +1,18 @@
-import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import {
+  FanTravelNotes,
+  RelatedTournamentLinks,
+  StadiumMatchList,
+  StadiumOverviewCard,
+  fixtureMatchesStadium,
+} from "@/components/venues/venue-content";
+import { getFixtures } from "@/lib/data/worldcup";
 import { stadiums } from "@/lib/data/venues";
 import { getStadiumImage } from "@/lib/data/visuals";
+import { createPageMetadata } from "@/lib/seo";
+
+export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
   return stadiums.map((stadium) => ({
@@ -20,10 +30,29 @@ export async function generateMetadata({
 
   if (!stadium) return { title: "Stadium not found" };
 
-  return {
+  return createPageMetadata({
     title: `${stadium.name} World Cup 2026 Stadium Guide`,
-    description: `${stadium.name} in ${stadium.city} host guide with capacity, timezone, matches and World Cup 2026 venue context.`,
-  };
+    description: `Explore ${stadium.name}, a World Cup 2026 host stadium in ${stadium.city}. View fixtures, city context, fan notes and tournament guide.`,
+    path: `/stadiums/${stadium.slug}`,
+  });
+}
+
+function tournamentRoleCopy(role: string) {
+  const value = role.toLowerCase();
+
+  if (value.includes("opening")) {
+    return "This venue is listed in the project data as the opening match host.";
+  }
+
+  if (value.includes("final")) {
+    return "This venue is listed in the project data as the final host.";
+  }
+
+  if (value.includes("knockout")) {
+    return "This venue is listed for group-stage and knockout tournament use.";
+  }
+
+  return "Part of the 2026 host venue network.";
 }
 
 export default async function StadiumPage({
@@ -39,10 +68,14 @@ export default async function StadiumPage({
     notFound();
   }
 
+  const [fixtures] = await Promise.all([getFixtures()]);
+  const stadiumFixtures = fixtures.filter((fixture) =>
+    fixtureMatchesStadium(fixture, stadium),
+  );
   const heroImage = getStadiumImage(stadium);
 
   return (
-    <main className="container mx-auto px-6 pt-12 pb-16">
+    <main className="container mx-auto px-4 pt-10 pb-16 sm:px-6">
       <section className="hero-panel overflow-hidden rounded-[2.5rem] p-0">
         <div className="relative min-h-80 p-6 sm:p-10">
           {heroImage ? (
@@ -52,13 +85,16 @@ export default async function StadiumPage({
               fill
               sizes="100vw"
               className="object-cover opacity-40"
+              priority
             />
           ) : null}
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-slate-950/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/75 to-slate-950/20" />
           <div className="relative z-10 max-w-5xl">
-            <p className="neon-kicker">{stadium.country}</p>
+            <p className="neon-kicker">
+              {stadium.city} · {stadium.country}
+            </p>
 
-            <h1 className="mt-4 text-5xl font-black uppercase text-white">
+            <h1 className="mt-4 text-4xl font-black uppercase text-white sm:text-5xl">
               {stadium.name}
             </h1>
 
@@ -74,64 +110,40 @@ export default async function StadiumPage({
         </div>
       </section>
 
-      <div className="mt-10 grid gap-6 lg:grid-cols-3">
-        <div className="card-panel p-6">
-          <h2 className="text-xl font-bold">Tournament information</h2>
+      <div className="mt-8 grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+        <StadiumOverviewCard stadium={stadium} />
+        <StadiumMatchList fixtures={stadiumFixtures} />
+      </div>
 
-          <ul className="mt-4 space-y-3 text-slate-300">
-            <li><strong>Capacity:</strong> {stadium.capacity}</li>
-            <li><strong>Matches:</strong> {stadium.matchesHosted}</li>
-            <li><strong>Timezone:</strong> {stadium.timezone}</li>
-            <li><strong>Role:</strong> {stadium.role}</li>
-            <li><strong>City:</strong> {stadium.city}</li>
-          </ul>
-        </div>
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        <FanTravelNotes />
 
-        <div className="card-panel p-6">
-          <h2 className="text-xl font-bold">Host city</h2>
-
-          <p className="mt-4 text-slate-300">
-            {stadium.city}
+        <section className="neon-card rounded-[2rem] p-6">
+          <p className="neon-kicker">Tournament role</p>
+          <h2 className="mt-4 text-2xl font-black uppercase text-white">
+            What this venue means
+          </h2>
+          <p className="mt-5 text-sm leading-6 text-slate-300">
+            {tournamentRoleCopy(stadium.role)}
           </p>
+          <p className="mt-4 text-sm leading-6 text-slate-300">
+            Fixture assignments and venue details may update as provider records
+            refresh.
+          </p>
+        </section>
+      </div>
 
-          <div className="mt-6 rounded-3xl border border-cyan-300/20 bg-slate-950/45 p-5 shadow-[0_0_34px_rgba(34,211,238,0.08)]">
-            <p className="neon-kicker">City guide</p>
-            <p className="mt-3 text-sm leading-6 text-slate-300">
-              See timezone, fan notes and city-level tournament context for this venue.
-            </p>
-            <Link
-              href={`/host-cities/${stadium.citySlug}`}
-              className="mt-5 inline-flex text-sm font-black uppercase tracking-[0.14em] text-lime-200 transition hover:text-white"
-            >
-              View Host City →
-            </Link>
-          </div>
-        </div>
-
-        <div className="card-panel p-6">
-          <p className="neon-kicker">World Cup 2026</p>
-          <h2 className="mt-4 text-xl font-bold">Tournament facts</h2>
-
-          <div className="mt-5 grid grid-cols-2 gap-3">
-            {[
-              ["48", "Teams"],
-              ["104", "Matches"],
-              ["16", "Host cities"],
-              ["3", "Nations"],
-            ].map(([value, label]) => (
-              <div key={label} className="rounded-2xl border border-lime-300/20 bg-lime-300/10 p-4">
-                <p className="text-2xl font-black text-white">{value}</p>
-                <p className="mt-1 text-[0.65rem] font-black uppercase tracking-[0.16em] text-lime-200">
-                  {label}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
+      <div className="mt-8">
+        <RelatedTournamentLinks
+          links={[
+            { href: `/host-cities/${stadium.citySlug}`, label: "Host city" },
+            { href: "/fixtures", label: "Fixtures" },
+            { href: "/groups", label: "Groups" },
+            { href: "/predictions", label: "Predictions" },
+            { href: "/stadiums", label: "Stadium index" },
+          ]}
+        />
       </div>
     </main>
   );
 }
-
-
-
