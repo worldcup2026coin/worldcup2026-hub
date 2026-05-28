@@ -56,3 +56,7 @@ wc26-mascot-backup-*/
 
 # Local automated code backups
 *.logo-backup-*
+
+# Local review screenshots and safety patches
+review-screenshots/
+safety-before-reset-*.patch
