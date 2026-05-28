@@ -1,3 +1,4 @@
+import { SOCIAL_LINKS } from "@/lib/social-links";
 import Image from "next/image";
 
 export function CommunityCTA() {
@@ -47,6 +48,15 @@ export function CommunityCTA() {
           />
         </div>
       </div>
-    </section>
+    <a
+  href={SOCIAL_LINKS.x}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex items-center justify-center rounded-full border border-cyan-300/30 bg-cyan-300/10 px-5 py-3 text-sm font-black uppercase tracking-[0.18em] text-cyan-100 transition hover:border-lime-300/70 hover:bg-lime-300/15 hover:text-lime-100"
+>
+  Follow @WC26_Hub on X
+</a>
+</section>
   );
 }
+

@@ -1,4 +1,5 @@
-﻿import Link from "next/link";
+import { SOCIAL_LINKS } from "@/lib/social-links";
+import Link from "next/link";
 import { Container } from "@/components/ui/container";
 
 const tournamentLinks = [
@@ -126,3 +127,14 @@ export function SiteFooter() {
 }
 
 
+
+<div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
+  <a
+    href={SOCIAL_LINKS.x}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-4 py-2 font-black uppercase tracking-[0.18em] text-cyan-100 transition hover:border-lime-300/70 hover:bg-lime-300/15 hover:text-lime-100"
+  >
+    Follow @WC26_Hub on X
+  </a>
+</div>
