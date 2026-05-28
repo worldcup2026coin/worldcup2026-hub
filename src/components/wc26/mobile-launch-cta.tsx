@@ -5,11 +5,23 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { wc26Config } from "@/lib/wc26";
 
+const excludedRoutePrefixes = [
+  "/fixtures",
+  "/community/quiz",
+  "/community/meme-generator",
+  "/predictions/bracket-challenge",
+  "/community/chat",
+  "/community/memes",
+  "/community/profile",
+  "/auth/login",
+  "/account",
+];
+
 export function MobileLaunchCta() {
   const [copied, setCopied] = useState(false);
   const pathname = usePathname();
 
-  if (pathname.startsWith("/fixtures")) {
+  if (excludedRoutePrefixes.some((route) => pathname.startsWith(route))) {
     return null;
   }
 
