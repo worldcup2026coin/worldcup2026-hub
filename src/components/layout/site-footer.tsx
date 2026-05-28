@@ -1,3 +1,4 @@
+import { SocialLinksRow } from "@/components/layout/social-links-row";
 import { SOCIAL_LINKS } from "@/lib/social-links";
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
@@ -119,7 +120,7 @@ export function SiteFooter() {
 
         <div className="mt-6 flex flex-col gap-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 World Cup 2026 Hub · built for tournament mode.</p>
-          <p>Only trust $WC26 links published on this website.</p>
+          <p>Only trust $WC26 links published on this website.</p><div className="mt-5"><SocialLinksRow /></div><p className="sr-only"></p>
         </div>
       </Container>
     </footer>
@@ -138,3 +139,5 @@ export function SiteFooter() {
     Follow @WC26_Hub on X
   </a>
 </div>
+
+
