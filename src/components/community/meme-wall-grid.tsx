@@ -12,10 +12,10 @@ export function MemeWallGrid({
     return (
       <div className="rounded-[2rem] border border-dashed border-white/15 bg-white/[0.035] p-8 text-center">
         <h2 className="text-2xl font-black uppercase text-white">
-          No approved memes yet
+          Approved community memes will appear here
         </h2>
         <p className="mt-2 text-sm font-semibold text-slate-300">
-          Submitted memes appear here after moderation approval.
+          Submit fan-made memes for review.
         </p>
       </div>
     );

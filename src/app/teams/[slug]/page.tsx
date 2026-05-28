@@ -23,6 +23,7 @@ import {
   formatDateTime,
   formatVenueDateTime,
 } from "@/lib/worldcup/format";
+import { formatPublicVenueName } from "@/lib/venue-labels";
 
 export const dynamic = "force-dynamic";
 
@@ -311,7 +312,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
                       Venue
                     </p>
                     <p className="mt-2 font-black text-white">
-                      {nextFixture.venue_name ?? "Venue TBC"}
+                      {formatPublicVenueName(nextFixture.venue_name) ?? "Venue TBC"}
                     </p>
                     <p className="mt-1 text-sm text-slate-400">
                       {nextFixture.venue_city ?? "Host city TBC"}

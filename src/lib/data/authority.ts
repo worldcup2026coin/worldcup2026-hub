@@ -10,7 +10,7 @@ export const tournamentTimeline = [
     label: "Opening match",
     date: "11 June 2026",
     title: "Mexico City starts the tournament",
-    copy: "The first match opens the 48-team era at Estadio Azteca.",
+    copy: "The first match opens the 48-team era at Mexico City Stadium / Estadio Azteca.",
   },
   {
     label: "Group stage",

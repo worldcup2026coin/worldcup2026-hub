@@ -4,6 +4,10 @@ import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/worldcup/page-header";
 import { wc26Config } from "@/lib/wc26";
 import { MascotShowcase } from "@/components/wc26/mascot-showcase";
+import {
+  OfficialLaunchLinks,
+  Wc26RiskWarning,
+} from "@/components/wc26/official-launch-links";
 
 export const metadata: Metadata = {
   title: "$WC26 Community",
@@ -62,6 +66,10 @@ export default function $WC26Page() {
                 </Link>
               </div>
 
+              <div className="mt-5">
+                <Wc26RiskWarning />
+              </div>
+
               <p className="mt-5 max-w-3xl text-xs font-semibold leading-5 text-slate-400">
                 $WC26 is unofficial and not affiliated with FIFA, World Cup, national
                 teams, players, sponsors or governing bodies. Crypto tokens are
@@ -69,30 +77,7 @@ export default function $WC26Page() {
               </p>
             </div>
 
-            <div className="neon-card rounded-[2rem] p-5">
-              <p className="neon-badge neon-badge-pink">Token status</p>
-              <h2 className="mt-4 text-3xl font-black uppercase text-white">
-                {wc26Config.launchStatus}
-              </h2>
-              <div className="mt-5 grid gap-3">
-                <div className="rounded-2xl border border-lime-300/20 bg-lime-300/10 p-4">
-                  <p className="text-xs font-black uppercase tracking-[0.18em] text-lime-200">
-                    Ticker
-                  </p>
-                  <p className="mt-1 text-2xl font-black text-white">
-                    {wc26Config.ticker}
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 p-4">
-                  <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">
-                    Contract
-                  </p>
-                  <p className="mt-1 break-all text-sm font-black text-white">
-                    {wc26Config.contractAddress}
-                  </p>
-                </div>
-              </div>
-            </div>
+            <OfficialLaunchLinks />
           </div>
         </section>
 

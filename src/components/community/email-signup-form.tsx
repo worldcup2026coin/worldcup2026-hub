@@ -88,7 +88,7 @@ export function EmailSignupForm({
             onChange={(event) => setConsent(event.target.checked)}
             className="mt-1 accent-emerald-400"
           />
-          I agree to receive World Cup 2026 Hub updates. I understand I can unsubscribe later.
+          I agree to receive World Cup 2026 Hub updates. Every marketing email will include an unsubscribe link.
         </label>
 
         <button

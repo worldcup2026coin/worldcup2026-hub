@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/worldcup/page-header";
+import {
+  OfficialLaunchLinks,
+  Wc26RiskWarning,
+} from "@/components/wc26/official-launch-links";
 import { wc26Config } from "@/lib/wc26";
 
 export const metadata: Metadata = {
@@ -60,8 +64,15 @@ export default function HowToBuyPage() {
                 Back to $WC26
               </Link>
             </div>
+            <div className="mt-5">
+              <Wc26RiskWarning />
+            </div>
           </div>
         </section>
+
+        <div className="mt-8">
+          <OfficialLaunchLinks />
+        </div>
 
         <section className="mt-8 grid gap-6 lg:grid-cols-2">
           {steps.map((step, index) => (

@@ -6,6 +6,10 @@ import {
   getFixtureHostCity,
   getFixtureVenueTimeZone,
 } from "@/lib/worldcup/format";
+import {
+  formatPublicVenueName,
+  venueNamingHelper,
+} from "@/lib/venue-labels";
 
 type MatchVenueContextProps = {
   fixture: Fixture;
@@ -43,6 +47,8 @@ export function MatchVenueContext({ fixture }: MatchVenueContextProps) {
   const venueTimeZone = getFixtureVenueTimeZone(fixture);
 
   const venueLocalTime = formatVenueDateTime(fixture);
+  const venueName = formatPublicVenueName(fixture.venue_name ?? hostCity?.stadium);
+  const helper = venueNamingHelper(fixture.venue_name);
   const siteKickoff = formatDateTime(fixture.match_date, "Europe/Dublin", {
     includeTimeZoneName: true,
   });
@@ -95,11 +101,16 @@ export function MatchVenueContext({ fixture }: MatchVenueContextProps) {
             Venue
           </p>
           <h3 className="mt-3 text-2xl font-black uppercase text-white">
-            {fixture.venue_name ?? hostCity?.stadium ?? "Venue TBC"}
+            {venueName ?? "Venue TBC"}
           </h3>
           <p className="mt-2 text-sm leading-6 text-slate-300">
             {fixture.venue_city ?? hostCity?.city ?? "Host city TBC"}
             {hostCity ? ` · ${hostCity.country}` : ""}
+            {helper ? (
+              <span className="mt-1 block text-xs text-slate-500">
+                {helper}
+              </span>
+            ) : null}
           </p>
         </div>
 

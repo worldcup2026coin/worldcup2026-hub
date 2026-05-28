@@ -2,6 +2,10 @@
 import type { Fixture } from "@/lib/data/matches";
 import Image from "next/image";
 import { formatFixtureTimes } from "@/lib/worldcup/format";
+import {
+  formatPublicVenueName,
+  venueNamingHelper,
+} from "@/lib/venue-labels";
 import { getMatchStatusInfo } from "@/lib/worldcup/match-status";
 import { MatchStatusBadge } from "@/components/matches/match-status-badge";
 
@@ -65,6 +69,8 @@ function ScoreBox({ fixture }: { fixture: Fixture }) {
 
 export function MatchHeader({ fixture }: MatchHeaderProps) {
   const times = formatFixtureTimes(fixture);
+  const venueName = formatPublicVenueName(fixture.venue_name);
+  const helper = venueNamingHelper(fixture.venue_name);
 
   return (
     <section className="hero-panel w-full max-w-full overflow-hidden rounded-[2.25rem] p-6 sm:p-10">
@@ -109,8 +115,13 @@ export function MatchHeader({ fixture }: MatchHeaderProps) {
             Venue
           </p>
           <p className="mt-2 font-semibold text-white">
-            {fixture.venue_name ?? "Venue TBC"}
+            {venueName ?? "Venue TBC"}
             {fixture.venue_city ? `  -  ${fixture.venue_city}` : ""}
+            {helper ? (
+              <span className="mt-1 block text-xs text-slate-400">
+                {helper}
+              </span>
+            ) : null}
           </p>
         </div>
 

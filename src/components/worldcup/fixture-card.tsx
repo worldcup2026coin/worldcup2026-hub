@@ -8,6 +8,10 @@ import {
   getFixtureDisplayStatus,
   teamSlug,
 } from "@/lib/worldcup/format";
+import {
+  formatPublicVenueName,
+  venueNamingHelper,
+} from "@/lib/venue-labels";
 import { FixtureStatusBadge } from "@/components/worldcup/fixture-status-badge";
 import { TeamFlag } from "@/components/worldcup/team-flag";
 
@@ -101,6 +105,8 @@ export function FixtureCard({ fixture }: FixtureCardProps) {
     away_team_name: fixture.away_team_name,
   });
   const times = formatFixtureTimes(fixture);
+  const venueName = formatPublicVenueName(fixture.venue_name);
+  const helper = venueNamingHelper(fixture.venue_name);
 
   return (
     <article className="neon-card group w-full max-w-full rounded-[2rem] p-5">
@@ -134,8 +140,13 @@ export function FixtureCard({ fixture }: FixtureCardProps) {
       <div className="mt-5 grid gap-2 text-xs font-semibold text-slate-400 sm:grid-cols-2">
         <p>
           <span className="text-cyan-200">Venue:</span>{" "}
-          {fixture.venue_name ?? "Venue TBC"}
+          {venueName ?? "Venue TBC"}
           {fixture.venue_city ? `, ${fixture.venue_city}` : ""}
+          {helper ? (
+            <span className="mt-1 block text-[0.7rem] text-slate-500">
+              {helper}
+            </span>
+          ) : null}
         </p>
         <p>
           <span className="text-lime-200">Site time:</span>{" "}

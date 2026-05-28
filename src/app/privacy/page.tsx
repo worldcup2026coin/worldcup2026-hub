@@ -37,7 +37,7 @@ export default function PrivacyPage() {
 
           <h2 className="mt-8 text-2xl font-black text-white">Email updates</h2>
           <p className="mt-4">
-            Email signup is optional. Users should only be contacted for World Cup 2026 Hub updates and related community features. An unsubscribe process should be added before sending regular campaigns.
+            Email signup is optional. Users should only be contacted for World Cup 2026 Hub updates and related community features. Every marketing email will include an unsubscribe link.
           </p>
 
           <h2 className="mt-8 text-2xl font-black text-white">Contact</h2>

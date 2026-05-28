@@ -39,10 +39,10 @@ export function ChatMessageList({
     return (
       <div className="rounded-[2rem] border border-dashed border-white/15 bg-white/[0.035] p-8 text-center">
         <h2 className="text-2xl font-black uppercase text-white">
-          No messages yet
+          Opening signal
         </h2>
         <p className="mt-2 text-sm font-semibold text-slate-300">
-          Start the fan signal.
+          Be the first to start the World Cup chaos.
         </p>
       </div>
     );

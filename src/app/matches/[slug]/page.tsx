@@ -25,6 +25,7 @@ import {
 import { getPublishedPolls } from "@/lib/data/community";
 import { formatDateOnly } from "@/lib/worldcup/format";
 import { getFixtureVenueTimeZone } from "@/lib/worldcup/format";
+import { formatPublicVenueName } from "@/lib/venue-labels";
 import { breadcrumbJsonLd, sportsEventJsonLd } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -141,7 +142,7 @@ export default async function MatchPage({ params }: MatchPageProps) {
               fixture.away_team_name ?? "Away"
             }`,
             startDate: fixture.match_date,
-            locationName: fixture.venue_name,
+            locationName: formatPublicVenueName(fixture.venue_name),
             locationCity: fixture.venue_city,
             homeTeam: fixture.home_team_name,
             awayTeam: fixture.away_team_name,
@@ -175,7 +176,11 @@ export default async function MatchPage({ params }: MatchPageProps) {
           <MatchCountdown matchDate={fixture.match_date} label="Match countdown" />
           <WorldClock
             matchDate={fixture.match_date}
-            venueLabel={fixture.venue_city ?? fixture.venue_name ?? "Venue"}
+            venueLabel={
+              fixture.venue_city ??
+              formatPublicVenueName(fixture.venue_name) ??
+              "Venue"
+            }
             venueTimeZone={getFixtureVenueTimeZone(fixture)}
           />
         </div>

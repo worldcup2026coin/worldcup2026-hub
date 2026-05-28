@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/worldcup/page-header";
-import { wc26Config } from "@/lib/wc26";
+import {
+  OfficialLaunchLinks,
+  Wc26RiskWarning,
+} from "@/components/wc26/official-launch-links";
 
 export const metadata: Metadata = {
   title: "$WC26 Launch",
@@ -52,22 +55,12 @@ export default function LaunchPage() {
                   Community
                 </Link>
               </div>
-            </div>
-
-            <div className="neon-card rounded-[2rem] p-5">
-              <p className="neon-badge neon-badge-cyan">Current status</p>
-              <h2 className="mt-4 text-3xl font-black uppercase text-white">
-                {wc26Config.launchStatus}
-              </h2>
-              <div className="mt-5 rounded-2xl border border-cyan-300/20 bg-cyan-300/10 p-4">
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">
-                  Official contract
-                </p>
-                <p className="mt-2 break-all text-sm font-black text-white">
-                  {wc26Config.contractAddress}
-                </p>
+              <div className="mt-5">
+                <Wc26RiskWarning />
               </div>
             </div>
+
+            <OfficialLaunchLinks />
           </div>
         </section>
 

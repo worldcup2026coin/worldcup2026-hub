@@ -9,6 +9,7 @@ import {
   getFixturesPageData,
   type FixtureFilters,
 } from "@/lib/data/worldcup";
+import { formatPublicVenueName } from "@/lib/venue-labels";
 import { formatDateOnly, formatLastUpdated } from "@/lib/worldcup/format";
 
 export const dynamic = "force-dynamic";
@@ -151,7 +152,7 @@ export default async function FixturesPage({
                 <option value="">All venues</option>
                 {options.venues.map((venue) => (
                   <option key={venue} value={venue}>
-                    {venue}
+                    {formatPublicVenueName(venue)}
                   </option>
                 ))}
               </select>
@@ -182,6 +183,10 @@ export default async function FixturesPage({
             </span>{" "}
             of <span className="font-black text-white">{fixtures.length}</span>{" "}
             fixtures
+          </p>
+          <p className="max-w-2xl text-xs font-semibold leading-5 text-slate-400 sm:text-right">
+            Showing 72 group-stage fixtures. Knockout fixtures will populate as
+            the bracket is confirmed. The full tournament has 104 matches.
           </p>
           {activeFilterCount > 0 ? (
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">

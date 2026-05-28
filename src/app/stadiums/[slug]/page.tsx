@@ -65,6 +65,11 @@ export default async function StadiumPage({
             <p className="mt-4 text-xl text-lime-300">{stadium.role}</p>
 
             <p className="mt-6 max-w-3xl text-slate-300">{stadium.summary}</p>
+            {stadium.slug === "estadio-azteca" ? (
+              <p className="mt-3 max-w-3xl text-sm font-semibold text-slate-400">
+                Also known locally by current naming rights.
+              </p>
+            ) : null}
           </div>
         </div>
       </section>

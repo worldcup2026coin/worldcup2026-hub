@@ -17,6 +17,8 @@ export const metadata = {
   description: "World Cup 2026 groups and standings from Supabase.",
 };
 
+const realGroupPattern = /^Group [A-L]$/;
+
 function QualificationRulesSummary() {
   const rules = [
     "Top two teams in each group qualify automatically for the Round of 32.",
@@ -58,7 +60,9 @@ export default async function GroupsPage() {
     getFixtures(),
   ]);
   const groupedStandings = groupStandingsByGroup(standings);
-  const groupNames = Object.keys(groupedStandings).sort();
+  const groupNames = Object.keys(groupedStandings)
+    .filter((groupName) => realGroupPattern.test(groupName))
+    .sort();
 
   return (
     <>

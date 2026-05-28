@@ -32,7 +32,7 @@ export const hostCities: HostCity[] = [
     city: "Mexico City",
     country: "Mexico",
     stadiumSlug: "estadio-azteca",
-    stadium: "Estadio Azteca",
+    stadium: "Mexico City Stadium / Estadio Azteca",
     timezone: "America/Mexico_City",
     matchesHosted: "Opening match plus group-stage and knockout fixtures",
     role: "Opening match host",
@@ -224,7 +224,8 @@ export const hostCities: HostCity[] = [
 export const stadiums: Stadium[] = [
   {
     slug: "estadio-azteca",
-    name: "Estadio Azteca",
+    name: "Mexico City Stadium / Estadio Azteca",
+    tournamentName: "Estadio Azteca",
     citySlug: "mexico-city",
     city: "Mexico City",
     country: "Mexico",
