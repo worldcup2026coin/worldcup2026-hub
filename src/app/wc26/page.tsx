@@ -31,7 +31,7 @@ const pillars = [
   },
   {
     title: "Launch coordination",
-    text: "One official place for launch status, contract details, community links and high-risk token warnings.",
+    text: "One verified $WC26 place for launch status, contract details, community links and high-risk token warnings.",
   },
 ];
 

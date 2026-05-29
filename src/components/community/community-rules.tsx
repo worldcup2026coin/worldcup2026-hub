@@ -13,7 +13,7 @@ export function CommunityRules() {
           "Respect other fans, countries, players and teams.",
           "Keep posts and replies football-focused.",
           "No spam, harassment, abuse or unsafe content.",
-          "Open comments are not enabled yet. Moderation tools come before public discussion features.",
+          "Community spaces are moderated to keep the hub football-first, safe and useful as the tournament grows.",
         ].map((item) => (
           <li key={item} className="rounded-2xl border border-white/10 bg-slate-950/45 p-4">
             {item}

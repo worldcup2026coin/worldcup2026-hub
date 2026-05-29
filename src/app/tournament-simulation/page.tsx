@@ -37,9 +37,15 @@ export default function TournamentSimulationPage() {
               </h2>
               <p className="mt-3 text-sm leading-6 text-slate-300">{copy}</p>
               <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950/45 p-4 text-sm text-slate-300">
-                Interactive controls can be added later when the bracket data
-                is final and reviewed.
+                Use the Bracket Challenge to build and share your full
+                tournament path.
               </div>
+              <Link
+                href="/predictions/bracket-challenge"
+                className="link-neon mt-4 inline-flex text-sm"
+              >
+                Build your bracket {"->"}
+              </Link>
             </article>
           ))}
         </section>

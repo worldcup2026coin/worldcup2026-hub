@@ -28,19 +28,6 @@ export const metadata: Metadata = createPageMetadata({
   path: "/",
 });
 
-function formatDateTime(value: string | null) {
-  if (!value) return "Date TBC";
-
-  return new Intl.DateTimeFormat("en-GB", {
-    weekday: "short",
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(value));
-}
-
 function matchHref(fixture: HomeFixture) {
   return `/matches/${fixtureSlug({
     api_fixture_id: fixture.api_fixture_id,
@@ -214,14 +201,9 @@ return (
                   <StatTile label="Groups" value="12" tone="lime" />
                 </div>
 
-                {data.latestSyncLog ? (
-                  <p className="mt-5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-                    Data last synced:{" "}
-                    {formatDateTime(data.latestSyncLog.ended_at ?? data.latestSyncLog.started_at)}
-                    {"  -  "}
-                    {data.latestSyncLog.status}
-                  </p>
-                ) : null}
+                <p className="mt-5 text-xs font-semibold leading-5 text-slate-500">
+                  Provider records refresh as tournament data updates.
+                </p>
               </div>
 
               <div className="grid gap-4">
@@ -321,7 +303,7 @@ return (
           <div className="neon-panel rounded-[2rem] p-5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <p className="neon-kicker">Matchday Launch fixture</p>
+                <p className="neon-kicker">Opening week fixtures</p>
                 <h2 className="mt-4 text-3xl font-black uppercase text-white">
                   Opening week fixtures
                 </h2>

@@ -11,7 +11,7 @@ import { createPageMetadata } from "@/lib/seo";
 export const metadata: Metadata = createPageMetadata({
   title: "How to Buy $WC26",
   description:
-    "Safer buying guide for $WC26. Verify the official contract here. Never trust DMs, screenshots or search results.",
+    "Safer buying guide for $WC26. Verify the $WC26 contract here. Never trust DMs, screenshots or search results.",
   path: "/how-to-buy",
   image: "/og-wc26-launch.png",
 });
@@ -19,7 +19,7 @@ export const metadata: Metadata = createPageMetadata({
 const checklist = [
   {
     title: "Start here only",
-    text: "Use this website and the official launch page as your starting point.",
+    text: "Use this website and the verified $WC26 launch page as your starting point.",
   },
   {
     title: "Confirm status is live",
@@ -27,11 +27,11 @@ const checklist = [
   },
   {
     title: "Copy contract here",
-    text: "Copy the contract from this site once the official launch block is live.",
+    text: "Copy the contract from this site once the verified $WC26 launch block is live.",
   },
   {
-    title: "Open official pump.fun",
-    text: "Use the official pump.fun link from this site, not search results or DMs.",
+    title: "Open verified pump.fun",
+    text: "Use the verified pump.fun link from this site, not search results or DMs.",
   },
   {
     title: "Compare ticker and contract",
@@ -42,7 +42,7 @@ const checklist = [
     text: "Meme tokens are volatile and can lose all value.",
   },
   {
-    title: "Save official links",
+    title: "Save verified links",
     text: "Bookmark the website, X and Telegram announcements before launch day noise hits.",
   },
   {
@@ -57,15 +57,15 @@ const checklist = [
 
 const buyingSteps = [
   {
-    title: "Start from the official website only",
+    title: "Start from this website only",
     text: "Begin at https://www.worldcup2026coin.com/launch. Do not use random search results, DMs, screenshots, replies, quote tweets, fake Telegram admins or copied links from strangers.",
   },
   {
     title: "Confirm launch status is LIVE",
-    text: "$WC26 is not live unless the launch block says LIVE and shows the contract plus the official pump.fun link.",
+    text: "$WC26 is not live unless the launch block says LIVE and shows the contract plus the verified pump.fun link.",
   },
   {
-    title: "Copy the official contract",
+    title: "Copy the verified contract",
     text: "Copy the contract address from this website. After pasting it anywhere, check the first and last characters before you continue.",
   },
   {
@@ -103,7 +103,7 @@ const buyingSteps = [
   },
   {
     title: "After buying",
-    text: "Save official links. Join Telegram announcements and chat. Use chart and Solscan links from the website once available. Do not trust DMs about support, bonus allocation, claim, airdrop, migration or wallet verification.",
+    text: "Save verified links. Join Telegram announcements and chat. Use chart and Solscan links from the website once available. Do not trust DMs about support, bonus allocation, claim, airdrop, migration or wallet verification.",
   },
 ];
 
@@ -113,8 +113,8 @@ export default function HowToBuyPage() {
       <PageHeader
         eyebrow="How to buy"
         title="How to buy $WC26 safely"
-        description="A beginner-friendly guide for checking official links, avoiding fake contracts and understanding the risks before touching any token."
-        meta="Beginner guide · Official links only · High-risk crypto"
+        description="A beginner-friendly guide for checking verified $WC26 links, avoiding fake contracts and understanding the risks before touching any token."
+        meta="Beginner guide · Verified $WC26 links only · High-risk crypto"
       />
 
       <Container className="pb-14">
@@ -132,7 +132,7 @@ export default function HowToBuyPage() {
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <Link href="/launch" className="glow-button-primary">
-                Official launch page
+                Verified $WC26 launch page
               </Link>
               <Link href="/wc26" className="glow-button-secondary">
                 Back to $WC26
@@ -181,9 +181,9 @@ export default function HowToBuyPage() {
               How to buy $WC26 when live
             </h2>
             <p className="mt-4 text-sm leading-6 text-slate-300">
-              Use this flow only after the official launch status says LIVE. If
+              Use this flow only after the verified $WC26 launch status says LIVE. If
               the contract or pump.fun link is still marked as coming at launch,
-              there is nothing official to buy yet.
+              there is nothing verified to buy yet.
             </p>
           </div>
 

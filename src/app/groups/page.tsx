@@ -9,7 +9,7 @@ import {
   groupStandingsByGroup,
 } from "@/lib/data/worldcup";
 import { createPageMetadata } from "@/lib/seo";
-import { formatLastUpdated, getFixtureDisplayStatus } from "@/lib/worldcup/format";
+import { getFixtureDisplayStatus } from "@/lib/worldcup/format";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +27,7 @@ function QualificationRulesSummary() {
     "Top two teams in each group qualify automatically for the Round of 32.",
     "The eight best third-placed teams also advance.",
     "Group tables update as results come in.",
+    "Provider records refresh as tournament data updates.",
   ];
 
   return (
@@ -58,7 +59,7 @@ function QualificationRulesSummary() {
 }
 
 export default async function GroupsPage() {
-  const [{ standings, latestSync }, fixtures] = await Promise.all([
+  const [{ standings }, fixtures] = await Promise.all([
     getGroupsPageData(),
     getFixtures(),
   ]);
@@ -73,7 +74,7 @@ export default async function GroupsPage() {
         eyebrow="Groups"
         title="Groups and standings"
         description="Synced group tables, teams, upcoming fixtures and qualification rules for World Cup 2026."
-        meta={`Last standings sync: ${formatLastUpdated(latestSync?.ended_at)}`}
+        meta="Standings refresh as provider data updates."
       />
 
       <Container className="pb-14">

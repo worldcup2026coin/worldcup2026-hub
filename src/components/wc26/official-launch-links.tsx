@@ -36,7 +36,7 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="neon-kicker">Official launch links</p>
+          <p className="neon-kicker">Verified $WC26 launch links</p>
           <h2 className="mt-3 text-2xl font-black uppercase text-white sm:text-3xl">
             Status: {formatLaunchStatus(wc26Config.launchStatus)}
           </h2>
@@ -73,7 +73,7 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
 
         <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-lime-200">
-            Official contract
+            Verified $WC26 contract
           </p>
           <p className="mt-2 break-all text-sm font-black text-white">
             {contract}
@@ -138,11 +138,11 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
               rel="noopener noreferrer"
               className="glow-button-primary text-center"
             >
-              Official pump.fun
+              Verified pump.fun
             </a>
           ) : (
             <div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-3 text-center text-sm font-black uppercase tracking-[0.12em] text-cyan-100">
-              Official link: Coming at launch
+              Verified $WC26 link: Coming at launch
             </div>
           )}
           <a
@@ -196,11 +196,11 @@ export function LaunchMechanicsPanel() {
     <section className="neon-panel rounded-[2rem] p-6">
       <p className="neon-kicker">Launch mechanics</p>
       <h2 className="mt-4 text-3xl font-black uppercase text-white">
-        Public launch, official links only
+        Public launch, verified $WC26 links only
       </h2>
       <p className="mt-4 text-sm leading-6 text-slate-300">
         $WC26 is planned as a public pump.fun launch on Solana with no presale.
-        The official contract address, pump.fun link, chart link and Solscan
+        The verified $WC26 contract address, pump.fun link, chart link and Solscan
         link will be published on this website, X and Telegram announcements at
         launch. Always verify the contract before interacting with any token.
       </p>

@@ -12,15 +12,15 @@ import { createPageMetadata } from "@/lib/seo";
 export const metadata: Metadata = createPageMetadata({
   title: "$WC26 Launch",
   description:
-    "Official $WC26 launch status page. Contract address and pump.fun link published here at launch. Crypto-assets are high risk.",
+    "Verified $WC26 launch status page. Contract address and pump.fun link published here at launch. Crypto-assets are high risk.",
   path: "/launch",
   image: "/og-wc26-launch.png",
 });
 
 const launchSteps = [
   "Confirm the contract only from this website.",
-  "Use the official pump.fun link once published.",
-  "Join the official community channels from this page.",
+  "Use the verified pump.fun link once published.",
+  "Join the verified $WC26 community channels from this page.",
   "Ignore fake contracts, impersonators and private messages.",
 ];
 
@@ -53,7 +53,7 @@ export default function LaunchPage() {
     },
     {
       title: "Follow announcements",
-      copy: "Use the announcements channel for official launch updates.",
+      copy: "Use the announcements channel for verified $WC26 launch updates.",
       href: "https://t.me/WC26Hub",
       label: "Open announcements",
       external: true,
@@ -65,8 +65,8 @@ export default function LaunchPage() {
       <PageHeader
         eyebrow="Launch"
         title="$WC26 launch status"
-        description="The official launch checkpoint for $WC26 links, contract details, community missions and safety warnings."
-        meta="Official links only · Beware fake contracts · High-risk crypto"
+        description="The verified launch checkpoint for $WC26 links, contract details, community missions and safety warnings."
+        meta="Verified $WC26 links only · Beware fake contracts · High-risk crypto"
       />
 
       <Container className="pb-14">
@@ -129,7 +129,7 @@ export default function LaunchPage() {
               First 72 hours
             </h2>
             <p className="mt-3 text-sm leading-6 text-slate-300">
-              The launch mission is simple: keep one official link hub, push daily
+              The launch mission is simple: keep one verified $WC26 link hub, push daily
               memes, run fan polls, protect newcomers from fake links and turn
               football moments into shareable $WC26 content.
             </p>

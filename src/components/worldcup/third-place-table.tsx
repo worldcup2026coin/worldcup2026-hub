@@ -4,7 +4,6 @@ import {
   getThirdPlacedTeamsFromStandings,
   type ThirdPlacedTeam,
 } from "@/lib/worldcup/third-place-ranking";
-import { formatLastUpdated } from "@/lib/worldcup/format";
 
 type ThirdPlaceTableProps = {
   standings: Standing[];
@@ -36,7 +35,6 @@ function rowClassName(row: ThirdPlacedTeam) {
 
 export function ThirdPlaceTable({
   standings,
-  latestSync,
   compact = false,
 }: ThirdPlaceTableProps) {
   const rows = getThirdPlacedTeamsFromStandings(standings);
@@ -76,7 +74,9 @@ export function ThirdPlaceTable({
           <p className="font-black uppercase tracking-[0.16em]">Live context</p>
           <p className="mt-1 text-slate-300">
             {hasAllGroups ? "All 12 groups detected" : `${rows.length}/12 groups detected`}
-            {latestSync ? ` · ${formatLastUpdated(latestSync)}` : ""}
+          </p>
+          <p className="mt-2 text-xs font-semibold leading-5 text-slate-400">
+            Standings refresh as provider data updates.
           </p>
         </div>
       </div>

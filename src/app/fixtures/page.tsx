@@ -10,7 +10,7 @@ import {
   type FixtureFilters,
 } from "@/lib/data/worldcup";
 import { createPageMetadata } from "@/lib/seo";
-import { formatDateOnly, formatLastUpdated } from "@/lib/worldcup/format";
+import { formatDateOnly } from "@/lib/worldcup/format";
 
 export const dynamic = "force-dynamic";
 
@@ -42,7 +42,7 @@ export default async function FixturesPage({
   searchParams,
 }: FixturesPageProps) {
   const params = await searchParams;
-  const { fixtures, teams, latestSync } = await getFixturesPageData();
+  const { fixtures, teams } = await getFixturesPageData();
 
   const filters: FixtureFilters = {
     q: getParam(params, "q") || undefined,
@@ -64,7 +64,7 @@ export default async function FixturesPage({
         eyebrow="Fixtures"
         title="World Cup 2026 fixtures"
         description="Browse the synced World Cup fixture list from Supabase. Filter by date, team, group, status, and venue where data is available."
-        meta={`Last fixtures sync: ${formatLastUpdated(latestSync?.ended_at)}`}
+        meta="Fixture records refresh as provider data updates."
       />
 
       <Container className="pb-14">

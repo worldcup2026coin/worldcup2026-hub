@@ -3,7 +3,6 @@ import { PageHeader } from "@/components/worldcup/page-header";
 import { TeamCard } from "@/components/worldcup/team-card";
 import { Container } from "@/components/ui/container";
 import { getTeamGroupMap, getTeamsPageData } from "@/lib/data/worldcup";
-import { formatLastUpdated } from "@/lib/worldcup/format";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +12,7 @@ export const metadata = {
 };
 
 export default async function TeamsPage() {
-  const { teams, standings, latestSync } = await getTeamsPageData();
+  const { teams, standings } = await getTeamsPageData();
   const teamGroupMap = getTeamGroupMap(standings);
 
   return (
@@ -22,7 +21,7 @@ export default async function TeamsPage() {
         eyebrow="Teams"
         title="Team hub"
         description="All synced World Cup teams from Supabase, with group and points context where standings data is available."
-        meta={`Last teams sync: ${formatLastUpdated(latestSync?.ended_at)}`}
+        meta="Team data refreshes as provider records update."
       />
 
       <Container className="pb-14">
@@ -36,7 +35,8 @@ export default async function TeamsPage() {
             <p className="mb-6 text-sm text-slate-300">
               Showing{" "}
               <span className="font-black text-white">{teams.length}</span>{" "}
-              teams.
+              teams. Group labels only show Group A through Group L. Provider
+              records refresh as tournament data updates.
             </p>
 
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

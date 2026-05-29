@@ -146,6 +146,8 @@ export type FixtureFilters = {
   q?: string;
 };
 
+const realGroupPattern = /^Group [A-L]$/;
+
 function asTeams(data: unknown): Team[] {
   return (data ?? []) as Team[];
 }
@@ -676,6 +678,10 @@ export function getTeamGroupMap(standings: Standing[]) {
   const map = new Map<number, Standing>();
 
   for (const row of standings) {
+    if (!realGroupPattern.test(row.group_name)) {
+      continue;
+    }
+
     map.set(row.api_team_id, row);
   }
 

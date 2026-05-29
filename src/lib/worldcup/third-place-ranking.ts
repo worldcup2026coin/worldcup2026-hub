@@ -36,6 +36,18 @@ function normaliseGroupName(value: string | null | undefined) {
   return value || "Group unknown";
 }
 
+function isRealWorldCupGroup(value: string | null | undefined) {
+  return /^Group [A-L]$/.test(normaliseGroupName(value));
+}
+
+function teamDedupeKey(row: Standing) {
+  if (row.api_team_id) {
+    return `id:${row.api_team_id}`;
+  }
+
+  return `name:${row.team_name.trim().toLowerCase()}`;
+}
+
 function baseSort(a: Standing, b: Standing) {
   const aRank = a.rank ?? 999;
   const bRank = b.rank ?? 999;
@@ -57,20 +69,32 @@ function baseSort(a: Standing, b: Standing) {
 export function getThirdPlacedTeamsFromStandings(
   standings: Standing[]
 ): ThirdPlacedTeam[] {
-  const grouped = standings.reduce<Record<string, Standing[]>>((groups, row) => {
-    const groupName = normaliseGroupName(row.group_name);
+  const grouped = standings
+    .filter((row) => isRealWorldCupGroup(row.group_name))
+    .reduce<Record<string, Standing[]>>((groups, row) => {
+      const groupName = normaliseGroupName(row.group_name);
 
-    if (!groups[groupName]) {
-      groups[groupName] = [];
-    }
+      if (!groups[groupName]) {
+        groups[groupName] = [];
+      }
 
-    groups[groupName].push(row);
-    return groups;
-  }, {});
+      groups[groupName].push(row);
+      return groups;
+    }, {});
 
+  const seenTeams = new Set<string>();
   const thirdPlaced = Object.values(grouped)
     .map((rows) => [...rows].sort(baseSort)[2])
-    .filter((row): row is Standing => Boolean(row));
+    .filter((row): row is Standing => {
+      if (!row) return false;
+
+      const key = teamDedupeKey(row);
+      if (seenTeams.has(key)) return false;
+
+      seenTeams.add(key);
+      return true;
+    })
+    .slice(0, 12);
 
   return sortThirdPlacedTeams(
     thirdPlaced.map((row) => ({

@@ -44,7 +44,7 @@ export function MobileLaunchCta() {
             rel="noopener noreferrer"
             className="rounded-lg bg-lime-300 px-2 py-1.5 text-center text-[0.58rem] font-black uppercase leading-none tracking-[0.08em] text-slate-950"
           >
-            Official Link
+            Verified Link
           </a>
           <button
             type="button"

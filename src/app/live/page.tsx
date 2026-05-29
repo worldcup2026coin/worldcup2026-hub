@@ -4,7 +4,6 @@ import { FixtureCard } from "@/components/worldcup/fixture-card";
 import { PageHeader } from "@/components/worldcup/page-header";
 import { Container } from "@/components/ui/container";
 import { getLivePageData } from "@/lib/data/worldcup";
-import { formatLastUpdated } from "@/lib/worldcup/format";
 
 export const dynamic = "force-dynamic";
 
@@ -14,15 +13,15 @@ export const metadata = {
 };
 
 export default async function LivePage() {
-  const { liveFixtures, upcomingFixtures, latestSync } = await getLivePageData();
+  const { liveFixtures, upcomingFixtures } = await getLivePageData();
 
   return (
     <>
       <PageHeader
         eyebrow="Live"
         title="Live scores centre"
-        description="Live match status will appear here from Supabase once the sync data marks fixtures as in play. No frontend API-Football calls are used."
-        meta={`Last fixtures sync: ${formatLastUpdated(latestSync?.ended_at)}`}
+        description="Live match status will appear here from Supabase once the fixtures sync marks matches as in play. Provider records refresh as tournament data updates."
+        meta="Fixture records refresh as provider data updates."
       />
 
       <Container className="pb-14">
@@ -47,7 +46,7 @@ export default async function LivePage() {
           <>
             <EmptyState
               title="No live matches right now"
-              description="There are no fixtures currently marked as live. Here are the next upcoming fixtures from Supabase."
+              description="There are no fixtures currently marked as live. Here are the next upcoming fixtures from the synced fixtures table."
               action={
                 <Link
                   href="/fixtures"
@@ -67,7 +66,7 @@ export default async function LivePage() {
         ) : (
           <EmptyState
             title="No live or upcoming fixtures available"
-            description="The fixtures table may be empty or all available fixtures may be missing dates. Keep the UI honest and re-sync when data is available."
+            description="The fixtures table may be empty or all available fixtures may be missing dates. Provider records refresh as tournament data updates."
           />
         )}
       </Container>
