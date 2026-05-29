@@ -9,7 +9,7 @@ export function getSiteUrl() {
   return (
     process.env.NEXT_PUBLIC_SITE_URL ||
     process.env.VERCEL_PROJECT_PRODUCTION_URL?.replace(/^/, "https://") ||
-    "https://worldcup2026-hub.vercel.app"
+    "https://www.worldcup2026coin.com"
   ).replace(/\/+$/, "");
 }
 

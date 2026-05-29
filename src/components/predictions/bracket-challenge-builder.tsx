@@ -211,7 +211,7 @@ export function BracketChallengeBuilder({ groups, signedIn }: BuilderProps) {
     : null;
   const shareUrl =
     typeof window === "undefined"
-      ? "https://worldcup2026-hub.vercel.app/predictions/bracket-challenge"
+      ? "https://www.worldcup2026coin.com/predictions/bracket-challenge"
       : draft.savedUrl
         ? `${window.location.origin}${draft.savedUrl}`
         : `${window.location.origin}/predictions/bracket-challenge`;

@@ -147,7 +147,7 @@ const copyBlocks = [
     title: "X launch post",
     text: `$WC26 is LIVE on pump.fun.
 
-Token: WorldCupCoin2026
+Token: WorldCup2026Coin
 Ticker: $WC26
 Chain: Solana
 Contract: [PASTE CONTRACT]
@@ -161,7 +161,7 @@ Fan-made. Unofficial. High risk. Not financial advice.`,
     title: "Telegram announcement",
     text: `$WC26 is LIVE on pump.fun.
 
-Token: WorldCupCoin2026
+Token: WorldCup2026Coin
 Ticker: $WC26
 Chain: Solana
 Contract: [PASTE CONTRACT]

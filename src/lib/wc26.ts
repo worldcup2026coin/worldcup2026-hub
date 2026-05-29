@@ -25,8 +25,8 @@ export const isLive = launchStatus === "live";
 
 export const wc26Config = {
   ticker: "$WC26",
-  name: "$WC26",
-  displayName: "$WC26 Community",
+  name: "WorldCup2026Coin",
+  displayName: "WorldCup2026Coin",
   description:
     "A fan-made football meme community built around World Cup 2026 chaos, predictions, fan battles and matchday energy.",
   launchStatus,

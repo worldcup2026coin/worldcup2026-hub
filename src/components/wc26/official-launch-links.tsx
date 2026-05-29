@@ -15,7 +15,9 @@ const riskCopy =
   "Crypto-assets are high risk. You could lose all money you put in. Nothing on this site is financial advice.";
 
 export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProps) {
-  const [copied, setCopied] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">(
+    "idle"
+  );
   const isLive = wc26Config.isLive;
   const contract = wc26Config.contractAddress || "Coming at launch";
   const pumpReady = isExternalLinkReady(wc26Config.pumpFunUrl);
@@ -23,9 +25,20 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
   const solscanReady = isExternalLinkReady(wc26Config.links.solscan);
 
   const copyContract = async () => {
-    if (!isLive) return;
-    await navigator.clipboard.writeText(contract);
-    setCopied(true);
+    if (!isLive || !wc26Config.contractAddress || !navigator.clipboard) {
+      setCopyStatus("failed");
+      window.setTimeout(() => setCopyStatus("idle"), 2000);
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(wc26Config.contractAddress);
+      setCopyStatus("copied");
+    } catch {
+      setCopyStatus("failed");
+    }
+
+    window.setTimeout(() => setCopyStatus("idle"), 2000);
   };
 
   return (
@@ -84,7 +97,11 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
               onClick={copyContract}
               className="mt-3 rounded-xl border border-lime-300/30 bg-lime-300/10 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-lime-100"
             >
-              {copied ? "Copied" : "Copy contract"}
+              {copyStatus === "copied"
+                ? "Copied"
+                : copyStatus === "failed"
+                  ? "Copy failed — select manually"
+                  : "Copy contract"}
             </button>
           ) : null}
         </div>

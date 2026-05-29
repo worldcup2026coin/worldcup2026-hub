@@ -136,7 +136,7 @@ export function MascotQuiz() {
   const result = winner ? results[winner] : null;
   const quizUrl =
     typeof window === "undefined"
-      ? "https://worldcup2026-hub.vercel.app/community/quiz"
+      ? "https://www.worldcup2026coin.com/community/quiz"
       : `${window.location.origin}/community/quiz`;
   const shareUrl = result
     ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(

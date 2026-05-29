@@ -18,7 +18,9 @@ const excludedRoutePrefixes = [
 ];
 
 export function MobileLaunchCta() {
-  const [copied, setCopied] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">(
+    "idle"
+  );
   const pathname = usePathname();
 
   if (excludedRoutePrefixes.some((route) => pathname.startsWith(route))) {
@@ -26,9 +28,20 @@ export function MobileLaunchCta() {
   }
 
   const copyContract = async () => {
-    if (!wc26Config.contractAddress) return;
-    await navigator.clipboard.writeText(wc26Config.contractAddress);
-    setCopied(true);
+    if (!wc26Config.contractAddress || !navigator.clipboard) {
+      setCopyStatus("failed");
+      window.setTimeout(() => setCopyStatus("idle"), 2000);
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(wc26Config.contractAddress);
+      setCopyStatus("copied");
+    } catch {
+      setCopyStatus("failed");
+    }
+
+    window.setTimeout(() => setCopyStatus("idle"), 2000);
   };
 
   if (wc26Config.isLive) {
@@ -51,7 +64,11 @@ export function MobileLaunchCta() {
             onClick={copyContract}
             className="rounded-lg border border-cyan-300/25 bg-cyan-300/10 px-2 py-1.5 text-[0.58rem] font-black uppercase leading-none tracking-[0.08em] text-cyan-100"
           >
-            {copied ? "Copied" : "Contract"}
+            {copyStatus === "copied"
+              ? "Copied"
+              : copyStatus === "failed"
+                ? "Select"
+                : "Contract"}
           </button>
           <a
             href={wc26Config.telegramChatUrl}

@@ -88,7 +88,7 @@ const buyingSteps = [
     title: "Review before confirming",
     text: "Pause before approving the transaction and verify every detail.",
     checks: [
-      "Token name: WorldCupCoin2026",
+      "Token name: WorldCup2026Coin",
       "Ticker: $WC26",
       "Chain: Solana",
       "Contract matches the website",
