@@ -6,7 +6,6 @@ import {
   OfficialLaunchLinks,
   Wc26RiskWarning,
 } from "@/components/wc26/official-launch-links";
-import { wc26Config } from "@/lib/wc26";
 import { createPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createPageMetadata({
@@ -53,6 +52,58 @@ const checklist = [
   {
     title: "Never share your seed phrase",
     text: "No admin, support account or website should ever ask for your recovery phrase.",
+  },
+];
+
+const buyingSteps = [
+  {
+    title: "Start from the official website only",
+    text: "Begin at https://www.worldcup2026coin.com/launch. Do not use random search results, DMs, screenshots, replies, quote tweets, fake Telegram admins or copied links from strangers.",
+  },
+  {
+    title: "Confirm launch status is LIVE",
+    text: "$WC26 is not live unless the launch block says LIVE and shows the contract plus the official pump.fun link.",
+  },
+  {
+    title: "Copy the official contract",
+    text: "Copy the contract address from this website. After pasting it anywhere, check the first and last characters before you continue.",
+  },
+  {
+    title: "Open the verified pump.fun link",
+    text: "Use the pump.fun button from this website. Compare the contract address on pump.fun with the contract shown here before connecting.",
+  },
+  {
+    title: "Use a Solana wallet",
+    text: "Phantom, Backpack and Solflare are common Solana wallet options. Your wallet needs SOL for the buy amount and network or platform fees.",
+  },
+  {
+    title: "Connect carefully",
+    text: "Connect only on the verified pump.fun page. Never share your seed phrase, recovery phrase or private key. No real admin will ever ask for it.",
+  },
+  {
+    title: "Choose amount",
+    text: "Start small if you are unsure and only use money you can afford to lose.",
+  },
+  {
+    title: "Review before confirming",
+    text: "Pause before approving the transaction and verify every detail.",
+    checks: [
+      "Token name: WorldCupCoin2026",
+      "Ticker: $WC26",
+      "Chain: Solana",
+      "Contract matches the website",
+      "You are on the verified pump.fun page",
+      "You understand the SOL amount",
+      "You understand transactions cannot be reversed",
+    ],
+  },
+  {
+    title: "Confirm in wallet",
+    text: "Approve only if everything matches. If the transaction fails, do not panic-click repeated approvals.",
+  },
+  {
+    title: "After buying",
+    text: "Save official links. Join Telegram announcements and chat. Use chart and Solscan links from the website once available. Do not trust DMs about support, bonus allocation, claim, airdrop, migration or wallet verification.",
   },
 ];
 
@@ -111,14 +162,76 @@ export default function HowToBuyPage() {
           ))}
         </section>
 
+        <section className="mt-8 rounded-[2rem] border border-fuchsia-300/30 bg-fuchsia-400/10 p-6 shadow-[0_0_30px_rgba(217,70,239,0.12)] sm:p-8">
+          <p className="neon-badge neon-badge-pink">Scam warning</p>
+          <h2 className="mt-4 text-2xl font-black uppercase text-white">
+            Clones move fast
+          </h2>
+          <p className="mt-3 max-w-4xl text-sm leading-6 text-fuchsia-100/90">
+            Scammers copy meme coins fast. Do not buy from replies, DMs,
+            random Telegram posts, screenshots or lookalike links. Only use the
+            contract and pump.fun link published on this website.
+          </p>
+        </section>
+
+        <section className="mt-8 rounded-[2.5rem] border border-lime-300/20 bg-slate-950/70 p-6 sm:p-8">
+          <div className="max-w-4xl">
+            <p className="neon-kicker">Beginner Solana guide</p>
+            <h2 className="mt-3 text-3xl font-black uppercase text-white sm:text-4xl">
+              How to buy $WC26 when live
+            </h2>
+            <p className="mt-4 text-sm leading-6 text-slate-300">
+              Use this flow only after the official launch status says LIVE. If
+              the contract or pump.fun link is still marked as coming at launch,
+              there is nothing official to buy yet.
+            </p>
+          </div>
+
+          <div className="mt-7 grid gap-4 lg:grid-cols-2">
+            {buyingSteps.map((step, index) => (
+              <article
+                key={step.title}
+                className="rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-5"
+              >
+                <div className="flex items-start gap-4">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-lime-300/40 bg-lime-300/10 text-sm font-black text-lime-100">
+                    {index + 1}
+                  </span>
+                  <div>
+                    <h3 className="text-lg font-black uppercase text-white">
+                      {step.title}
+                    </h3>
+                    <p className="mt-2 text-sm leading-6 text-slate-300">
+                      {step.text}
+                    </p>
+                    {step.checks ? (
+                      <ul className="mt-4 grid gap-2 text-sm text-slate-200">
+                        {step.checks.map((check) => (
+                          <li
+                            key={check}
+                            className="rounded-xl border border-white/10 bg-black/20 px-3 py-2"
+                          >
+                            {check}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <section className="mt-8 rounded-[2rem] border border-red-300/20 bg-red-400/10 p-6">
           <h2 className="text-2xl font-black uppercase text-white">
             High-risk warning
           </h2>
           <p className="mt-3 text-sm leading-6 text-red-100/90">
-            {wc26Config.ticker} is not an investment product. No profit is promised
-            or implied. Meme tokens are extremely volatile and can lose all value.
-            Only participate if you understand the risk.
+            $WC26 is fan-made and unofficial. It is not affiliated with FIFA,
+            the FIFA World Cup, teams, players, sponsors or governing bodies.
+            Crypto-assets are high risk. You could lose all money you put in.
+            Nothing here is financial advice.
           </p>
         </section>
       </Container>
