@@ -5,17 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { wc26Config } from "@/lib/wc26";
 
-const excludedRoutePrefixes = [
-  "/fixtures",
-  "/community/quiz",
-  "/community/meme-generator",
-  "/predictions/bracket-challenge",
-  "/community/chat",
-  "/community/memes",
-  "/community/profile",
-  "/auth/login",
-  "/account",
-];
+const allowedRoutes = new Set(["/", "/launch", "/wc26", "/how-to-buy", "/community"]);
 
 export function MobileLaunchCta() {
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">(
@@ -23,7 +13,7 @@ export function MobileLaunchCta() {
   );
   const pathname = usePathname();
 
-  if (excludedRoutePrefixes.some((route) => pathname.startsWith(route))) {
+  if (!allowedRoutes.has(pathname)) {
     return null;
   }
 

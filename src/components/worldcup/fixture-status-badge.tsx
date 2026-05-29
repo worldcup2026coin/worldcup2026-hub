@@ -33,7 +33,7 @@ export function FixtureStatusBadge({
   return (
     <span
       title={statusLong ?? statusShort ?? undefined}
-      className={`inline-flex rounded-full border px-3 py-1 text-xs font-black uppercase tracking-[0.18em] ${styles[displayStatus]}`}
+      className={`inline-flex min-w-max whitespace-nowrap rounded-full border px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.08em] sm:text-xs sm:tracking-[0.16em] ${styles[displayStatus]}`}
     >
       {displayStatus === "live" ? "● " : ""}
       {labels[displayStatus]}

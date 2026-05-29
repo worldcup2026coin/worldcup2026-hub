@@ -37,7 +37,7 @@ export function TeamCard({ team, standing }: TeamCardProps) {
               {standing?.group_name ?? "Group TBC"}
             </p>
           </div>
-          <h2 className="mt-2 break-words text-xl font-black uppercase tracking-tight text-white group-hover:text-lime-200">
+          <h2 className="mt-2 whitespace-normal break-normal text-lg font-black uppercase leading-tight tracking-tight text-white [overflow-wrap:normal] [text-wrap:balance] [word-break:normal] group-hover:text-lime-200 sm:text-xl">
             {team.name}
           </h2>
           <p className="mt-1 text-sm font-semibold text-slate-400">
@@ -47,7 +47,7 @@ export function TeamCard({ team, standing }: TeamCardProps) {
       </div>
 
       <div className="mt-5 grid min-w-0 grid-cols-2 gap-3">
-        <span className="min-w-0 break-words rounded-2xl border border-white/10 bg-slate-950/45 px-3 py-2 text-xs font-black uppercase tracking-[0.1em] text-slate-300">
+        <span className="min-w-0 whitespace-normal break-normal rounded-2xl border border-white/10 bg-slate-950/45 px-3 py-2 text-xs font-black uppercase tracking-[0.06em] text-slate-300 [overflow-wrap:normal] [word-break:normal] sm:tracking-[0.1em]">
           {team.country ?? "Country TBC"}
         </span>
         {standing ? (

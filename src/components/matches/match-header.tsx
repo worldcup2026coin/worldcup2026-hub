@@ -40,7 +40,7 @@ function TeamBadge({
         )}
       </span>
 
-      <h1 className="mt-4 w-full max-w-full break-words text-center text-base font-black uppercase leading-tight tracking-tight text-white max-[380px]:text-sm sm:max-w-[18rem] sm:text-balance sm:text-4xl lg:max-w-[24rem]">
+      <h1 className="mt-4 w-full max-w-full whitespace-normal break-normal text-center text-base font-black uppercase leading-tight tracking-tight text-white [overflow-wrap:normal] [text-wrap:balance] [word-break:normal] max-[380px]:text-sm sm:max-w-[18rem] sm:text-4xl lg:max-w-[24rem]">
         {displayName}
       </h1>
     </div>

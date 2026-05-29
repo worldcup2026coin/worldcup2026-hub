@@ -179,12 +179,12 @@ export default async function TeamPage({ params }: TeamPageProps) {
 
       <Container className="pb-14">
         <nav data-sticky-nav className="sticky top-3 z-20 mb-6 w-full max-w-full overflow-x-auto rounded-2xl border border-white/10 bg-slate-950/85 p-2 shadow-2xl shadow-slate-950/40 backdrop-blur">
-          <div className="flex w-max max-w-none gap-2">
+          <div className="flex min-w-max flex-nowrap gap-2">
             {anchorLinks.map(([label, id]) => (
               <a
                 key={id}
                 href={`#${id}`}
-                className="rounded-xl px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-slate-300 transition hover:bg-white/10 hover:text-white"
+                className="whitespace-nowrap rounded-xl px-3 py-2 text-xs font-black uppercase tracking-[0.04em] text-slate-300 transition hover:bg-white/10 hover:text-white sm:tracking-[0.14em]"
               >
                 {label}
               </a>
@@ -213,7 +213,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
               )}
 
               <div>
-                <h2 className="flex min-w-0 items-center gap-2 text-2xl font-black text-white">
+                <h2 className="flex min-w-0 items-center gap-2 whitespace-normal break-normal text-2xl font-black leading-tight text-white [overflow-wrap:normal] [text-wrap:balance] [word-break:normal]">
                   {team.name}
                 </h2>
                 <p className="mt-1 text-sm text-slate-400">
@@ -292,7 +292,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
               {nextFixture ? (
                 <div className="mt-5 grid min-w-0 gap-4 md:grid-cols-[1.2fr_0.8fr]">
                   <div>
-                    <h2 className="text-3xl font-black uppercase text-white">
+                    <h2 className="whitespace-normal break-normal text-2xl font-black uppercase leading-tight text-white [overflow-wrap:normal] [text-wrap:balance] [word-break:normal] sm:text-3xl">
                       {nextFixture.home_team_name ?? "Team TBC"} vs{" "}
                       {nextFixture.away_team_name ?? "Team TBC"}
                     </h2>

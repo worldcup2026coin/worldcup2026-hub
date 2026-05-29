@@ -68,8 +68,8 @@ export default async function FixturesPage({
       />
 
       <Container className="pb-14">
-        <form className="rounded-3xl border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-slate-950/30">
-          <label className="mb-4 grid gap-2">
+        <form className="w-full max-w-full rounded-3xl border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-slate-950/30">
+          <label className="mb-4 grid min-w-0 gap-2">
             <span className="text-xs font-bold uppercase tracking-[0.18em] text-lime-200">
               Search fixtures
             </span>
@@ -77,19 +77,19 @@ export default async function FixturesPage({
               name="q"
               defaultValue={filters.q ?? ""}
               placeholder="Search team, venue or group..."
-              className="min-h-12 rounded-2xl border border-lime-300/20 bg-slate-950 px-4 text-sm font-bold text-white outline-none placeholder:text-slate-500 focus:border-lime-300/70"
+              className="box-border min-h-12 w-full max-w-full rounded-2xl border border-lime-300/20 bg-slate-950 px-4 text-sm font-bold text-white outline-none placeholder:text-slate-500 focus:border-lime-300/70"
             />
           </label>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-            <label className="grid gap-2">
+            <label className="grid min-w-0 gap-2">
               <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
                 Date
               </span>
               <select
                 name="date"
                 defaultValue={filters.date ?? ""}
-                className="min-h-12 rounded-2xl border border-white/10 bg-slate-950 px-4 text-sm text-white"
+                className="box-border min-h-12 w-full max-w-full rounded-2xl border border-white/10 bg-slate-950 px-4 text-sm text-white"
               >
                 <option value="">All dates</option>
                 {options.dates.map((date) => (
@@ -100,14 +100,14 @@ export default async function FixturesPage({
               </select>
             </label>
 
-            <label className="grid gap-2">
+            <label className="grid min-w-0 gap-2">
               <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
                 Team
               </span>
               <select
                 name="team"
                 defaultValue={filters.team ?? ""}
-                className="min-h-12 rounded-2xl border border-white/10 bg-slate-950 px-4 text-sm text-white"
+                className="box-border min-h-12 w-full max-w-full rounded-2xl border border-white/10 bg-slate-950 px-4 text-sm text-white"
               >
                 <option value="">All teams</option>
                 {options.teams.map((team) => (
@@ -118,14 +118,14 @@ export default async function FixturesPage({
               </select>
             </label>
 
-            <label className="grid gap-2">
+            <label className="grid min-w-0 gap-2">
               <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
                 Group
               </span>
               <select
                 name="group"
                 defaultValue={filters.group ?? ""}
-                className="min-h-12 rounded-2xl border border-white/10 bg-slate-950 px-4 text-sm text-white"
+                className="box-border min-h-12 w-full max-w-full rounded-2xl border border-white/10 bg-slate-950 px-4 text-sm text-white"
               >
                 <option value="">All groups</option>
                 {options.groups.map((group) => (
@@ -136,14 +136,14 @@ export default async function FixturesPage({
               </select>
             </label>
 
-            <label className="grid gap-2">
+            <label className="grid min-w-0 gap-2">
               <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
                 Status
               </span>
               <select
                 name="status"
                 defaultValue={filters.status ?? ""}
-                className="min-h-12 rounded-2xl border border-white/10 bg-slate-950 px-4 text-sm text-white"
+                className="box-border min-h-12 w-full max-w-full rounded-2xl border border-white/10 bg-slate-950 px-4 text-sm text-white"
               >
                 <option value="">All statuses</option>
                 <option value="upcoming">Upcoming</option>
@@ -154,14 +154,14 @@ export default async function FixturesPage({
               </select>
             </label>
 
-            <label className="grid gap-2">
+            <label className="grid min-w-0 gap-2">
               <span className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
                 Venue
               </span>
               <select
                 name="venue"
                 defaultValue={filters.venue ?? ""}
-                className="min-h-12 rounded-2xl border border-white/10 bg-slate-950 px-4 text-sm text-white"
+                className="box-border min-h-12 w-full max-w-full rounded-2xl border border-white/10 bg-slate-950 px-4 text-sm text-white"
               >
                 <option value="">All venues</option>
                 {options.venues.map((venue) => (

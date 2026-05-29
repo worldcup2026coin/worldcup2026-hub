@@ -26,7 +26,7 @@ export function MatchStatusBadge({
 
   return (
     <span
-      className={`inline-flex rounded-full border px-3 py-1 text-xs font-black uppercase tracking-[0.18em] ${statusStyles[status.kind]}`}
+      className={`inline-flex min-w-max whitespace-nowrap rounded-full border px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.08em] sm:text-xs sm:tracking-[0.16em] ${statusStyles[status.kind]}`}
       title={statusLong ?? statusShort ?? undefined}
     >
       {status.kind === "live" ? "● " : ""}

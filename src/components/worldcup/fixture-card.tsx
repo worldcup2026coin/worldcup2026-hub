@@ -61,7 +61,7 @@ function TeamLine({
     <div className="flex min-w-0 items-center gap-3">
       <TeamLogo src={logo} alt={displayName} />
       <span
-        className={`truncate text-sm font-black ${
+        className={`min-w-0 whitespace-normal break-normal text-sm font-black leading-tight [overflow-wrap:normal] [word-break:normal] ${
           isWinner ? "text-lime-200 glow-text" : "text-white"
         }`}
       >
@@ -115,7 +115,7 @@ export function FixtureCard({ fixture }: FixtureCardProps) {
           statusShort={fixture.status_short}
           statusLong={fixture.status_long}
         />
-        <span className="max-w-full break-words rounded-full border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-1 text-xs font-black uppercase tracking-[0.1em] text-fuchsia-100">
+        <span className="max-w-full whitespace-nowrap rounded-full border border-fuchsia-300/20 bg-fuchsia-400/10 px-3 py-1 text-[0.68rem] font-black uppercase tracking-[0.06em] text-fuchsia-100 sm:text-xs sm:tracking-[0.1em]">
           {times.venueTimeLabel}
         </span>
       </div>
