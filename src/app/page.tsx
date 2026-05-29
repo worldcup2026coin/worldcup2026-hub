@@ -176,6 +176,9 @@ return (
                       venueTimeLabel={countdownTimes.venueTimeLabel}
                       utcTimeLabel={countdownTimes.utcTimeLabel}
                     />
+                    <p className="sr-only">
+                      Venue time {countdownTimes.venueTimeLabel}. UTC {countdownTimes.utcTimeLabel ?? "TBC"}. Your time shown after the page loads.
+                    </p>
                   </div>
 
 
@@ -269,7 +272,7 @@ return (
               </p>
               <p className="mt-3 max-w-3xl text-xs font-semibold leading-5 text-slate-400">
                 Unofficial fan community. Not affiliated with FIFA, World Cup,
-                teams, players, sponsors or governing bodies. Crypto tokens are
+                teams, players, sponsors or governing bodies. Crypto-assets are
                 high risk.
               </p>
               <div className="mt-5">

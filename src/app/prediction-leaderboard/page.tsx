@@ -455,7 +455,7 @@ export default async function PredictionLeaderboardPage({
           <div className="rounded-[1.75rem] border border-lime-300/20 bg-black/35 p-5">
             <p className="neon-kicker">Participation rule</p>
             <p className="mt-4 text-lg font-black text-white">
-              Email login only · no wallet · no token holding · no payment
+              Email login only · no purchase required · no payment
             </p>
             <p className="mt-3 text-sm leading-6 text-slate-300">
               Old predictions stay in the record forever and continue counting
@@ -800,7 +800,7 @@ export default async function PredictionLeaderboardPage({
             <p className="neon-kicker">Disclaimer</p>
             <p className="mt-4 text-sm font-bold leading-6 text-slate-300">
               Fan predictions are for community entertainment and football
-              debate only. They are not betting advice, financial advice,
+              debate only. They are not tips, financial guidance,
               official tournament content, or a promise of rewards.
             </p>
           </section>

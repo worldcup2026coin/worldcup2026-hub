@@ -53,7 +53,7 @@ export default async function FanPollsPage() {
           </h1>
           <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300">
             Vote in World Cup 2026 fan polls and reveal community results after
-            your pick. No fake counts, no inflated social proof, just real
+            your pick. No inflated counts, no manufactured social proof, just real
             recorded votes as the community wakes up.
           </p>
         </section>

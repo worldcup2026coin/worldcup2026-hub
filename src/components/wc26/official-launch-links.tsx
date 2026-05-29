@@ -69,8 +69,8 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
         <div className="grid gap-3 sm:grid-cols-3">
           {[
             ["Blockchain", "Solana"],
-            ["Launch platform", "pump.fun"],
-            ["Launch model", "Fair launch / no presale"],
+            ["Launch platform", "Official launch page"],
+            ["Launch model", "Public launch / no early sale"],
           ].map(([label, value]) => (
             <div
               key={label}
@@ -155,7 +155,7 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
               rel="noopener noreferrer"
               className="glow-button-primary text-center"
             >
-              Verified pump.fun
+              Verified launch link
             </a>
           ) : (
             <div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-3 text-center text-sm font-black uppercase tracking-[0.12em] text-cyan-100">
@@ -216,8 +216,8 @@ export function LaunchMechanicsPanel() {
         Public launch, verified $WC26 links only
       </h2>
       <p className="mt-4 text-sm leading-6 text-slate-300">
-        $WC26 is planned as a public pump.fun launch on Solana with no presale.
-        The verified $WC26 contract address, pump.fun link, chart link and Solscan
+        $WC26 is planned as a public Solana launch with no early sale.
+        The verified $WC26 contract address, official launch link, chart link and Solscan
         link will be published on this website, X and Telegram announcements at
         launch. Always verify the contract before interacting with any token.
       </p>

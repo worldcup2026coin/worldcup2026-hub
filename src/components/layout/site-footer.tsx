@@ -53,7 +53,7 @@ const footerGroups: Array<{ title: string; tone: string; links: FooterLink[] }> 
     links: [
       { href: "/community", label: "Community" },
       { href: "/community/chat", label: "Chat" },
-      { href: "/community/memes", label: "Meme Wall" },
+      { href: "/community/memes", label: "Fan Gallery" },
       { href: "/community/meme-generator", label: "Meme Generator" },
       { href: "/community/quiz", label: "Mascot Quiz" },
       { href: "/community/factions", label: "Factions" },
