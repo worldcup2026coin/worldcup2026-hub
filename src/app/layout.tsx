@@ -72,7 +72,9 @@ export default function RootLayout({
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
           <main className="flex-1 pb-24 md:pb-0">{children}</main>
-          <SiteFooter />
+          <div className="pb-24 md:pb-0">
+            <SiteFooter />
+          </div>
         </div>
         <MobileLaunchCta />
         <JsonLd data={websiteJsonLd()} />
