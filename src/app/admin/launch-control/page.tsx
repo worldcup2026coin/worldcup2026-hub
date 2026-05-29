@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Container } from "@/components/ui/container";
-import { isCommunityAdmin } from "@/lib/community/data";
+import { getCommunityProfile, isCommunityAdmin } from "@/lib/community/data";
 import { SOCIAL_LINKS } from "@/lib/social-links";
 import { createClient } from "@/lib/supabase/server";
 
@@ -230,9 +230,34 @@ export default async function LaunchControlPage() {
     notFound();
   }
 
+  const profile = await getCommunityProfile(user.id);
+
   return (
     <main className="py-10 sm:py-14">
       <Container>
+        <section className="mb-6 rounded-[2rem] border border-lime-300/20 bg-lime-300/10 p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="neon-kicker">Admin access confirmed</p>
+              <h1 className="mt-3 text-3xl font-black uppercase text-white">
+                Signed in as: {user.email ?? "Email unavailable"}
+              </h1>
+              <p className="mt-3 text-sm font-bold leading-6 text-slate-300">
+                Display name: {profile?.display_name ?? "Not set"}
+                {profile?.handle ? ` · Handle: @${profile.handle}` : ""}
+              </p>
+            </div>
+            <div className="grid gap-2 text-left sm:text-right">
+              <span className="w-fit rounded-full border border-lime-300/30 bg-lime-300/15 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-lime-100 sm:ml-auto">
+                Role: admin
+              </span>
+              <span className="w-fit rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-cyan-100 sm:ml-auto">
+                Status: active
+              </span>
+            </div>
+          </div>
+        </section>
+
         <section className="hero-panel rounded-[2.5rem] p-6 sm:p-10">
           <p className="neon-kicker">Private admin</p>
           <h1 className="neon-title glow-text mt-5 text-5xl font-black uppercase leading-[0.9] text-white sm:text-7xl">

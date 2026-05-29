@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -66,11 +67,79 @@ export default async function AccountPage({
     .eq("user_id", user.id)
     .maybeSingle();
 
+  const { data: communityProfile } = await supabase
+    .from("community_profiles")
+    .select("display_name, handle, role, status")
+    .eq("id", user.id)
+    .maybeSingle();
+
   const saved = params.saved === "1";
   const error = params.error;
+  const role = communityProfile?.role ?? "user";
+  const status = communityProfile?.status ?? "active";
+  const isAdmin = role === "admin" && status === "active";
 
   return (
     <main className="mx-auto w-full max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+      <section className="mb-6 rounded-[2rem] border border-lime-300/20 bg-lime-300/10 p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="neon-kicker">Account status</p>
+            <h1 className="mt-3 text-3xl font-black uppercase text-white">
+              Signed in
+            </h1>
+            <p className="mt-3 break-all text-sm font-bold text-slate-300">
+              {user.email ?? "Email unavailable"}
+            </p>
+          </div>
+          <span className="w-fit rounded-full border border-lime-300/30 bg-lime-300/15 px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-lime-100">
+            {isAdmin ? "Admin" : role}
+          </span>
+        </div>
+
+        <dl className="mt-5 grid gap-3 sm:grid-cols-2">
+          {[
+            ["Display name", communityProfile?.display_name ?? profile?.display_name ?? "Not set"],
+            ["Community handle", communityProfile?.handle ? `@${communityProfile.handle}` : "Not set"],
+            ["Community role", role],
+            ["Community status", status],
+          ].map(([label, value]) => (
+            <div
+              key={label}
+              className="rounded-2xl border border-white/10 bg-slate-950/45 p-4"
+            >
+              <dt className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">
+                {label}
+              </dt>
+              <dd className="mt-2 break-words text-sm font-black text-white">
+                {value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      {isAdmin ? (
+        <section className="mb-6 rounded-[2rem] border border-cyan-300/20 bg-cyan-300/10 p-6">
+          <p className="neon-kicker">Admin tools</p>
+          <h2 className="mt-3 text-2xl font-black uppercase text-white">
+            Admin access confirmed
+          </h2>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {[
+              ["/admin/launch-control", "Launch Control"],
+              ["/admin/moderation", "Moderation Hub"],
+              ["/admin/moderation/chat", "Chat Moderation"],
+              ["/admin/moderation/memes", "Meme Moderation"],
+            ].map(([href, label]) => (
+              <Link key={href} href={href} className="glow-button-secondary">
+                {label}
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section className="neon-panel rounded-[2.25rem] p-6 sm:p-8">
         <p className="neon-kicker">$WC26 account</p>
 
