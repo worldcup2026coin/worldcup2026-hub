@@ -173,18 +173,19 @@ export default async function TeamPage({ params }: TeamPageProps) {
       <PageHeader
         eyebrow={standing?.group_name ?? "Team"}
         title={team.name}
+        titleClassName="team-hero-title"
         description={`${team.name} tournament outlook with group context, next match, key players, fixtures and results.`}
         meta={`${team.code ?? "Code TBC"}  -  ${team.country ?? "Country TBC"}`}
       />
 
       <Container className="pb-14">
         <nav data-sticky-nav className="sticky top-3 z-20 mb-6 w-full max-w-full overflow-x-auto rounded-2xl border border-white/10 bg-slate-950/85 p-2 shadow-2xl shadow-slate-950/40 backdrop-blur">
-          <div className="flex min-w-max flex-nowrap gap-2">
+          <div className="flex min-w-max flex-nowrap gap-4 pr-4 sm:gap-2 sm:pr-0">
             {anchorLinks.map(([label, id]) => (
               <a
                 key={id}
                 href={`#${id}`}
-                className="whitespace-nowrap rounded-xl px-3 py-2 text-xs font-black uppercase tracking-[0.04em] text-slate-300 transition hover:bg-white/10 hover:text-white sm:tracking-[0.14em]"
+                className="shrink-0 whitespace-nowrap rounded-xl px-4 py-2 text-[0.7rem] font-black tracking-normal text-slate-300 transition hover:bg-white/10 hover:text-white sm:px-3 sm:text-xs sm:uppercase sm:tracking-[0.14em]"
               >
                 {label}
               </a>
@@ -212,8 +213,8 @@ export default async function TeamPage({ params }: TeamPageProps) {
                 </div>
               )}
 
-              <div>
-                <h2 className="flex min-w-0 items-center gap-2 whitespace-normal break-normal text-2xl font-black leading-tight text-white [overflow-wrap:normal] [text-wrap:balance] [word-break:normal]">
+              <div className="min-w-0">
+                <h2 className="team-name-heading flex min-w-0 items-center gap-2 whitespace-normal break-normal text-xl font-black leading-tight text-white [overflow-wrap:normal] [text-wrap:balance] [word-break:normal] sm:text-2xl">
                   {team.name}
                 </h2>
                 <p className="mt-1 text-sm text-slate-400">

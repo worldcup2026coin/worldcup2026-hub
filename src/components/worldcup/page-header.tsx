@@ -6,9 +6,16 @@ type PageHeaderProps = {
   title: string;
   description: string;
   meta?: string;
+  titleClassName?: string;
 };
 
-export function PageHeader({ eyebrow, title, description, meta }: PageHeaderProps) {
+export function PageHeader({
+  eyebrow,
+  title,
+  description,
+  meta,
+  titleClassName = "",
+}: PageHeaderProps) {
   return (
     <section className="py-8 sm:py-10">
       <Container>
@@ -16,7 +23,9 @@ export function PageHeader({ eyebrow, title, description, meta }: PageHeaderProp
           <div className="relative z-10 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
               <p className="neon-kicker">{eyebrow}</p>
-              <h1 className="neon-title glow-text mt-5 max-w-5xl whitespace-normal break-normal text-3xl font-black leading-[0.95] text-white [overflow-wrap:normal] [text-wrap:balance] [word-break:normal] min-[420px]:text-4xl sm:text-6xl sm:leading-[0.9] lg:text-7xl">
+              <h1
+                className={`neon-title glow-text mt-5 max-w-5xl whitespace-normal break-normal text-3xl font-black leading-[0.95] text-white [overflow-wrap:normal] [text-wrap:balance] [word-break:normal] min-[420px]:text-4xl sm:text-6xl sm:leading-[0.9] lg:text-7xl ${titleClassName}`}
+              >
                 {title}
               </h1>
               <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300 sm:text-lg">

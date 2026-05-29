@@ -520,6 +520,39 @@ body:has([data-team-page]) main {
   overflow-wrap: anywhere;
 }
 
+[data-team-page] .team-hero-title,
+[data-team-page] .team-name-heading,
+[data-team-page] [data-sticky-nav] a {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+  text-wrap: balance;
+}
+
+[data-team-page] [data-sticky-nav] a {
+  white-space: nowrap;
+}
+
+[data-team-page] .team-hero-title {
+  font-size: clamp(2.5rem, 11vw, 4.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-transform: none;
+}
+
+@media (min-width: 640px) {
+  [data-team-page] .team-hero-title {
+    font-size: 3.75rem;
+    text-transform: uppercase;
+  }
+}
+
+@media (min-width: 1024px) {
+  [data-team-page] .team-hero-title {
+    font-size: 4.5rem;
+  }
+}
+
 @media (max-width: 640px) {
   [data-team-page] {
     padding-left: 1rem;
