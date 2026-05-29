@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/worldcup/page-header";
 import {
+  LaunchMechanicsPanel,
   OfficialLaunchLinks,
   Wc26RiskWarning,
 } from "@/components/wc26/official-launch-links";
@@ -13,6 +14,7 @@ export const metadata: Metadata = createPageMetadata({
   description:
     "Official $WC26 launch status page. Contract address and pump.fun link published here at launch. Crypto-assets are high risk.",
   path: "/launch",
+  image: "/og-wc26-launch.png",
 });
 
 const launchSteps = [
@@ -23,6 +25,41 @@ const launchSteps = [
 ];
 
 export default function LaunchPage() {
+  const first72Missions = [
+    {
+      title: "Post your launch meme",
+      copy: "Create a WC26 meme and tag @WC26_Hub.",
+      href: "/community/meme-generator",
+      label: "Create your launch meme",
+    },
+    {
+      title: "Vote in the first fan poll",
+      copy: "Pick which country owns the opening week.",
+      href: "/fan-polls",
+      label: "Vote in fan polls",
+    },
+    {
+      title: "Pick your bracket call",
+      copy: "Share your WC26 champion before tournament chaos takes over.",
+      href: "/predictions/bracket-challenge",
+      label: "Build bracket",
+    },
+    {
+      title: "Join Telegram chat",
+      copy: "Jump into the community chat for matchday signal.",
+      href: "https://t.me/WC26HubChat",
+      label: "Join Telegram chat",
+      external: true,
+    },
+    {
+      title: "Follow announcements",
+      copy: "Use the announcements channel for official launch updates.",
+      href: "https://t.me/WC26Hub",
+      label: "Open announcements",
+      external: true,
+    },
+  ];
+
   return (
     <>
       <PageHeader
@@ -67,6 +104,8 @@ export default function LaunchPage() {
         </section>
 
         <section className="mt-8 grid gap-6 lg:grid-cols-2">
+          <LaunchMechanicsPanel />
+
           <div className="neon-panel rounded-[2rem] p-6">
             <p className="neon-kicker">Launch checklist</p>
             <h2 className="mt-4 text-3xl font-black uppercase text-white">
@@ -95,13 +134,22 @@ export default function LaunchPage() {
               football moments into shareable $WC26 content.
             </p>
             <div className="mt-5 grid gap-3">
-              {["Meme prompt", "Fan poll", "Country battle", "Launch recap"].map((item) => (
-                <div
-                  key={item}
+              {first72Missions.map((item) => (
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  target={item.external ? "_blank" : undefined}
+                  rel={item.external ? "noopener noreferrer" : undefined}
                   className="rounded-2xl border border-fuchsia-300/15 bg-fuchsia-400/10 p-4 text-sm font-black uppercase tracking-[0.08em] text-white"
                 >
-                  {item}
-                </div>
+                  <span className="block">{item.title}</span>
+                  <span className="mt-2 block text-xs normal-case leading-5 tracking-normal text-slate-300">
+                    {item.copy}
+                  </span>
+                  <span className="mt-3 block text-xs text-lime-200">
+                    {item.label} →
+                  </span>
+                </Link>
               ))}
             </div>
           </div>

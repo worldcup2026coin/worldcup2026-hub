@@ -19,6 +19,8 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
   const isLive = wc26Config.isLive;
   const contract = wc26Config.contractAddress || "Coming at launch";
   const pumpReady = isExternalLinkReady(wc26Config.pumpFunUrl);
+  const chartReady = isExternalLinkReady(wc26Config.links.chart);
+  const solscanReady = isExternalLinkReady(wc26Config.links.solscan);
 
   const copyContract = async () => {
     if (!isLive) return;
@@ -88,6 +90,47 @@ export function OfficialLaunchLinks({ compact = false }: OfficialLaunchLinksProp
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
+          <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+            <p className="text-[0.66rem] font-black uppercase tracking-[0.18em] text-slate-400">
+              Chart
+            </p>
+            {chartReady ? (
+              <a
+                href={wc26Config.links.chart}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex text-sm font-black text-lime-200 transition hover:text-white"
+              >
+                View Chart
+              </a>
+            ) : (
+              <p className="mt-2 text-sm font-black text-white">
+                Available after launch
+              </p>
+            )}
+          </div>
+          <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+            <p className="text-[0.66rem] font-black uppercase tracking-[0.18em] text-slate-400">
+              Solscan
+            </p>
+            {solscanReady ? (
+              <a
+                href={wc26Config.links.solscan}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex text-sm font-black text-lime-200 transition hover:text-white"
+              >
+                View on Solscan
+              </a>
+            ) : (
+              <p className="mt-2 text-sm font-black text-white">
+                Available after launch
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
           {pumpReady ? (
             <a
               href={wc26Config.pumpFunUrl}
@@ -145,5 +188,25 @@ export function Wc26RiskWarning() {
     <p className="rounded-2xl border border-red-300/20 bg-red-400/10 px-4 py-3 text-sm font-bold leading-6 text-red-100/90">
       {riskCopy}
     </p>
+  );
+}
+
+export function LaunchMechanicsPanel() {
+  return (
+    <section className="neon-panel rounded-[2rem] p-6">
+      <p className="neon-kicker">Launch mechanics</p>
+      <h2 className="mt-4 text-3xl font-black uppercase text-white">
+        Public launch, official links only
+      </h2>
+      <p className="mt-4 text-sm leading-6 text-slate-300">
+        $WC26 is planned as a public pump.fun launch on Solana with no presale.
+        The official contract address, pump.fun link, chart link and Solscan
+        link will be published on this website, X and Telegram announcements at
+        launch. Always verify the contract before interacting with any token.
+      </p>
+      <p className="mt-4 rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-4 py-3 text-sm font-bold leading-6 text-cyan-100">
+        Chart and liquidity information will update after launch.
+      </p>
+    </section>
   );
 }

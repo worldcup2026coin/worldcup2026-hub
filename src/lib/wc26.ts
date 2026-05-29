@@ -5,6 +5,8 @@ export type Wc26LaunchStatus = "prelaunch" | "live";
 const envLaunchStatus = process.env.NEXT_PUBLIC_WC26_LAUNCH_STATUS;
 const envContractAddress = process.env.NEXT_PUBLIC_WC26_CONTRACT_ADDRESS ?? "";
 const envPumpFunUrl = process.env.NEXT_PUBLIC_WC26_PUMP_FUN_URL ?? "";
+const envDexscreenerUrl = process.env.NEXT_PUBLIC_WC26_DEXSCREENER_URL ?? "";
+const envSolscanUrl = process.env.NEXT_PUBLIC_WC26_SOLSCAN_URL ?? "";
 
 export const launchStatus: Wc26LaunchStatus =
   envLaunchStatus === "live" && envContractAddress && envPumpFunUrl
@@ -13,6 +15,9 @@ export const launchStatus: Wc26LaunchStatus =
 
 export const contractAddress = launchStatus === "live" ? envContractAddress : "";
 export const pumpFunUrl = launchStatus === "live" ? envPumpFunUrl : "";
+export const dexscreenerUrl =
+  launchStatus === "live" ? envDexscreenerUrl : "";
+export const solscanUrl = launchStatus === "live" ? envSolscanUrl : "";
 export const xUrl = SOCIAL_LINKS.x;
 export const telegramChannelUrl = SOCIAL_LINKS.telegramChannel;
 export const telegramChatUrl = SOCIAL_LINKS.telegramChat;
@@ -40,8 +45,8 @@ export const wc26Config = {
     telegram: telegramChannelUrl,
     telegramChat: telegramChatUrl,
     pumpFun: pumpFunUrl,
-    chart: "#",
-    solscan: "#",
+    chart: dexscreenerUrl,
+    solscan: solscanUrl,
   },
 } as const;
 

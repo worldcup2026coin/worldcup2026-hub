@@ -244,23 +244,6 @@ textarea {
   mask-image: linear-gradient(to bottom, black, transparent 82%);
 }
 
-.hero-panel::after {
-  content: "MATCHDAY SIGNAL";
-  position: absolute;
-  right: clamp(1rem, 4vw, 4rem);
-  top: 1.25rem;
-  transform: rotate(5deg);
-  border: 1px solid rgba(255, 43, 214, 0.42);
-  border-radius: 999px;
-  background: rgba(3, 7, 18, 0.72);
-  color: var(--neon-pink);
-  box-shadow: var(--shadow-pink);
-  padding: 0.45rem 0.8rem;
-  font-size: 0.68rem;
-  font-weight: 950;
-  letter-spacing: 0.2em;
-}
-
 .glow-button-primary {
   display: inline-flex;
   min-height: 3rem;
@@ -462,10 +445,6 @@ textarea {
 }
 
 @media (max-width: 640px) {
-  .hero-panel::after {
-    display: none;
-  }
-
   .neon-title {
     letter-spacing: -0.055em;
   }

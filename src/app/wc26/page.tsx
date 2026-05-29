@@ -6,6 +6,7 @@ import { wc26Config } from "@/lib/wc26";
 import { MascotShowcase } from "@/components/wc26/mascot-showcase";
 import { StickerPackSection } from "@/components/wc26/sticker-pack-section";
 import {
+  LaunchMechanicsPanel,
   OfficialLaunchLinks,
   Wc26RiskWarning,
 } from "@/components/wc26/official-launch-links";
@@ -16,6 +17,7 @@ export const metadata: Metadata = createPageMetadata({
   description:
     "$WC26 is the fan-made football meme community layer for World Cup 2026 — memes, fan chaos, launch alerts and matchday signal.",
   path: "/wc26",
+  image: "/og-wc26.png",
 });
 
 const pillars = [
@@ -67,6 +69,12 @@ export default function $WC26Page() {
                 <Link href="/community" className="glow-button-secondary">
                   Join community
                 </Link>
+                <Link
+                  href="/community/meme-generator"
+                  className="glow-button-secondary"
+                >
+                  Create your launch meme
+                </Link>
               </div>
 
               <div className="mt-5">
@@ -97,6 +105,10 @@ export default function $WC26Page() {
             </div>
           ))}
         </section>
+
+        <div className="mt-8">
+          <LaunchMechanicsPanel />
+        </div>
 
         <section className="neon-panel mt-8 rounded-[2rem] p-6">
           <p className="neon-kicker">Community missions</p>

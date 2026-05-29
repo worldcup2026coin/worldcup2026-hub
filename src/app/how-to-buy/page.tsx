@@ -14,6 +14,7 @@ export const metadata: Metadata = createPageMetadata({
   description:
     "Safer buying guide for $WC26. Verify the official contract here. Never trust DMs, screenshots or search results.",
   path: "/how-to-buy",
+  image: "/og-wc26-launch.png",
 });
 
 const checklist = [

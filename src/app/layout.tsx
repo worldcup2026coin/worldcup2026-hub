@@ -32,6 +32,10 @@ export const metadata: Metadata = {
   },
   description: defaultDescription,
   applicationName: siteName,
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
   alternates: {
     canonical: "/",
   },
