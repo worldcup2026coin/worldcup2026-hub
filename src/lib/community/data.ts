@@ -105,6 +105,11 @@ export async function isCommunityModerator(userId: string) {
   );
 }
 
+export async function isCommunityAdmin(userId: string) {
+  const profile = await getCommunityProfile(userId);
+  return Boolean(profile && profile.status === "active" && profile.role === "admin");
+}
+
 export async function getRecentChatMessages(limit = 40, includeModerated = false) {
   const supabase = createSupabaseAdminClient();
   let query = supabase
