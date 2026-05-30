@@ -24,7 +24,7 @@ function TeamBadge({
 
   return (
     <div className="flex min-w-0 flex-col items-center text-center">
-      <span className="flex h-24 w-24 items-center justify-center rounded-[1.75rem] border border-lime-300/25 bg-white/10 p-2 shadow-[0_0_30px_rgba(163,255,18,0.13)] sm:h-28 sm:w-28">
+      <span className="flex h-20 w-20 items-center justify-center rounded-[1.5rem] border border-lime-300/25 bg-white/10 p-2 shadow-[0_0_30px_rgba(163,255,18,0.13)] sm:h-28 sm:w-28 sm:rounded-[1.75rem]">
         {logo ? (
           <Image
             src={logo}
@@ -40,7 +40,7 @@ function TeamBadge({
         )}
       </span>
 
-      <h1 className="mt-4 w-full max-w-full whitespace-normal break-normal text-center text-base font-black uppercase leading-tight tracking-tight text-white [overflow-wrap:normal] [text-wrap:balance] [word-break:normal] max-[380px]:text-sm sm:max-w-[18rem] sm:text-4xl lg:max-w-[24rem]">
+      <h1 className="match-team-name mt-3 w-full max-w-[16rem] whitespace-normal break-normal text-center text-xl font-black leading-tight tracking-normal text-white [hyphens:none] [overflow-wrap:normal] [text-wrap:balance] [word-break:normal] sm:mt-4 sm:max-w-[18rem] sm:text-4xl sm:uppercase sm:tracking-tight lg:max-w-[24rem]">
         {displayName}
       </h1>
     </div>
@@ -52,14 +52,14 @@ function ScoreBox({ fixture }: { fixture: Fixture }) {
 
   if (!status.showScore) {
     return (
-      <p className="mt-2 text-4xl font-black uppercase text-white sm:text-6xl">
+      <p className="mt-1 text-3xl font-black uppercase text-white sm:mt-2 sm:text-6xl">
         <span className="glow-text text-cyan-200">VS</span>
       </p>
     );
   }
 
   return (
-    <p className="mt-2 text-5xl font-black text-white sm:text-7xl">
+    <p className="mt-1 text-4xl font-black text-white sm:mt-2 sm:text-7xl">
       {fixture.home_goals ?? "-"}
       <span className="mx-2 text-cyan-300">:</span>
       {fixture.away_goals ?? "-"}
@@ -90,14 +90,14 @@ export function MatchHeader({ fixture }: MatchHeaderProps) {
         />
       </div>
 
-      <div className="relative z-10 mt-10 grid min-w-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-5">
+      <div className="relative z-10 mt-8 grid min-w-0 grid-cols-1 items-center gap-5 sm:mt-10 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:gap-5">
         <TeamBadge
           name={fixture.home_team_name}
           logo={fixture.home_team_logo_url}
         />
 
-        <div className="rounded-[2rem] border border-fuchsia-300/25 bg-slate-950/75 px-4 py-5 text-center shadow-[0_0_30px_rgba(255,43,214,0.14)] sm:px-6">
-          <p className="text-[0.65rem] font-black uppercase tracking-[0.2em] text-fuchsia-200">
+        <div className="match-score-box mx-auto w-full max-w-[12rem] rounded-[1.5rem] border border-fuchsia-300/25 bg-slate-950/75 px-4 py-4 text-center shadow-[0_0_30px_rgba(255,43,214,0.14)] sm:w-auto sm:max-w-none sm:rounded-[2rem] sm:px-6 sm:py-5">
+          <p className="whitespace-nowrap text-[0.62rem] font-black uppercase tracking-[0.12em] text-fuchsia-200 sm:text-[0.65rem] sm:tracking-[0.2em]">
             Match signal
           </p>
           <ScoreBox fixture={fixture} />

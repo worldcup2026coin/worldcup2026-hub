@@ -522,7 +522,8 @@ body:has([data-team-page]) main {
 
 [data-team-page] .team-hero-title,
 [data-team-page] .team-name-heading,
-[data-team-page] [data-sticky-nav] a {
+[data-team-page] [data-sticky-nav] a,
+[data-match-page] .match-team-name {
   overflow-wrap: normal;
   word-break: normal;
   hyphens: none;

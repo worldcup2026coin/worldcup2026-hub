@@ -61,7 +61,7 @@ function TeamLine({
     <div className="flex min-w-0 items-center gap-3">
       <TeamLogo src={logo} alt={displayName} />
       <span
-        className={`min-w-0 whitespace-normal break-normal text-sm font-black leading-tight [overflow-wrap:normal] [word-break:normal] ${
+        className={`min-w-0 whitespace-normal break-normal text-[0.82rem] font-black leading-tight [hyphens:none] [overflow-wrap:normal] [word-break:normal] sm:text-sm ${
           isWinner ? "text-lime-200 glow-text" : "text-white"
         }`}
       >

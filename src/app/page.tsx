@@ -55,17 +55,28 @@ function statusLabel(status: string | null) {
   return "Upcoming";
 }
 
+function compactTeamName(name: string | null | undefined) {
+  if (!name) return null;
+
+  if (name === "Bosnia & Herzegovina") return "Bosnia";
+
+  return name;
+}
+
 function MiniFixtureCard({ fixture }: { fixture: HomeFixture }) {
+  const homeName = compactTeamName(fixture.home_team_name) ?? "Home";
+  const awayName = compactTeamName(fixture.away_team_name) ?? "Away";
+
   return (
     <Link
       href={matchHref(fixture)}
       className="neon-card block rounded-[2rem] p-5"
     >
       <div className="flex items-center justify-between gap-3">
-        <span className="neon-badge neon-badge-pink">
+        <span className="neon-badge neon-badge-pink whitespace-nowrap text-[0.65rem] tracking-[0.1em]">
           {statusLabel(fixture.status_short)}
         </span>
-        <span className="text-xs font-black uppercase tracking-[0.14em] text-slate-400">
+        <span className="whitespace-nowrap text-[0.65rem] font-black uppercase tracking-[0.08em] text-slate-400 sm:text-xs sm:tracking-[0.14em]">
           {formatFixtureTimes(fixture).venueTimeLabel}
         </span>
       </div>
@@ -81,12 +92,12 @@ function MiniFixtureCard({ fixture }: { fixture: HomeFixture }) {
               className="mx-auto h-14 w-14 rounded-2xl border border-white/10 bg-white/10 object-contain p-1"
             />
           ) : null}
-          <p className="mt-2 truncate text-sm font-black uppercase text-white">
-            {fixture.home_team_name ?? "Home"}
+          <p className="mt-2 whitespace-normal break-normal text-sm font-black leading-tight text-white [hyphens:none] [overflow-wrap:normal] [text-wrap:balance] [word-break:normal] sm:uppercase">
+            {homeName}
           </p>
         </div>
 
-        <div className="rounded-2xl border border-lime-300/25 bg-lime-300/10 px-4 py-3 text-center text-xl font-black text-white shadow-[0_0_22px_rgba(163,255,18,0.10)]">
+        <div className="rounded-2xl border border-lime-300/25 bg-lime-300/10 px-3 py-3 text-center text-lg font-black text-white shadow-[0_0_22px_rgba(163,255,18,0.10)] sm:px-4 sm:text-xl">
           {scoreText(fixture)}
         </div>
 
@@ -100,8 +111,8 @@ function MiniFixtureCard({ fixture }: { fixture: HomeFixture }) {
               className="mx-auto h-14 w-14 rounded-2xl border border-white/10 bg-white/10 object-contain p-1"
             />
           ) : null}
-          <p className="mt-2 truncate text-sm font-black uppercase text-white">
-            {fixture.away_team_name ?? "Away"}
+          <p className="mt-2 whitespace-normal break-normal text-sm font-black leading-tight text-white [hyphens:none] [overflow-wrap:normal] [text-wrap:balance] [word-break:normal] sm:uppercase">
+            {awayName}
           </p>
         </div>
       </div>
