@@ -12,7 +12,8 @@
     "qa:full-site-screenshots": "node scripts/qa/qa-full-site-screenshots.mjs",
     "qa:internal-links": "node scripts/qa/qa-internal-links.mjs",
     "qa:mobile-overflow": "node scripts/qa/qa-mobile-overflow.mjs",
-    "qa:no-overpromise": "node scripts/qa/qa-no-overpromise.mjs"
+    "qa:no-overpromise": "node scripts/qa/qa-no-overpromise.mjs",
+    "doctor": "react-doctor . --verbose"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",
@@ -32,6 +33,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "playwright": "^1.60.0",
+    "react-doctor": "^0.2.14",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
