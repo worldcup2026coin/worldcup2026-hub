@@ -24,14 +24,14 @@ function TeamBadge({
 
   return (
     <div className="flex min-w-0 flex-col items-center text-center">
-      <span className="flex h-20 w-20 items-center justify-center rounded-[1.5rem] border border-lime-300/25 bg-white/10 p-2 shadow-[0_0_30px_rgba(163,255,18,0.13)] sm:h-28 sm:w-28 sm:rounded-[1.75rem]">
+      <span className="flex size-20 items-center justify-center rounded-[1.5rem] border border-lime-300/25 bg-white/10 p-2 shadow-[0_0_30px_rgba(163,255,18,0.13)] sm:size-28 sm:rounded-[1.75rem]">
         {logo ? (
           <Image
             src={logo}
             alt={`${displayName} logo`}
             width={112}
             height={112}
-            className="h-full w-full rounded-2xl object-contain"
+            className="size-full rounded-2xl object-contain"
           />
         ) : (
           <span className="text-2xl font-black text-white">

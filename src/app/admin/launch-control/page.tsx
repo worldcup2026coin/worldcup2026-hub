@@ -335,7 +335,7 @@ export default async function LaunchControlPage() {
                   key={step}
                   className="grid grid-cols-[auto_1fr] gap-3 rounded-2xl border border-white/10 bg-slate-950/45 p-4 text-sm font-bold leading-6 text-slate-200"
                 >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-lime-300/30 bg-lime-300/10 text-lime-100">
+                  <span className="flex size-8 items-center justify-center rounded-full border border-lime-300/30 bg-lime-300/10 text-lime-100">
                     {index + 1}
                   </span>
                   <span>{step}</span>
@@ -394,6 +394,7 @@ export default async function LaunchControlPage() {
                 </h3>
                 <textarea
                   readOnly
+                  aria-label={`${block.title} template`}
                   value={block.text}
                   className="mt-4 min-h-72 w-full resize-y rounded-2xl border border-white/10 bg-black/40 p-4 text-sm font-semibold leading-6 text-slate-200 outline-none"
                 />

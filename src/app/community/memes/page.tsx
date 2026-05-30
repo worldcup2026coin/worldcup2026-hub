@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { CommunityRulesPanel } from "@/components/community/community-rules-panel";
 import { MemeSubmitForm } from "@/components/community/meme-submit-form";
 import { MemeWallGrid } from "@/components/community/meme-wall-grid";
@@ -46,13 +47,13 @@ export default async function MemeWallPage({
         <div className="grid gap-6 xl:grid-cols-[1fr_23rem]">
           <div className="grid gap-6">
             <div className="flex flex-wrap gap-3">
-              <a
+              <Link
                 href="/community/meme-generator"
                 className="rounded-full border border-lime-300/50 bg-lime-300 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-slate-950"
               >
                 Create meme
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/community/memes?sort=newest"
                 className={`rounded-full border px-4 py-2 text-xs font-black uppercase tracking-[0.14em] ${
                   sort === "newest"
@@ -61,8 +62,8 @@ export default async function MemeWallPage({
                 }`}
               >
                 Newest
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/community/memes?sort=top"
                 className={`rounded-full border px-4 py-2 text-xs font-black uppercase tracking-[0.14em] ${
                   sort === "top"
@@ -71,7 +72,7 @@ export default async function MemeWallPage({
                 }`}
               >
                 Most upvoted
-              </a>
+              </Link>
             </div>
             <MemeWallGrid memes={memes} signedIn={Boolean(user)} />
           </div>

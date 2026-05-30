@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const mascots = [
   {
@@ -42,9 +43,9 @@ export function MascotShowcase() {
           </span>
         </div>
         <div className="mt-5">
-          <a href="/community/quiz" className="glow-button-secondary">
+          <Link href="/community/quiz" className="glow-button-secondary">
             Take the mascot quiz
-          </a>
+          </Link>
         </div>
 
         <div className="mt-6 overflow-hidden rounded-[1.5rem] border border-lime-300/20 bg-black/40 shadow-[0_0_34px_rgba(163,255,18,0.12)]">
@@ -136,15 +137,15 @@ export function MascotShowcase() {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <a href="/launch" className="glow-button-primary">
+            <Link href="/launch" className="glow-button-primary">
               Launch Status
-            </a>
-            <a href="/how-to-buy" className="glow-button-secondary">
+            </Link>
+            <Link href="/how-to-buy" className="glow-button-secondary">
               How to Buy
-            </a>
-            <a href="/community" className="glow-button-secondary">
+            </Link>
+            <Link href="/community" className="glow-button-secondary">
               Community
-            </a>
+            </Link>
           </div>
         </div>
       </section>

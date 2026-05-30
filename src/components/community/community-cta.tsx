@@ -1,5 +1,6 @@
 import { SOCIAL_LINKS } from "@/lib/social-links";
 import Image from "next/image";
+import Link from "next/link";
 
 export function CommunityCTA() {
   return (
@@ -18,17 +19,17 @@ export function CommunityCTA() {
           </p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <a href="/wc26" className="glow-button-primary">
+            <Link href="/wc26" className="glow-button-primary">
               View $WC26
-            </a>
+            </Link>
 
-            <a href="/launch" className="glow-button-secondary">
+            <Link href="/launch" className="glow-button-secondary">
               Launch status
-            </a>
+            </Link>
 
-            <a href="/how-to-buy" className="glow-button-secondary">
+            <Link href="/how-to-buy" className="glow-button-secondary">
               How to buy
-            </a>
+            </Link>
           </div>
 
           <p className="mt-4 max-w-3xl text-xs font-semibold leading-5 text-slate-400">

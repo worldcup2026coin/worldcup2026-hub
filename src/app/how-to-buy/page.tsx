@@ -194,7 +194,7 @@ export default function HowToBuyPage() {
                 className="rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-5"
               >
                 <div className="flex items-start gap-4">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-lime-300/40 bg-lime-300/10 text-sm font-black text-lime-100">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full border border-lime-300/40 bg-lime-300/10 text-sm font-black text-lime-100">
                     {index + 1}
                   </span>
                   <div>

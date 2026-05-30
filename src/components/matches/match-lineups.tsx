@@ -74,10 +74,10 @@ export function MatchLineups({ lineups }: MatchLineupsProps) {
                     alt={`${lineup.team_name} logo`}
                     width={40}
                     height={40}
-                    className="h-10 w-10 rounded-full object-contain"
+                    className="size-10 rounded-full object-contain"
                   />
                 ) : (
-                  <div className="h-10 w-10 rounded-full bg-white/10" />
+                  <div className="size-10 rounded-full bg-white/10" />
                 )}
 
                 <div>

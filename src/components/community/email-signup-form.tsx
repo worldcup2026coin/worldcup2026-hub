@@ -74,6 +74,7 @@ export function EmailSignupForm({
       <form onSubmit={submitForm} className="mt-5 grid gap-3">
         <input
           type="email"
+          aria-label="Email address"
           required
           value={email}
           onChange={(event) => setEmail(event.target.value)}

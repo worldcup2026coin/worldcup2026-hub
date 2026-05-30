@@ -311,6 +311,7 @@ function WindowCard({
           {isExactScore ? (
             <input
               name="exactScore"
+              aria-label={`${window.title} exact score prediction`}
               required
               placeholder="Example: Mexico 2-1 South Africa"
               defaultValue={existing?.exact_score ?? ""}
@@ -319,6 +320,7 @@ function WindowCard({
           ) : hasOptions ? (
             <select
               name="pick"
+              aria-label={`${window.title} prediction pick`}
               required
               defaultValue={existing?.pick ?? ""}
               className="rounded-2xl border border-cyan-300/20 bg-black/40 px-4 py-4 text-sm font-bold text-white outline-none transition focus:border-lime-300/60"
@@ -335,6 +337,7 @@ function WindowCard({
           ) : (
             <input
               name="freePick"
+              aria-label={`${window.title} prediction pick`}
               required
               placeholder="Type your pick"
               defaultValue={existing?.pick ?? ""}
@@ -561,6 +564,7 @@ export default async function PredictionLeaderboardPage({
                 </p>
                 <input
                   name="displayName"
+                  aria-label="Prediction display name"
                   required
                   minLength={2}
                   maxLength={32}

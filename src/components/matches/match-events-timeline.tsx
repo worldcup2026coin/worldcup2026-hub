@@ -36,7 +36,7 @@ export function MatchEventsTimeline({ events }: MatchEventsTimelineProps) {
             key={event.id}
             className="flex gap-4 rounded-2xl bg-white/[0.04] p-4"
           >
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-lg">
+            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-slate-950 text-lg">
               {eventIcon(event.event_type)}
             </div>
 

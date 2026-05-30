@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -219,9 +219,9 @@ export default async function AccountPage({
           Manage the display name, handle and bio shown beside community chat
           messages and approved memes.
         </p>
-        <a href="/community/profile" className="glow-button-secondary mt-5">
+        <Link href="/community/profile" className="glow-button-secondary mt-5">
           Edit community profile
-        </a>
+        </Link>
       </section>
     </main>
   );

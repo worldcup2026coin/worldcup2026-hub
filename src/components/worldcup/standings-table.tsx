@@ -77,17 +77,17 @@ export function StandingsTable({
                     className="flex min-w-0 items-center gap-3 font-black text-white transition hover:text-lime-200"
                   >
                     {row.team_logo_url ? (
-                      <span className="flex h-8 w-8 items-center justify-center rounded-xl border border-white/10 bg-white/10 p-1">
+                      <span className="flex size-8 items-center justify-center rounded-xl border border-white/10 bg-white/10 p-1">
                         <Image
                           src={row.team_logo_url}
                           alt={`${row.team_name} logo`}
                           width={32}
                           height={32}
-                          className="h-full w-full rounded-lg object-contain"
+                          className="size-full rounded-lg object-contain"
                         />
                       </span>
                     ) : (
-                      <TeamFlag name={row.team_name} className="h-8 w-8 text-base" />
+                      <TeamFlag name={row.team_name} className="size-8 text-base" />
                     )}
                     <span className="truncate">{row.team_name}</span>
                   </Link>

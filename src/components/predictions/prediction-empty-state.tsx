@@ -22,7 +22,7 @@ export function PredictionEmptyState({
 }: PredictionEmptyStateProps) {
   return (
     <div className="neon-panel rounded-3xl border-dashed p-6 text-center">
-      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-fuchsia-300/25 bg-fuchsia-400/10 text-xl shadow-[0_0_20px_rgba(255,43,214,0.12)]">
+      <div className="mx-auto flex size-12 items-center justify-center rounded-2xl border border-fuchsia-300/25 bg-fuchsia-400/10 text-xl shadow-[0_0_20px_rgba(255,43,214,0.12)]">
         🧠
       </div>
       <h3 className="mt-4 text-lg font-black uppercase tracking-tight text-white">{title}</h3>

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 type MascotKey = "maple" | "zayu" | "clutch";
@@ -290,15 +291,15 @@ export function MascotQuiz() {
                 >
                   Telegram chat
                 </a>
-                <a href="/wc26" className="glow-button-secondary text-center">
+                <Link href="/wc26" className="glow-button-secondary text-center">
                   $WC26 page
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/community/memes"
                   className="glow-button-secondary text-center"
                 >
                   Meme Wall
-                </a>
+                </Link>
               </div>
             </div>
           </div>

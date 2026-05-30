@@ -27,17 +27,17 @@ function TeamLogo({
   alt: string;
 }) {
   if (!src) {
-    return <TeamFlag name={alt} className="h-10 w-10" />;
+    return <TeamFlag name={alt} className="size-10" />;
   }
 
   return (
-    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/10 p-1 shadow-[0_0_18px_rgba(163,255,18,0.10)]">
+    <span className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/10 p-1 shadow-[0_0_18px_rgba(163,255,18,0.10)]">
       <Image
         src={src}
         alt={alt}
         width={40}
         height={40}
-        className="h-full w-full rounded-xl object-contain"
+        className="size-full rounded-xl object-contain"
       />
     </span>
   );

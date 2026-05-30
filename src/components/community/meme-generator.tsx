@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 const templates = [
   {
@@ -252,9 +253,9 @@ export function MemeGenerator({ signedIn }: { signedIn: boolean }) {
             {submitting ? "Submitting..." : "Submit to Meme Wall"}
           </button>
         ) : (
-          <a href="/auth/login" className="glow-button-secondary">
+          <Link href="/auth/login" className="glow-button-secondary">
             Sign in to submit
-          </a>
+          </Link>
         )}
 
         {notice ? (

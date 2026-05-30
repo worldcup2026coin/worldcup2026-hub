@@ -160,12 +160,12 @@ export default async function PredictionsPage() {
                     <h2 className="mt-2 text-2xl font-black text-white">
                       <TeamFlag
                         name={item.fixture.home_team_name}
-                        className="mr-2 inline-flex h-8 w-8 align-middle"
+                        className="mr-2 inline-flex size-8 align-middle"
                       />
                       {item.matchTitle}
                       <TeamFlag
                         name={item.fixture.away_team_name}
-                        className="ml-2 inline-flex h-8 w-8 align-middle"
+                        className="ml-2 inline-flex size-8 align-middle"
                       />
                     </h2>
                   </div>

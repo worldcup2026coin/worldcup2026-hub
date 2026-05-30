@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { CommunityProfile } from "@/lib/community/types";
 
 export function ChatComposer({
@@ -23,9 +24,9 @@ export function ChatComposer({
         <p className="mt-2 text-sm leading-6 text-slate-300">
           Everyone can read the chat. Sign in to join the football debate.
         </p>
-        <a href="/auth/login" className="glow-button-primary mt-5">
+        <Link href="/auth/login" className="glow-button-primary mt-5">
           Sign in
-        </a>
+        </Link>
       </div>
     );
   }

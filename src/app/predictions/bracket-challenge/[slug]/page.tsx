@@ -91,7 +91,7 @@ function TeamChip({
         {label}
       </p>
       <div className="mt-3 flex items-center gap-3">
-        <TeamFlag name={name} className="h-10 w-10" />
+        <TeamFlag name={name} className="size-10" />
         <p className="text-lg font-black text-white">{name}</p>
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { TeamFlag } from "@/components/worldcup/team-flag";
 import type {
   BracketChallengeData,
@@ -182,7 +183,7 @@ function TeamName({ team }: { team: BracketTeam | null }) {
         name={team.name}
         country={team.country}
         code={team.code}
-        className="h-7 w-7 shrink-0 text-base"
+        className="size-7 shrink-0 text-base"
       />
       <span className="truncate">{team.name}</span>
     </span>
@@ -431,9 +432,9 @@ export function BracketChallengeBuilder({ groups, signedIn }: BuilderProps) {
             {saving ? "Saving..." : "Save Bracket"}
           </button>
         ) : (
-          <a href="/auth/login" className={`glow-button-primary ${buttonClass}`}>
+          <Link href="/auth/login" className={`glow-button-primary ${buttonClass}`}>
             Sign in to save
-          </a>
+          </Link>
         )}
         <button
           type="button"
@@ -807,6 +808,7 @@ export function BracketChallengeBuilder({ groups, signedIn }: BuilderProps) {
               </label>
               <input
                 value={draft.displayName}
+                aria-label="Bracket display name"
                 onChange={(event) =>
                   setDraft((current) => ({
                     ...current,
@@ -819,6 +821,7 @@ export function BracketChallengeBuilder({ groups, signedIn }: BuilderProps) {
               />
               <input
                 value={draft.title}
+                aria-label="Bracket title"
                 onChange={(event) =>
                   setDraft((current) => ({ ...current, title: event.target.value }))
                 }

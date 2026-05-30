@@ -96,7 +96,7 @@ export function LeaderboardTable({ title, valueLabel, rows }: Props) {
                           <span className="inline-flex items-center gap-2">
                             <TeamFlag
                               name={row.team_name}
-                              className="h-7 w-7 text-base"
+                              className="size-7 text-base"
                             />
                             {row.team_name ?? "-"}
                           </span>

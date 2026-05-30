@@ -89,7 +89,7 @@ function MiniFixtureCard({ fixture }: { fixture: HomeFixture }) {
               alt=""
               width={56}
               height={56}
-              className="mx-auto h-14 w-14 rounded-2xl border border-white/10 bg-white/10 object-contain p-1"
+              className="mx-auto size-14 rounded-2xl border border-white/10 bg-white/10 object-contain p-1"
             />
           ) : null}
           <p className="mt-2 whitespace-normal break-normal text-sm font-black leading-tight text-white [hyphens:none] [overflow-wrap:normal] [text-wrap:balance] [word-break:normal] sm:uppercase">
@@ -108,7 +108,7 @@ function MiniFixtureCard({ fixture }: { fixture: HomeFixture }) {
               alt=""
               width={56}
               height={56}
-              className="mx-auto h-14 w-14 rounded-2xl border border-white/10 bg-white/10 object-contain p-1"
+              className="mx-auto size-14 rounded-2xl border border-white/10 bg-white/10 object-contain p-1"
             />
           ) : null}
           <p className="mt-2 whitespace-normal break-normal text-sm font-black leading-tight text-white [hyphens:none] [overflow-wrap:normal] [text-wrap:balance] [word-break:normal] sm:uppercase">
@@ -443,10 +443,10 @@ return (
                           alt=""
                           width={40}
                           height={40}
-                          className="h-10 w-10 rounded-xl border border-white/10 bg-white/10 object-contain p-1"
+                          className="size-10 rounded-xl border border-white/10 bg-white/10 object-contain p-1"
                         />
                       ) : (
-                        <div className="h-10 w-10 rounded-xl bg-white/10" />
+                        <div className="size-10 rounded-xl bg-white/10" />
                       )}
                       <div>
                         <p className="text-sm font-black uppercase text-white">{team.name}</p>

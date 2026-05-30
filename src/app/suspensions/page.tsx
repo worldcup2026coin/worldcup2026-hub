@@ -48,7 +48,7 @@ export default async function SuspensionsPage() {
                           {row.player_name ?? "Player TBC"}
                         </p>
                         <p className="mt-1 inline-flex items-center gap-2 text-sm text-slate-400">
-                          <TeamFlag name={row.team_name} className="h-6 w-6 text-sm" />
+                          <TeamFlag name={row.team_name} className="size-6 text-sm" />
                           {row.team_name ?? "Team TBC"}
                         </p>
                       </div>

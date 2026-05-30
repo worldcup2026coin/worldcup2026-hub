@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ChatComposer } from "@/components/community/chat-composer";
 import { ChatMessageList } from "@/components/community/chat-message-list";
 import { CommunityRulesPanel } from "@/components/community/community-rules-panel";
@@ -51,9 +52,9 @@ export default async function CommunityChatPage() {
             <CommunityRulesPanel />
             <SocialLinksPanel />
             {user ? (
-              <a href="/community/profile" className="glow-button-secondary">
+              <Link href="/community/profile" className="glow-button-secondary">
                 Edit community profile
-              </a>
+              </Link>
             ) : null}
           </aside>
         </div>
