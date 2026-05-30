@@ -36,7 +36,7 @@ function tuneDescription(description: string) {
 export function EmptyState({ title, description, action }: EmptyStateProps) {
   return (
     <div className="neon-panel rounded-[2rem] border-dashed p-8 text-center">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-lime-300/35 bg-lime-300/10 text-3xl shadow-[0_0_24px_rgba(163,255,18,0.14)]">
+      <div className="mx-auto flex size-16 items-center justify-center rounded-2xl border border-lime-300/35 bg-lime-300/10 text-3xl shadow-[0_0_24px_rgba(163,255,18,0.14)]">
         ⚡
       </div>
       <p className="neon-kicker mx-auto mt-5">Waiting on signal</p>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { TeamFlag } from "@/components/worldcup/team-flag";
 import type { Team } from "@/lib/data/worldcup";
 
@@ -54,9 +55,9 @@ export function FactionChooser({ teams, signedIn }: FactionChooserProps) {
           saving can be connected later if a small profile field is added.
         </p>
         {!signedIn ? (
-          <a href="/auth/login" className="glow-button-secondary mt-5">
+          <Link href="/auth/login" className="glow-button-secondary mt-5">
             Sign in for future profile saving
-          </a>
+          </Link>
         ) : null}
       </section>
 

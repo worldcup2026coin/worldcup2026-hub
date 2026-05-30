@@ -205,10 +205,10 @@ export default async function TeamPage({ params }: TeamPageProps) {
                   alt={`${team.name} logo`}
                   width={80}
                   height={80}
-                  className="h-20 w-20 rounded-full object-contain"
+                  className="size-20 rounded-full object-contain"
                 />
               ) : (
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/10 text-2xl font-black text-white">
+                <div className="flex size-20 items-center justify-center rounded-full bg-white/10 text-2xl font-black text-white">
                   <TeamFlag code={team.code} name={team.name} country={team.country} />
                 </div>
               )}
@@ -594,7 +594,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
                   return (
                     <span
                       key={`${result}-${index}`}
-                      className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border text-sm font-black ${tone}`}
+                      className={`inline-flex size-10 items-center justify-center rounded-xl border text-sm font-black ${tone}`}
                     >
                       {result}
                     </span>

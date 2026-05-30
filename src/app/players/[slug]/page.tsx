@@ -51,10 +51,10 @@ export default async function PlayerPage({ params }: Props) {
                 alt={player.name ?? "Player"}
                 width={112}
                 height={112}
-                className="h-28 w-28 rounded-[2rem] border border-lime-300/25 object-cover shadow-[0_0_28px_rgba(163,255,18,0.14)]"
+                className="size-28 rounded-[2rem] border border-lime-300/25 object-cover shadow-[0_0_28px_rgba(163,255,18,0.14)]"
               />
             ) : (
-              <div className="flex h-28 w-28 items-center justify-center rounded-[2rem] border border-lime-300/25 bg-lime-300/10 text-4xl">
+              <div className="flex size-28 items-center justify-center rounded-[2rem] border border-lime-300/25 bg-lime-300/10 text-4xl">
                 ⚽
               </div>
             )}

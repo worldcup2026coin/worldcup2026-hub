@@ -95,8 +95,8 @@ export function CountdownTimer({
       data-match-countdown
       className="neon-card neon-card-hot relative w-full max-w-full overflow-hidden rounded-[2rem] p-4 shadow-[0_0_60px_rgba(163,230,53,0.18)] sm:p-5"
     >
-      <div className="pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full bg-lime-400/25 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-12 left-6 h-32 w-32 rounded-full bg-fuchsia-500/20 blur-3xl" />
+      <div className="pointer-events-none absolute -right-10 -top-10 size-36 rounded-full bg-lime-400/25 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-12 left-6 size-32 rounded-full bg-fuchsia-500/20 blur-3xl" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(163,230,53,0.045)_1px,transparent_1px),linear-gradient(0deg,rgba(34,211,238,0.035)_1px,transparent_1px)] bg-[size:38px_38px]" />
 
       <div className="relative">

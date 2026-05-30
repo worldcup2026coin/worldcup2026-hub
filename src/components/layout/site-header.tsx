@@ -69,7 +69,7 @@ export function SiteHeader() {
           <button
             type="button"
             onClick={() => setIsOpen((current) => !current)}
-            className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-300/25 bg-white/[0.06] text-2xl font-black text-white shadow-[0_0_20px_rgba(34,211,238,0.12)] lg:hidden"
+            className="inline-flex size-12 items-center justify-center rounded-2xl border border-cyan-300/25 bg-white/[0.06] text-2xl font-black text-white shadow-[0_0_20px_rgba(34,211,238,0.12)] lg:hidden"
             aria-label="Toggle navigation menu"
             aria-expanded={isOpen}
           >

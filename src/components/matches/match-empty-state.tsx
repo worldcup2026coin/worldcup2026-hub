@@ -7,7 +7,7 @@ type MatchEmptyStateProps = {
 export function MatchEmptyState({ title, description }: MatchEmptyStateProps) {
   return (
     <div className="neon-panel rounded-3xl border-dashed p-6 text-center">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-cyan-300/25 bg-cyan-300/10 text-2xl">
+      <div className="mx-auto flex size-14 items-center justify-center rounded-2xl border border-cyan-300/25 bg-cyan-300/10 text-2xl">
         ⚡
       </div>
       <h3 className="mt-4 text-xl font-black uppercase tracking-tight text-white">

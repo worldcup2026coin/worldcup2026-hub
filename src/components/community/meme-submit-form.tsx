@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export function MemeSubmitForm({ signedIn }: { signedIn: boolean }) {
   const [notice, setNotice] = useState<string | null>(null);
@@ -15,9 +16,9 @@ export function MemeSubmitForm({ signedIn }: { signedIn: boolean }) {
         <p className="mt-2 text-sm leading-6 text-slate-300">
           Meme uploads go to moderation first. Approved memes appear publicly.
         </p>
-        <a href="/auth/login" className="glow-button-primary mt-5">
+        <Link href="/auth/login" className="glow-button-primary mt-5">
           Sign in
-        </a>
+        </Link>
       </section>
     );
   }

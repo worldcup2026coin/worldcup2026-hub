@@ -60,12 +60,12 @@ function CardInner({ tip, fixture }: Pick<PredictionCardProps, "tip" | "fixture"
             <p className="mt-2 text-sm font-semibold text-slate-400">
               <TeamFlag
                 name={fixture.home_team_name}
-                className="mr-1 inline-flex h-6 w-6 align-middle text-sm"
+                className="mr-1 inline-flex size-6 align-middle text-sm"
               />
               {fixture.home_team_name ?? "Home"} vs{" "}
               <TeamFlag
                 name={fixture.away_team_name}
-                className="mx-1 inline-flex h-6 w-6 align-middle text-sm"
+                className="mx-1 inline-flex size-6 align-middle text-sm"
               />
               {fixture.away_team_name ?? "Away"} ·{" "}
               {formatDateTime(fixture.match_date)}
